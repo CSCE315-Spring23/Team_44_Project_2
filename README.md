@@ -6,4 +6,4 @@
 
 ### Personal account  
 `psql -h csce-315-db.engr.tamu.edu -U csce315331_[user_name] -d csce315331_team_44`  
-User name is your last name.
+User name is your last name. 
