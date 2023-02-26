@@ -64,7 +64,7 @@ def getItemPrice(id: int, menuItems: dict) -> float:
     pass
 
 
-def createOrder(soldItems: list, orderID: int) -> list:
+def createOrder(soldItems: list, orderID: int, curDate: date) -> list:
     '''creates an order from the list of sold items. -> [ID, Customer name, Total Cost, Date Ordered, Employee ID]'''
     pass
 

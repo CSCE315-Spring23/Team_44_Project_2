@@ -41,26 +41,36 @@ if __name__ == "main":
     orderID = 0
     for i in range(numDaysToGenerate):
         if (isSunday(curDate)):
+            curDate = incrementDate(curDate)
             continue
+
         # - check if game day and generate a number of orders for that day
         numberOfOrders = numOrdersForDay(curDate, gameDays)
+
         # - for each order
         for nthOrder in range(numberOfOrders):
             # -- generate a number of items for that order
             numItems = numItemsForOrder()
+
             # -- choose items for the order
             items = selectSoldItems(weightedMenu, numItems)
+
             # -- get prices for all those items and create an order with employee id and a customer name
-            order = createOrder(items, orderID)
+            order = createOrder(items, orderID, curDate)
+
             # -- create a string for the order
             orderString = createStringOfOrder(order)
+
             # -- create a string for each item sold
             itemsString = createStringOfSoldItems(items, menu, orderID)
+
             # -- write the strings to the output files
             orderItemFile.write(orderString)
             soldItemFile.write(itemsString)
+
             # - increment date
             curDate = incrementDate(curDate)
+            
             # increment order ID
             orderID += 1
 
