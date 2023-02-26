@@ -1,4 +1,5 @@
 from datetime import date
+from datetime import datetime
 import random
 
 
@@ -6,7 +7,7 @@ def incrementDate(curDate: date) -> date:
     pass
 
 
-def getCustomerName() -> str:
+def getCustomerName(customers: list) -> str:
     pass
 
 
@@ -14,7 +15,7 @@ def getEmployeeID() -> str:
     pass
 
 
-def numOrdersForDay(gameDays: set) -> int:
+def numOrdersForDay(day: date, gameDays: set) -> int:
     pass
 
 
