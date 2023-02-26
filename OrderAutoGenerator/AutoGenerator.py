@@ -1,7 +1,8 @@
 from UtilityFunctions import *
 
-if __name__ == "main":
+if __name__ == "__main__":
     # open customer file and read lines to list of customers
+    #breakpoint()
     customerFile = open("customerNames.csv")
     if (customerFile.closed):
         raise Exception(f"Couldn't open customer file")
@@ -19,10 +20,10 @@ if __name__ == "main":
 
     # get user input for start date and end date
     # convert into date object
-    dateFormat = "%Y-%M-%D"
+    dateFormat = "%Y-%m-%d"
 
     startDateString = input("Enter start date (Y-M-D): ")
-    numDaysToGenerate = input("Enter a number of days to generate ")
+    numDaysToGenerate = int(input("Enter a number of days to generate "))
 
     startDate = datetime.strptime(startDateString, dateFormat).date()
 
@@ -64,7 +65,7 @@ if __name__ == "main":
             orderString = createStringOfOrder(order)
 
             # -- create a string for each item sold
-            itemsString = createStringOfSoldItems(items, menu, orderID)
+            itemsString = createStringOfSoldItems(items, menu, orderID, soldItemID)
 
             # -- write the strings to the output files
             orderItemFile.write(orderString)

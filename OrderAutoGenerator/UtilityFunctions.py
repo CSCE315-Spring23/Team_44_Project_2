@@ -1,6 +1,6 @@
 from datetime import date
 from datetime import datetime
-import datetime
+from datetime import timedelta
 import random
 import numpy as np
 import math
@@ -8,7 +8,7 @@ import math
 
 def incrementDate(curDate: date) -> date:
     '''increments the date we are generating orders for by 1 day'''
-    curDate = curDate + datetime.timedelta(days=1)
+    curDate = curDate + timedelta(days=1)
     return curDate
 
 
@@ -54,8 +54,9 @@ def numItemsForOrder() -> int:
     '''generates a random number of items for an order'''
     mean = 3
     stdev = 1
-    value = np.random.norma(mean, stdev)
+    value = np.random.normal(mean, stdev)
     value = abs(math.ceil(value))
+    value = 1 if value == 0 else value
     return value
 
 
@@ -70,14 +71,16 @@ def selectSoldItems(weightedItems: dict, numItems: int) -> list:
 
 def selectItem(weightedItems: dict) -> int:
     '''chooses one item from the weighted menu'''
-    weights = weightedItems.values()
-    keys = weightedItems.keys()
-    return random.choice(keys, weights)
+    weights = list(weightedItems.values())
+    keys = list(weightedItems.keys())
+    return random.choices(keys, weights)[0]
 
 
 def getItemPrice(id: int, menuItems: dict) -> float:
     '''gets the price of an item'''
-    itemPrice = float(menuItems[id][1])
+    itemList = menuItems[id]
+    price = itemList[1]
+    itemPrice = float(price)
     return itemPrice
 
 
@@ -87,11 +90,11 @@ def createOrder(soldItems: list, orderID: int, curDate: date, customer: str, men
     order.append(orderID)
     order.append(customer)
     price = 0
-    for item in soldItems:
-        price += getItemPrice(item, menuItems)
+    for i in range(len(soldItems)):
+        price += getItemPrice(soldItems[i], menuItems)
     order.append(price)
 
-    dateFormat = "%Y-%M-%D"
+    dateFormat = "%Y-%m-%d"
     order.append(curDate.strftime(dateFormat))
     order.append(getEmployeeID(employees))
     return order
@@ -109,12 +112,15 @@ def createStringOfSoldItems(soldItems: list, menuItems: dict, orderID: int, sold
 def createStringofSoldItem(itemID: int, menuItems: dict, orderID: int, soldID: int) -> str:
     '''turns one sold item into a line for the csv output -> [ID, MenuID, OrderID]'''
     itemString = ""
-    itemString += soldID + "," + itemID + "," + orderID
+    itemString += str(soldID) + "," + str(itemID) + "," + str(orderID)
     return itemString
 
 
 def createStringOfOrder(orderList: list) -> str:
     '''creates a string of an order from a list [ID, Customer name, Total Cost, Date Ordered, Employee ID] of the order in the format comma separated'''
+    for i in range(len(orderList)):
+        orderList[i] = str(orderList[i])
+        
     orderString = ",".join(orderList)
     return orderString
 
@@ -128,10 +134,11 @@ def openMenu(fileName: str) -> dict:
     menu = {}
 
     for line in menuLines:
-        lineList = line.split()
+        lineList = line.split(",")
         id = int(lineList[0])
         menu[id] = lineList[1:]
     
+    print(menu)
     return menu
 
 
@@ -139,12 +146,12 @@ def createMenuWeights(menuItems: dict) -> dict:
     weightedMenu = {}
 
     for item in menuItems:
-        weightedMenu[item] = menuItems[item][-1]
+        weightedMenu[item] = float(menuItems[item][-1])
     return weightedMenu
 
 
 def isGameDay(dateToCheck: date, gameDays: set) -> bool:
-    dateFormat = "%Y-%M-%D"
+    dateFormat = "%Y-%m-%d"
     dateString = dateToCheck.strftime(dateFormat)
     return dateString in gameDays
 
