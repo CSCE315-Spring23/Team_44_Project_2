@@ -1,0 +1,56 @@
+ID,Name,Cost,Weight
+0,null,0.00,0
+1,Chick-fil-A Chicken Sandwich,4.49,10
+2,Chick-fil-A Chicken Sandwich Deluxe,5.19,3
+3,Spicy Chicken Sandwich,4.89,8
+4,Spicy Chicken Sandwich Deluxe,5.59,2
+5,12 ct. Grilled Nuggets,7.69,2
+6,8 ct. Grilled Nuggets,5.35,2
+7,12 ct. Chick-fil-A Nuggets,6.29,10
+8,8 ct. Chick-fil-A Nuggets,4.55,10
+9,Grilled Chicken Sandwich,6.15,2
+10,Grilled Chicken Club,7.79,1
+11,Grilled Chicken Cool Wrap,7.45,1
+12,Cobb Salad,9.25,1
+13,Spicy Southwest Salad,9.45,1
+14,Market Salad,9.69,1
+15,L. Waffle Fries,2.69,9
+16,M. Waffle Fries,2.29,10
+17,Chips,1.99,4
+18,Fruit Cup,3.99,1
+19,Side Salad,3.79,2
+20,Bottled Water,1.95,2
+21,M. Unsweetened Iced Tea,2.09,5
+22,L. Unsweetened Iced Tea,2.39,4
+23,M. Sweet Iced Tea,2.09,6
+24,L. Sweet Iced Tea,4.45,5
+25,M. Lemonade,2.39,7
+27,L. Lemonade ,2.89,6
+28,M. Sunjoy,2.39,2
+29,L. Sunjoy ,2.89,2
+30,M. Soft Drink,1.99,8
+31,L. Soft Drink,2.45,6
+32,Orginal Cold Brew Iced Coffee,3.09,3
+33,Vanilla Cold Brew Iced Coffee,3.09,3
+34,Cookies & Cream Milkshake,4.19,3
+35,Chocolate Milkshake,4.19,4
+36,Strawberry Milkshake,4.19,3
+37,Vanilla Milkshake,4.19,4
+38,Frosted Lemonade,4.09,3
+39,Frosted Coffee,4.09,2
+40,Icedream Cone,1.65,3
+41,Chocolate Fudge Brownie,2.09,2
+42,Chocolate Chunk Cookie,1.49,2
+43,Avocado Lime Ranch Dressing,0.00,1
+44,Zesty Apple Cider Vinaigrette,0.00,1
+45,Garlic Herb Ranch Dressing,0.00,1
+46,Light Balsamic Vinaigrette Dressing,0.00,1
+47,Chick-fil-A Sauce,0.00,8
+48,Polynesian Sauce,0.00,3
+49,Honey Mustard Sauce,0.00,3
+50,Garden Herb Ranch Sauce,0.00,7
+52,Zesty Buffalo Sauce,0.00,3
+53,Barbecue Sauce,0.00,3
+54,Sweet & Spicy Sriracha Sauce,0.00,2
+56,Ketchup,0.00,7
+57,Mayonnaise,0.00,2
