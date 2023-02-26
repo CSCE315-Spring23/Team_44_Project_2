@@ -81,36 +81,77 @@ def getItemPrice(id: int, menuItems: dict) -> float:
     return itemPrice
 
 
-def createOrder(soldItems: list, orderID: int, curDate: date) -> list:
+def createOrder(soldItems: list, orderID: int, curDate: date, customer: str, menuItems: dict, employees: list) -> list:
     '''creates an order from the list of sold items. -> [ID, Customer name, Total Cost, Date Ordered, Employee ID]'''
-    pass
+    order = []
+    order.append(orderID)
+    order.append(customer)
+    price = 0
+    for item in soldItems:
+        price += getItemPrice(item, menuItems)
+    order.append(price)
+
+    dateFormat = "%Y-%M-%D"
+    order.append(curDate.strftime(dateFormat))
+    order.append(getEmployeeID(employees))
+    return order
+    
 
 
-def createStringOfSoldItems(soldItems: list, menuItems: dict, orderID: int) -> str:
+def createStringOfSoldItems(soldItems: list, menuItems: dict, orderID: int, soldID: int) -> str:
     '''turns a list of sold items into a series of lines for csv file '''
-    pass
+    stringOfItems = ""
+    for item in soldItems:
+       stringOfItems += createStringofSoldItem(item, menuItems, orderID, soldID)
+       soldID += 1
+    return stringOfItems
 
-
-def createStringofSoldItem(itemID: int, menuItems: dict) -> str:
+def createStringofSoldItem(itemID: int, menuItems: dict, orderID: int, soldID: int) -> str:
     '''turns one sold item into a line for the csv output -> [ID, MenuID, OrderID]'''
-    pass
+    itemString = ""
+    itemString += soldID + "," + itemID + "," + orderID
+    return itemString
 
 
 def createStringOfOrder(orderList: list) -> str:
-    pass
+    '''creates a string of an order from a list [ID, Customer name, Total Cost, Date Ordered, Employee ID] of the order in the format comma separated'''
+    orderString = ",".join(orderList)
+    return orderString
 
 
 def openMenu(fileName: str) -> dict:
-    pass
+    menuFile = open(fileName)
+    #get menu lines and skip first 2 lines
+    menuLines = menuFile.readlines()[2:]
+    menuFile.close()
+
+    menu = {}
+
+    for line in menuLines:
+        lineList = line.split()
+        id = int(lineList[0])
+        menu[id] = lineList[1:]
+    
+    return menu
 
 
 def createMenuWeights(menuItems: dict) -> dict:
-    pass
+    weightedMenu = {}
+
+    for item in menuItems:
+        weightedMenu[item] = menuItems[item][-1]
+    return weightedMenu
 
 
-def isGameDay(date_to_check: date, gameDays: set) -> bool:
-    pass
+def isGameDay(dateToCheck: date, gameDays: set) -> bool:
+    dateFormat = "%Y-%M-%D"
+    dateString = dateToCheck.strftime(dateFormat)
+    return dateString in gameDays
 
 
-def parseGameDaysInput(days_string: str) -> set:
-    pass
+def parseGameDaysInput(daysString: str) -> set:
+    gameDaysList = daysString.split(",")
+    gameDays = set()
+    for day in gameDaysList:
+        gameDays.add(day)
+    return gameDays

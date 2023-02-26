@@ -39,6 +39,7 @@ if __name__ == "main":
     # main loop for each day in the range
     curDate = startDate
     orderID = 0
+    soldItemID = 1
     for i in range(numDaysToGenerate):
         if (isSunday(curDate)):
             curDate = incrementDate(curDate)
@@ -56,7 +57,8 @@ if __name__ == "main":
             items = selectSoldItems(weightedMenu, numItems)
 
             # -- get prices for all those items and create an order with employee id and a customer name
-            order = createOrder(items, orderID, curDate)
+            customer = getCustomerName(customers)
+            order = createOrder(items, orderID, curDate, customer, menu, employeeIDs)
 
             # -- create a string for the order
             orderString = createStringOfOrder(order)
@@ -70,9 +72,10 @@ if __name__ == "main":
 
             # - increment date
             curDate = incrementDate(curDate)
-            
+
             # increment order ID
             orderID += 1
+            soldItemID += numItems
 
     # close files
     orderItemFile.close()
