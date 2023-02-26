@@ -51,6 +51,7 @@ def numOrdersForDay(day: date, gameDays: set) -> int:
     if (isGameDay(day, gameDays)):
         mean = 1000
         stdev = 100
+
     value = np.random.normal(mean, stdev)
     value = math.ceil(value)
     return value
