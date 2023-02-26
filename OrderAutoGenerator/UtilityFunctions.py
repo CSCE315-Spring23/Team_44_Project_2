@@ -2,6 +2,8 @@ from datetime import date
 from datetime import datetime
 import datetime
 import random
+import numpy as np
+import math
 
 
 def incrementDate(curDate: date) -> date:
@@ -41,27 +43,42 @@ def getEmployeeID(employeeIDs: list) -> str:
 
 def numOrdersForDay(day: date, gameDays: set) -> int:
     '''chooses a number of orders for a given day. Takes into account if its a gameday'''
-    pass
+    mean = 300
+    stdev = 50
+    value = np.random.normal(mean, stdev)
+    value = math.ceil(value)
+    return value
 
 
 def numItemsForOrder() -> int:
     '''generates a random number of items for an order'''
-    pass
+    mean = 3
+    stdev = 1
+    value = np.random.norma(mean, stdev)
+    value = abs(math.ceil(value))
+    return value
 
 
 def selectSoldItems(weightedItems: dict, numItems: int) -> list:
     '''chooses numItems number of items for an order based on the weighted menu'''
-    pass
+    items = []
+    for i in range(numItems):
+        item = selectItem(weightedItems)
+        items.append(item)
+    return items
 
 
 def selectItem(weightedItems: dict) -> int:
     '''chooses one item from the weighted menu'''
-    pass
+    weights = weightedItems.values()
+    keys = weightedItems.keys()
+    return random.choice(keys, weights)
 
 
 def getItemPrice(id: int, menuItems: dict) -> float:
     '''gets the price of an item'''
-    pass
+    itemPrice = float(menuItems[id][1])
+    return itemPrice
 
 
 def createOrder(soldItems: list, orderID: int, curDate: date) -> list:
@@ -72,6 +89,7 @@ def createOrder(soldItems: list, orderID: int, curDate: date) -> list:
 def createStringOfSoldItems(soldItems: list, menuItems: dict, orderID: int) -> str:
     '''turns a list of sold items into a series of lines for csv file '''
     pass
+
 
 def createStringofSoldItem(itemID: int, menuItems: dict) -> str:
     '''turns one sold item into a line for the csv output -> [ID, MenuID, OrderID]'''
