@@ -3,7 +3,12 @@ from UtilityFunctions import *
 if __name__ == "main":
     # open customer file and read lines to list of customers
     customerFile = open("customerNames.csv")
+    if (customerFile.closed):
+        raise Exception(f"Couldn't open customer file")
     customers = customerFile.readlines()
+
+    # get employee IDs
+    employeeIDs = generateEmployeesList("Employees.csv")
 
     # get menu file
     menuFileName = input("Enter menu file name: ")
@@ -33,8 +38,10 @@ if __name__ == "main":
 
     # main loop for each day in the range
     curDate = startDate
+    orderID = 0
     for i in range(numDaysToGenerate):
-
+        if (isSunday(curDate)):
+            continue
         # - check if game day and generate a number of orders for that day
         numberOfOrders = numOrdersForDay(curDate, gameDays)
         # - for each order
@@ -44,16 +51,18 @@ if __name__ == "main":
             # -- choose items for the order
             items = selectSoldItems(weightedMenu, numItems)
             # -- get prices for all those items and create an order with employee id and a customer name
-            order = createOrder(items)
+            order = createOrder(items, orderID)
             # -- create a string for the order
             orderString = createStringOfOrder(order)
             # -- create a string for each item sold
-            itemsString = createStringOfSoldItems(items)
+            itemsString = createStringOfSoldItems(items, menu, orderID)
             # -- write the strings to the output files
             orderItemFile.write(orderString)
             soldItemFile.write(itemsString)
             # - increment date
             curDate = incrementDate(curDate)
+            # increment order ID
+            orderID += 1
 
     # close files
     orderItemFile.close()
