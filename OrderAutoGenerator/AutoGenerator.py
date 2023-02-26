@@ -2,7 +2,7 @@ from UtilityFunctions import *
 
 if __name__ == "__main__":
     # open customer file and read lines to list of customers
-    #breakpoint()
+    # breakpoint()
     customerFile = open("customerNames.csv")
     if (customerFile.closed):
         raise Exception(f"Couldn't open customer file")
@@ -59,24 +59,26 @@ if __name__ == "__main__":
 
             # -- get prices for all those items and create an order with employee id and a customer name
             customer = getCustomerName(customers)
-            order = createOrder(items, orderID, curDate, customer, menu, employeeIDs)
+            order = createOrder(items, orderID, curDate,
+                                customer, menu, employeeIDs)
 
             # -- create a string for the order
             orderString = createStringOfOrder(order)
 
             # -- create a string for each item sold
-            itemsString = createStringOfSoldItems(items, menu, orderID, soldItemID)
+            itemsString = createStringOfSoldItems(
+                items, menu, orderID, soldItemID)
 
             # -- write the strings to the output files
             orderItemFile.write(orderString)
             soldItemFile.write(itemsString)
 
-            # - increment date
-            curDate = incrementDate(curDate)
-
             # increment order ID
             orderID += 1
             soldItemID += numItems
+
+        # - increment date
+        curDate = incrementDate(curDate)
 
     # close files
     orderItemFile.close()

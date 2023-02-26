@@ -19,7 +19,9 @@ def isSunday(curDate: date) -> bool:
 
 def getCustomerName(customers: list) -> str:
     '''generates a randome customer name'''
-    return random.choice(customers)
+    customer = random.choice(customers)
+    customer = customer.replace("\n", "")
+    return customer
 
 
 def generateEmployeesList(fileName: str) -> list:
@@ -31,7 +33,8 @@ def generateEmployeesList(fileName: str) -> list:
     lines = employeesFile.readlines()
     IDs = []
     for line in lines:
-        id = line.split()[-1]
+        id = line.split(",")[-1]
+        id = id.replace("\n", "")
         IDs.append(id)
     return IDs
 
@@ -45,6 +48,9 @@ def numOrdersForDay(day: date, gameDays: set) -> int:
     '''chooses a number of orders for a given day. Takes into account if its a gameday'''
     mean = 300
     stdev = 50
+    if (isGameDay(day, gameDays)):
+        mean = 1000
+        stdev = 100
     value = np.random.normal(mean, stdev)
     value = math.ceil(value)
     return value
@@ -92,27 +98,29 @@ def createOrder(soldItems: list, orderID: int, curDate: date, customer: str, men
     price = 0
     for i in range(len(soldItems)):
         price += getItemPrice(soldItems[i], menuItems)
+    price = round(price, 2)
     order.append(price)
 
     dateFormat = "%Y-%m-%d"
     order.append(curDate.strftime(dateFormat))
     order.append(getEmployeeID(employees))
     return order
-    
 
 
 def createStringOfSoldItems(soldItems: list, menuItems: dict, orderID: int, soldID: int) -> str:
     '''turns a list of sold items into a series of lines for csv file '''
     stringOfItems = ""
     for item in soldItems:
-       stringOfItems += createStringofSoldItem(item, menuItems, orderID, soldID)
-       soldID += 1
+        stringOfItems += createStringofSoldItem(item,
+                                                menuItems, orderID, soldID)
+        soldID += 1
     return stringOfItems
+
 
 def createStringofSoldItem(itemID: int, menuItems: dict, orderID: int, soldID: int) -> str:
     '''turns one sold item into a line for the csv output -> [ID, MenuID, OrderID]'''
     itemString = ""
-    itemString += str(soldID) + "," + str(itemID) + "," + str(orderID)
+    itemString += str(soldID) + "," + str(itemID) + "," + str(orderID) + "\n"
     return itemString
 
 
@@ -120,14 +128,14 @@ def createStringOfOrder(orderList: list) -> str:
     '''creates a string of an order from a list [ID, Customer name, Total Cost, Date Ordered, Employee ID] of the order in the format comma separated'''
     for i in range(len(orderList)):
         orderList[i] = str(orderList[i])
-        
-    orderString = ",".join(orderList)
+
+    orderString = ",".join(orderList) + "\n"
     return orderString
 
 
 def openMenu(fileName: str) -> dict:
     menuFile = open(fileName)
-    #get menu lines and skip first 2 lines
+    # get menu lines and skip first 2 lines
     menuLines = menuFile.readlines()[2:]
     menuFile.close()
 
@@ -137,8 +145,7 @@ def openMenu(fileName: str) -> dict:
         lineList = line.split(",")
         id = int(lineList[0])
         menu[id] = lineList[1:]
-    
-    print(menu)
+
     return menu
 
 
