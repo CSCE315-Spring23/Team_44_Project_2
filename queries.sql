@@ -18,3 +18,7 @@ SELECT SUM(total_cost) FROM orderitem WHERE date='2022-09-03';
 -- SELECT SUM(total_cost) FROM orderitem WHERE date='2022-10-22';
 -- SELECT SUM(total_cost) FROM orderitem where date='2022-11-19';
 -- SELECT SUM(total_cost) FROM orderitem where date='2022-11-26';
+
+/* average */
+SELECT AVG(total_cost) FROM orderitem WHERE customer_name='Victoria';
+SELECT AVG(total_cost) FROM orderitem WHERE date='2022-07-04';
