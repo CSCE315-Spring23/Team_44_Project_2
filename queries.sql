@@ -11,9 +11,10 @@ SELECT * FROM employee;
 
 SELECT SUM(total_cost) FROM orderitem;
 
-/* game day */
-
+/* normal day */
 SELECT SUM(total_cost) FROM orderitem WHERE date='2022-09-02';
+
+/* game day */
 SELECT SUM(total_cost) FROM orderitem WHERE date='2022-09-03';
 -- SELECT SUM(total_cost) FROM orderitem WHERE date='2022-10-22';
 -- SELECT SUM(total_cost) FROM orderitem where date='2022-11-19';
