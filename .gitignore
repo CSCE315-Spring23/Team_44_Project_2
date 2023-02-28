@@ -1,3 +1,7 @@
 #Ignore .sh
-
 *.sh
+
+#Ignore Data in AutoGen Folder
+OrderAutoGenerator/OrderItem.csv
+OrderAutoGenerator/SoldItem.csv
+OrderAutoGenerator/__pycache__
