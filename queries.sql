@@ -61,7 +61,9 @@ SELECT menuitem.name, COUNT(solditem.menuid) AS count
 SELECT name, role AS employee_role FROM employee
     ORDER BY name ASC;
 
-/* Select most sold menu item and count */
-SELECT menuid, COUNT(menuid) AS menu_item FROM solditem
-    GROUP BY menu_item;
+/* Select top 10 most sold menu items and count */
+SELECT menuid, COUNT(menuid) FROM solditem
+    GROUP BY menuid
+    ORDER BY count DESC
+    LIMIT 10;
 
