@@ -1,5 +1,4 @@
 /* tables exist */
-
 SELECT * FROM menuitem;
 SELECT * FROM inventory;
 SELECT * FROM orderitem;
@@ -8,7 +7,6 @@ SELECT * FROM recipeitem;
 SELECT * FROM employee;
 
 /* over $1mill */
-
 SELECT SUM(total_cost) FROM orderitem;
 
 /* normal day */
@@ -19,6 +17,9 @@ SELECT SUM(total_cost) FROM orderitem WHERE date='2022-09-03';
 -- SELECT SUM(total_cost) FROM orderitem WHERE date='2022-10-22';
 -- SELECT SUM(total_cost) FROM orderitem where date='2022-11-19';
 -- SELECT SUM(total_cost) FROM orderitem where date='2022-11-26';
+
+/* total number of days */
+SELECT (MAX(date)-MIN(date)) AS days_elapsed FROM orderitem;
 
 /* average */
 SELECT AVG(total_cost) FROM orderitem WHERE customer_name='Victoria';
@@ -55,3 +56,7 @@ SELECT menuitem.name, COUNT(solditem.menuid) AS count
     GROUP BY solditem.menuid, menuitem.name
     ORDER BY count DESC
     LIMIT 5;
+
+SELECT name, role AS employee_role FROM employee
+    ORDER BY name ASC;
+
