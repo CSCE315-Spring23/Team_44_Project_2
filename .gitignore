@@ -5,3 +5,6 @@
 OrderAutoGenerator/OrderItem.csv
 OrderAutoGenerator/SoldItem.csv
 OrderAutoGenerator/__pycache__
+
+#Ignore .json in .vscode
+/.vscode
