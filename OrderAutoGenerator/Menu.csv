@@ -25,32 +25,31 @@ ID,Name,Cost,Weight
 23,M. Sweet Iced Tea,2.09,6
 24,L. Sweet Iced Tea,4.45,5
 25,M. Lemonade,2.39,7
-27,L. Lemonade ,2.89,6
-28,M. Sunjoy,2.39,2
-29,L. Sunjoy ,2.89,2
-30,M. Soft Drink,1.99,8
-31,L. Soft Drink,2.45,6
-32,Orginal Cold Brew Iced Coffee,3.09,3
-33,Vanilla Cold Brew Iced Coffee,3.09,3
-34,Cookies & Cream Milkshake,4.19,3
-35,Chocolate Milkshake,4.19,4
-36,Strawberry Milkshake,4.19,3
-37,Vanilla Milkshake,4.19,4
-38,Frosted Lemonade,4.09,3
-39,Frosted Coffee,4.09,2
-40,Icedream Cone,1.65,3
-41,Chocolate Fudge Brownie,2.09,2
-42,Chocolate Chunk Cookie,1.49,2
-43,Avocado Lime Ranch Dressing,0.00,1
-44,Zesty Apple Cider Vinaigrette,0.00,1
-45,Garlic Herb Ranch Dressing,0.00,1
-46,Light Balsamic Vinaigrette Dressing,0.00,1
-47,Chick-fil-A Sauce,0.00,8
-48,Polynesian Sauce,0.00,3
-49,Honey Mustard Sauce,0.00,3
-50,Garden Herb Ranch Sauce,0.00,7
-52,Zesty Buffalo Sauce,0.00,3
-53,Barbecue Sauce,0.00,3
-54,Sweet & Spicy Sriracha Sauce,0.00,2
-56,Ketchup,0.00,7
-57,Mayonnaise,0.00,2
+26,L. Lemonade ,2.89,6
+27,M. Sunjoy,2.39,2
+28,L. Sunjoy ,2.89,2
+29,M. Soft Drink,1.99,8
+30,L. Soft Drink,2.45,6
+31,Orginal Cold Brew Iced Coffee,3.09,3
+32,Vanilla Cold Brew Iced Coffee,3.09,3
+33,Cookies & Cream Milkshake,4.19,3
+34,Chocolate Milkshake,4.19,4
+35,Strawberry Milkshake,4.19,3
+36,Vanilla Milkshake,4.19,4
+37,Frosted Lemonade,4.09,3
+38,Frosted Coffee,4.09,2
+39,Icedream Cone,1.65,3
+40,Chocolate Fudge Brownie,2.09,2
+41,Chocolate Chunk Cookie,1.49,2
+42,Avocado Lime Ranch Dressing,0.00,1
+43,Zesty Apple Cider Vinaigrette,0.00,1
+44,Garlic Herb Ranch Dressing,0.00,1
+45,Light Balsamic Vinaigrette Dressing,0.00,1
+46,Chick-fil-A Sauce,0.00,8
+47,Polynesian Sauce,0.00,3
+48,Honey Mustard Sauce,0.00,3
+49,Garden Herb Ranch Sauce,0.00,7
+50,Zesty Buffalo Sauce,0.00,3
+51,Barbecue Sauce,0.00,3
+52,Sweet & Spicy Sriracha Sauce,0.00,2
+53,Ketchup,0.00,7
