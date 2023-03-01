@@ -37,8 +37,11 @@ SELECT * FROM recipeitem
 --     WHERE menuitem.name = 'Chick-fil-A Chicken Sandwich'; /* given id */
 
 /* specific employee */
-SELECT * FROM orderitem JOIN employee ON orderitem.employee_id = employee.pin::INT WHERE employee.name = 'Cluck Rogers' LIMIT 10; --for demonstration
--- SELECT * FROM orderitem JOIN employee ON orderitem.employee_id = employee.id WHERE employee.name = 'Cluck Rogers' LIMIT 10; --after fix
+SELECT * FROM orderitem JOIN employee ON orderitem.employee_id = employee.id WHERE employee.name = 'Cluck Rogers' LIMIT 10; 
+
+/* Sorts Employees Alphabetically */
+SELECT name, role AS employee_role FROM employee
+    ORDER BY name ASC;
 
 /* number sold for menu item */
 SELECT menuitem.name, COUNT(solditem.menuid) AS menuid_count
@@ -57,9 +60,6 @@ SELECT menuitem.name, COUNT(solditem.menuid) AS count
     ORDER BY count DESC
     LIMIT 5;
 
-/* Sorts Employees Alphabetically */
-SELECT name, role AS employee_role FROM employee
-    ORDER BY name ASC;
 
 /* Select top 10 most sold menu items and count */
 SELECT menuid, COUNT(menuid) FROM solditem
