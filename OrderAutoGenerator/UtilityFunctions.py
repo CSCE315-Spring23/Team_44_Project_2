@@ -33,7 +33,7 @@ def generateEmployeesList(fileName: str) -> list:
     lines = employeesFile.readlines()
     IDs = []
     for line in lines:
-        id = line.split(",")[-1]
+        id = line.split(",")[0]
         id = id.replace("\n", "")
         IDs.append(id)
     return IDs

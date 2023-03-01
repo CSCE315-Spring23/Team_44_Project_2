@@ -22,3 +22,10 @@ SELECT SUM(total_cost) FROM orderitem WHERE date='2022-09-03';
 /* average */
 SELECT AVG(total_cost) FROM orderitem WHERE customer_name='Victoria';
 SELECT AVG(total_cost) FROM orderitem WHERE date='2022-07-04';
+
+
+/* verify 52 weeks */
+SELECT MIN(date) FROM orderitem;
+SELECT MAX(date) FROM orderitem;
+
+
