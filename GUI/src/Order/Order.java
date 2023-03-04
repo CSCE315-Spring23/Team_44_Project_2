@@ -4,18 +4,19 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 public class Order {
-    private static int orderId = 96845;
-    private String customer_name;
+    private int orderId;
+    private String customer_name = "";
     private LocalDate date;
-    private double totalPrice;
-    private String employeeId;
+    private double totalCost;
+    private int employeeId;
     private HashMap<String, Integer> items = new HashMap<String, Integer>();
 
-    public Order(String employeeId){
+    public Order(int employeeId, int orderId){
         this.employeeId = employeeId;
+        this.orderId = orderId;
         date = LocalDate.now();
-        orderId++;
         System.out.println("Order Created: "+"current date: "+date + " order id: "+orderId);
+        orderId++;
     }
 
     public void addItem(String name, double price){
@@ -25,7 +26,7 @@ public class Order {
         else{
             items.put(name, 1);
         }
-        totalPrice += price;
+        totalCost += price;
     }
 
     public void removeItem(String name, double price){
@@ -37,7 +38,7 @@ public class Order {
                 items.put(name, items.get(name)-1);
             }
         }
-        totalPrice -= price;
+        totalCost -= price;
     }
 
     public void setCustomerName(String name){
@@ -48,7 +49,7 @@ public class Order {
         return customer_name;
     }
 
-    public String getEmployeeId(){
+    public int getEmployeeId(){
         return employeeId;
     }
 
@@ -60,8 +61,8 @@ public class Order {
         return date;
     }
 
-    public double getTotalPrice(){
-        return totalPrice;
+    public double getTotalCost(){
+        return totalCost;
     }
 
     public int getItemCount(String name){
