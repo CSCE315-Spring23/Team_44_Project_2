@@ -9,4 +9,6 @@ OrderAutoGenerator/__pycache__
 
 #Ignore .json in .vscode
 .vscode/
-GUI/.vscode/
+
+#Ignore bin
+/GUI/bin/
