@@ -1,5 +1,3 @@
-
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -22,17 +20,16 @@ public class Controller {
     private TextField customerNameTextBox;
 
     public void initialize() {
-        // database login info
-        String dbName = "csce315331_team_44";
-        String dbConnectionString = "jdbc:postgresql://csce-315-db.engr.tamu.edu/" + dbName;
-        String username = "csce315331_tean_44_master"; // change to your username
+        //database login info
+        String dbConnectionString = "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_team_44";
+        String username = "csce315331_team_44_master"; // change to your username
         String password = "ShreemanLikesDeepWork"; //nothing to see here
 
 
         database = new DatabaseConnect(dbConnectionString, username, password);
         database.setUpDatabase();
         System.out.println("Initialized");
-        currentOrder = new Order(1, database.getLastId("orderitemtest") + 1);
+        currentOrder = new Order(1, database.getLastId("orderitemtest")+1); //TODO: change to orderitem
     }
 
     public void menuItemButtonOnClick(ActionEvent event) {
@@ -57,16 +54,16 @@ public class Controller {
 
     public void submitOrderOnClick() {
         if (currentOrder.getTotalCost() == 0.0) {
-            System.out.println("No items in order");
+            System.out.println("Error: No items in order");
             return;
         }
         if (currentOrder.getCustomerName().equals("")) {
-            System.out.println("No customer name");
+            System.out.println("Error: No customer name");
             return;
         }
 
         database.insertOrderItem(currentOrder);
-        // TODO: add order to solditem table
+        database.insertSoldItem(currentOrder);
 
         // reset order
         currentOrder = new Order(1, database.getLastId("orderitemtest") + 1);
