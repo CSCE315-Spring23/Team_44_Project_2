@@ -1,8 +1,10 @@
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
 import Order.Order;
 import DB.DatabaseConnect;
+import DB.DatabaseLoginInfo;
 
 public class Controller {
 
@@ -21,9 +23,9 @@ public class Controller {
 
     public void initialize() {
         //database login info
-        String dbConnectionString = "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_team_44";
-        String username = "csce315331_team_44_master"; // change to your username
-        String password = "ShreemanLikesDeepWork"; //nothing to see here
+        String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
+        String username = DatabaseLoginInfo.username;
+        String password = DatabaseLoginInfo.password;
 
 
         database = new DatabaseConnect(dbConnectionString, username, password);
@@ -75,6 +77,8 @@ public class Controller {
 
         database.insertOrderItem(currentOrder);
         database.insertSoldItem(currentOrder);
+
+        database.updateInventory(currentOrder);
 
         // reset order
         currentOrder = new Order(1, database.getLastId("orderitemtest") + 1);

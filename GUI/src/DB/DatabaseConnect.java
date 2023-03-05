@@ -1,7 +1,7 @@
 package DB;
 
 import java.sql.*;
-import java.util.HashMap;
+import java.util.*;
 
 import Order.Order;
 
@@ -177,5 +177,48 @@ public class DatabaseConnect {
         }
 
         return ret;
+    }
+
+    public void updateInventory(Order order){
+        String databaseName = "inventorytest"; //TODO: change to inventory
+
+        HashMap<String, Integer> soldItems = order.getItems();
+
+
+        for(String item : soldItems.keySet()){
+            HashMap<Integer, Double> inventoryIDs = new HashMap<Integer, Double>();
+
+            int menuItemId = getMenuItemId(item);
+            int count = soldItems.get(item);
+
+            try {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT inventoryid, count FROM recipeitem WHERE menuid = " + menuItemId + ";");
+                while (rs.next()) {
+                    inventoryIDs.put(rs.getInt("inventoryid"), rs.getDouble("count"));
+                }
+                rs.close();
+                stmt.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error getting recipeitem");
+            }
+
+            for(int inventoryid : inventoryIDs.keySet()){
+                double quantity = inventoryIDs.get(inventoryid);
+
+                try{
+                    Statement stmt = conn.createStatement();
+                    stmt.executeUpdate("UPDATE " + databaseName + " SET quantity = quantity - " + quantity*count + " WHERE id = " + inventoryid + ";");
+                    System.out.println("Updated " + databaseName + " for inventoryid " + inventoryid);
+                    stmt.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Error updating inventory");
+                }
+
+            }
+
+        }
     }
 }
