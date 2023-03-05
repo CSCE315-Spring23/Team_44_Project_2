@@ -32,10 +32,14 @@ public class Controller {
         currentOrder = new Order(1, database.getLastId("orderitemtest")+1); //TODO: change to orderitem
     }
 
+    /*
+     * Handles the button click event for the menu items
+     */
     public void menuItemButtonOnClick(ActionEvent event) {
         Button b = (Button) event.getSource();
         System.out.println("Button Clicked: " + " " + b.getId());
 
+        // id number starts at the second character
         String id = b.getId().substring(1);
 
         String name = database.getMenuItemName(id);
@@ -46,11 +50,19 @@ public class Controller {
         orderBox.setText(currentOrder.getItemCount());
         totalCostTextBox.setText(String.format("Total Cost: $%.2f", currentOrder.getTotalCost()));
     }
+
+    /*
+     * Handles the text change event for the customer name text box
+     */
     public void customerNameOnChanged() {
         currentOrder.setCustomerName(customerNameTextBox.getText());
         System.out.println("Customer Name Changed: " + currentOrder.getCustomerName());
     }
 
+    /*
+     * Handles the button click event for the submit order button
+     * Inserts the order into the both the orderitem and solditem tables, and TODO: update inventory
+     */
     public void submitOrderOnClick() {
         if (currentOrder.getTotalCost() == 0.0) {
             System.out.println("Error: No items in order");

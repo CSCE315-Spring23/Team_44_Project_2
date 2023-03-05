@@ -18,6 +18,9 @@ public class DatabaseConnect {
         this.password = password;
     }
 
+    /*
+     * Sets up the connection to the database
+    */
     public void setUpDatabase() {
         try {
             conn = DriverManager.getConnection(dbConnectionString, username, password);
@@ -29,6 +32,13 @@ public class DatabaseConnect {
         System.out.println("Opened database successfully");
     }
 
+
+
+    /*
+     * Returns the NAME of a menu item given its ID
+     * @param id
+     * @return menuitem.name
+    */
     public String getMenuItemName(String id) {
         String ret = "";
         try {
@@ -46,6 +56,11 @@ public class DatabaseConnect {
         return ret;
     }
 
+    /*
+     * Returns the COST of a menu item given its ID
+     * @param id
+     * @return menuitem.cost
+    */
     public double getMenuItemCost(String id) {
         double ret = 0.0;
         try {
@@ -63,7 +78,11 @@ public class DatabaseConnect {
         return ret;
     }
 
-
+    /*
+     * Returns the last ID in a given table
+     * @param table
+     * @return max(id)
+    */
     public int getLastId(String table) {
         int ret = 0;
         try {
@@ -81,6 +100,11 @@ public class DatabaseConnect {
         return ret;
     }
 
+    /*
+     * Inserts an order into the database
+     * @param order
+     *
+    */
     public void insertOrderItem(Order order) {
         String databaseName = "orderitemtest"; //TODO: change to orderitem
 
@@ -102,6 +126,11 @@ public class DatabaseConnect {
         }
     }
 
+    /*
+     * Inserts each individual menu item in an order into the solditem database
+     * @param order
+     *
+    */
     public void insertSoldItem(Order order){
         String databaseName = "solditemtest"; //TODO: change to solditem
 
@@ -127,6 +156,11 @@ public class DatabaseConnect {
         }
     }
 
+    /*
+     * Returns the ID of a menu item given its NAME
+     * @param name
+     * @return menuitem.id
+    */
     public int getMenuItemId(String name) {
         int ret = -1;
         try {
