@@ -1,4 +1,4 @@
-import java.sql.*;
+
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,8 +26,8 @@ public class Controller {
         String teamNumber = "team_44";
         String dbName = "csce315331_" + teamNumber;
         String dbConnectionString = "jdbc:postgresql://csce-315-db.engr.tamu.edu/" + dbName;
-        String username = "csce315331_dai"; // change to your username
-        String password = "Kd115711"; //nothing to see here
+        String username = "csce315331_tean_44_master"; // change to your username
+        String password = "ShreemanLikesDeepWork"; //nothing to see here
 
 
         database = new DatabaseConnect(dbConnectionString, username, password);

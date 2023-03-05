@@ -1,6 +1,8 @@
 package DB;
 
 import java.sql.*;
+import java.util.HashMap;
+
 import Order.Order;
 
 public class DatabaseConnect {
@@ -97,6 +99,12 @@ public class DatabaseConnect {
             e.printStackTrace();
             System.out.println("Error inserting into orderitem");
         }
+    }
+
+    public void insertSoldItem(Order order){
+        int orderId = order.getOrderId();
+        HashMap<String, Integer> soldItems = order.getItems();
+        int soldItemId = getLastId("solditemtest") + 1;
     }
 }
 
