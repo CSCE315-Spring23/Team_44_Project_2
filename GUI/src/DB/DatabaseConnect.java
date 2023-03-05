@@ -69,7 +69,6 @@ public class DatabaseConnect {
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT MAX(id) from " + table + ";");
-            System.out.println(rs);
             while (rs.next()) {
                 ret = rs.getInt("max");
             }
@@ -83,6 +82,8 @@ public class DatabaseConnect {
     }
 
     public void insertOrderItem(Order order) {
+        String databaseName = "orderitemtest"; //TODO: change to orderitem
+
         int id = order.getOrderId();
         String customerName = order.getCustomerName();
         double totalCost = order.getTotalCost();
@@ -91,9 +92,9 @@ public class DatabaseConnect {
 
         try {
             Statement stmt = conn.createStatement();
-            int rs = stmt.executeUpdate("INSERT INTO orderitemtest VALUES (" + id + ", '" + customerName + "', "
+            stmt.executeUpdate("INSERT INTO " + databaseName + " VALUES (" + id + ", '" + customerName + "', "
                     + totalCost + ", '" + date + "', " + employeeId + ");");
-            System.out.println("Inserted into orderitemtest");
+            System.out.println("Inserted order " + id + " into " + databaseName);
             stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,9 +103,46 @@ public class DatabaseConnect {
     }
 
     public void insertSoldItem(Order order){
+        String databaseName = "solditemtest"; //TODO: change to solditem
+
         int orderId = order.getOrderId();
         HashMap<String, Integer> soldItems = order.getItems();
         int soldItemId = getLastId("solditemtest") + 1;
+
+        for(String item : soldItems.keySet()){
+            int quantity = soldItems.get(item);
+            int menuItemId = getMenuItemId(item);
+            for(int i = 0; i < quantity; i++){
+                try {
+                    Statement stmt = conn.createStatement();
+                    stmt.executeUpdate("INSERT INTO " + databaseName +  " VALUES (" + soldItemId + ", " + menuItemId + ", " + orderId + ");");
+                    System.out.println(soldItemId + ": Inserted "+ item + " into " + databaseName + "for order " + orderId);
+                    stmt.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Error inserting into solditem");
+                }
+                soldItemId++;
+            }
+        }
+    }
+
+    public int getMenuItemId(String name) {
+        int ret = -1;
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT id FROM menuitem WHERE name = '" + name + "';");
+            while (rs.next()) {
+                ret = rs.getInt("id");
+            }
+            rs.close();
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error getting menu item id");
+        }
+
+        return ret;
     }
 }
 
