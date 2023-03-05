@@ -1,6 +1,7 @@
 #Ignore .sh
 *.sh
 *.class
+*.ps1
 
 #Ignore Data in AutoGen Folder
 OrderAutoGenerator/OrderItem.csv
