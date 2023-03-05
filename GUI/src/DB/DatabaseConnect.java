@@ -61,7 +61,6 @@ public class DatabaseConnect {
         return ret;
     }
 
-
     public int getLastId(String table) {
         int ret = 0;
         try {
@@ -99,4 +98,3 @@ public class DatabaseConnect {
         }
     }
 }
-
