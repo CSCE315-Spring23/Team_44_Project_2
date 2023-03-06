@@ -73,6 +73,11 @@ public class DatabaseConnect {
         System.out.println("Opened database successfully");
     }
 
+    /**
+     * 
+     * @param command query to send to database
+     * @return the result set of the query
+     */
     public ResultSet executeQuery(String command){
         Statement stmt = null;
         ResultSet rs = null;
