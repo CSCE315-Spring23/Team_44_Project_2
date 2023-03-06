@@ -31,7 +31,7 @@ public class Controller {
         database = new DatabaseConnect(dbConnectionString, username, password);
         database.setUpDatabase();
         System.out.println("Initialized");
-        currentOrder = new Order(1, database.getLastId("orderitemtest")+1); //TODO: change to orderitem
+        currentOrder = new Order(1, database.getLastId("orderitemtest") + 1); //TODO: change to orderitem
     }
 
     /*
