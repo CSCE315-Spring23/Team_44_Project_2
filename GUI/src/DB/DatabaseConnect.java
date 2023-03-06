@@ -56,7 +56,7 @@ public class DatabaseConnect {
     }
 
     /**
-     * Initialize {@link conn} and established a connection to the database.
+     * Initialize {@link #conn} and established a connection to the database.
      */
     public void setUpDatabase() {
         try {
