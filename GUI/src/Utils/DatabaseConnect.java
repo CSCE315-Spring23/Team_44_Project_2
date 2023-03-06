@@ -182,17 +182,22 @@ public class DatabaseConnect {
             int menuItemId = getMenuItemId(item);
             for (int i = 0; i < quantity; ++i) {
                 try {
-                    Statement stmt = conn.createStatement();
-                    stmt.executeUpdate("INSERT INTO " + databaseName + " VALUES (" + soldItemId
-                            + ", " + menuItemId + ", " + orderId + ");");
-                    System.out.println(soldItemId + ": Inserted " + item + " into " + databaseName
-                            + " for order " + orderId);
+                    final Statement stmt = conn.createStatement();
+                    final String query = String.format("INSERT INTO %s VALUES (%d, %d, %d);",
+                            databaseName, soldItemId, menuItemId, orderId);
+                    stmt.executeUpdate(query);
+
+                    final String debug =
+                            String.format("Inserted %s with id %d into %s for order %d", item,
+                                    soldItemId, databaseName, orderId);
+                    System.out.println(debug);
+
                     stmt.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Error inserting into solditem");
                 }
-                soldItemId++;
+                ++soldItemId;
             }
         }
     }
