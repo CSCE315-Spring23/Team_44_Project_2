@@ -30,17 +30,17 @@ public class DatabaseConnect {
     /**
      * {@link String} that connects to the server
      */
-    private String dbConnectionString;
+    private final String dbConnectionString;
 
     /**
      * {@link String} user name credentials
      */
-    private String username;
+    private final String username;
 
     /**
      * {@link String} password credentials
      */
-    private String password;
+    private final String password;
 
     /**
      * Construct a connection to the database
@@ -49,7 +49,8 @@ public class DatabaseConnect {
      * @param username user name credentials
      * @param password password credentials
      */
-    public DatabaseConnect(String dbConnectionString, String username, String password) {
+    public DatabaseConnect(final String dbConnectionString, final String username,
+            final String password) {
         this.dbConnectionString = dbConnectionString;
         this.username = username;
         this.password = password;
@@ -75,7 +76,7 @@ public class DatabaseConnect {
      * @param id Identification number as a {@link String}
      * @return the name of the menu item
      */
-    public String getMenuItemName(String id) {
+    public String getMenuItemName(final String id) {
         String ret = "";
         try {
             Statement stmt = conn.createStatement();
@@ -98,7 +99,7 @@ public class DatabaseConnect {
      * @param id Identification number as a {@link String}
      * @return the cost of the menu item
      */
-    public double getMenuItemCost(String id) {
+    public double getMenuItemCost(final String id) {
         double ret = 0.0;
         try {
             Statement stmt = conn.createStatement();
@@ -121,7 +122,7 @@ public class DatabaseConnect {
      * @param table table name
      * @return the last ID in the table
      */
-    public int getLastId(String table) {
+    public int getLastId(final String table) {
         int ret = 0;
         try {
             Statement stmt = conn.createStatement();
@@ -143,7 +144,7 @@ public class DatabaseConnect {
      * 
      * @param order {@link Order} to insert
      */
-    public void insertOrderItem(Order order) {
+    public void insertOrderItem(final Order order) {
         String databaseName = "orderitemtest"; // TODO: change to orderitem
 
         int id = order.getOrderId();
@@ -169,7 +170,7 @@ public class DatabaseConnect {
      * 
      * @param order
      */
-    public void insertSoldItem(Order order) {
+    public void insertSoldItem(final Order order) {
         String databaseName = "solditemtest"; // TODO: change to solditem
 
         int orderId = order.getOrderId();
@@ -209,7 +210,7 @@ public class DatabaseConnect {
      * @param name of the menu item as a {@link String}
      * @return the Identification number, -1 when not found
      */
-    public int getMenuItemId(String name) {
+    public int getMenuItemId(final String name) {
         int ret = -1;
         try {
             Statement stmt = conn.createStatement();
@@ -233,7 +234,7 @@ public class DatabaseConnect {
      * 
      * @param order {@link Order} that will update inventory
      */
-    public void updateInventory(Order order) {
+    public void updateInventory(final Order order) {
         String databaseName = "inventorytest"; // TODO: change to inventory
 
         HashMap<String, Integer> soldItems = order.getItems();
