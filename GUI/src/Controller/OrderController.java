@@ -69,7 +69,7 @@ public class OrderController {
 
         database = new DatabaseConnect(dbConnectionString, username, password);
         database.setUpDatabase();
-        System.out.println("Initialized");
+        System.out.println("Database Connection Established");
 
         // TODO: change to orderitem
         currentOrder = new Order(1, database.getLastId("orderitemtest") + 1);
@@ -82,7 +82,7 @@ public class OrderController {
      */
     public void menuItemButtonOnClick(ActionEvent event) {
         Button b = (Button) event.getSource();
-        System.out.println("Button Clicked: " + " " + b.getId());
+        System.out.println("Button Clicked: " + b.getId());
 
         // id number starts at the second character
         String id = b.getId().substring(1);
@@ -115,7 +115,8 @@ public class OrderController {
             System.out.println("Error: No items in order");
             return;
         }
-        if (currentOrder.getCustomerName().equals("")) {
+
+        if (currentOrder.getCustomerName().isEmpty()) {
             System.out.println("Error: No customer name");
             return;
         }
