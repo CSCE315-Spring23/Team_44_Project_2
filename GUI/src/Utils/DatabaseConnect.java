@@ -180,13 +180,13 @@ public class DatabaseConnect {
         for (String item : soldItems.keySet()) {
             int quantity = soldItems.get(item);
             int menuItemId = getMenuItemId(item);
-            for (int i = 0; i < quantity; i++) {
+            for (int i = 0; i < quantity; ++i) {
                 try {
                     Statement stmt = conn.createStatement();
                     stmt.executeUpdate("INSERT INTO " + databaseName + " VALUES (" + soldItemId
                             + ", " + menuItemId + ", " + orderId + ");");
                     System.out.println(soldItemId + ": Inserted " + item + " into " + databaseName
-                            + "for order " + orderId);
+                            + " for order " + orderId);
                     stmt.close();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -235,24 +235,26 @@ public class DatabaseConnect {
      * @param order {@link Order} that will update inventory
      */
     public void updateInventory(final Order order) {
-        String databaseName = "inventorytest"; // TODO: change to inventory
+        final String databaseName = "inventorytest"; // TODO: change to inventory
 
         HashMap<String, Integer> soldItems = order.getItems();
 
-        for (String item : soldItems.keySet()) {
+        for (final String item : soldItems.keySet()) {
             HashMap<Integer, Double> inventoryIDs = new HashMap<Integer, Double>();
 
-            int menuItemId = getMenuItemId(item);
+            int menuItemId = this.getMenuItemId(item);
             int count = soldItems.get(item);
 
             try {
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt
-                        .executeQuery("SELECT inventoryid, count FROM recipeitem WHERE menuid = "
-                                + menuItemId + ";");
+                Statement stmt = this.conn.createStatement();
+                final String query = String.format(
+                        "SELECT inventoryid, count FROM recipeitem WHERE menuid = %d;", menuItemId);
+                ResultSet rs = stmt.executeQuery(query);
+
                 while (rs.next()) {
                     inventoryIDs.put(rs.getInt("inventoryid"), rs.getDouble("count"));
                 }
+
                 rs.close();
                 stmt.close();
             } catch (Exception e) {
@@ -264,9 +266,11 @@ public class DatabaseConnect {
                 double quantity = inventoryIDs.get(inventoryid);
 
                 try {
-                    Statement stmt = conn.createStatement();
-                    stmt.executeUpdate("UPDATE " + databaseName + " SET quantity = quantity - "
-                            + quantity * count + " WHERE id = " + inventoryid + ";");
+                    final Statement stmt = conn.createStatement();
+                    final String query =
+                            String.format("UPDATE %s SET quantity = quantity - %f WHERE id = %s;",
+                                    databaseName, quantity * count, inventoryid);
+                    stmt.executeUpdate(query);
                     System.out
                             .println("Updated " + databaseName + " for inventoryid " + inventoryid);
                     stmt.close();
