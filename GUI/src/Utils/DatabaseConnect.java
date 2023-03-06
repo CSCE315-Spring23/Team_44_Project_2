@@ -3,8 +3,11 @@ package Utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+
+import javax.naming.spi.DirStateFactory.Result;
 
 import Order.Order;
 
@@ -68,6 +71,19 @@ public class DatabaseConnect {
             System.exit(0);
         }
         System.out.println("Opened database successfully");
+    }
+
+    public ResultSet executeQuery(String command){
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(command);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return rs;
     }
 
     /**

@@ -9,5 +9,21 @@ import Utils.SessionData;
 import Utils.DatabaseConnect;
 
 public class EditMenuController {
-    
+
+    private DatabaseConnect database;
+    private SessionData session;
+
+    public EditMenuController(SessionData session) {
+        this.session = session;
+        this.database = session.getDatabase();
+    }
+
+    public void initialize() {
+
+    }
+
+    private void getMenuItemsQuery(){
+
+    }
+
 }
