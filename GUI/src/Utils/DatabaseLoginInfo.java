@@ -1,4 +1,4 @@
-package DB;
+package Utils;
 
 public class DatabaseLoginInfo {
     public static final String dbConnectionString = "jdbc:postgresql://csce-315-db.engr.tamu.edu/csce315331_team_44";

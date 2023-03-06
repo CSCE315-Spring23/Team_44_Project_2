@@ -1,12 +1,13 @@
+package Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import Order.Order;
-import DB.DatabaseConnect;
-import DB.DatabaseLoginInfo;
+import Utils.DatabaseConnect;
+import Utils.DatabaseLoginInfo;
 
-public class Controller {
+public class OrderController {
 
     DatabaseConnect database;
 

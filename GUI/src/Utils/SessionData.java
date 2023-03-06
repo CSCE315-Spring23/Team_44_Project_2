@@ -1,4 +1,4 @@
-package DB;
+package Utils;
 
 // Bundle of Information that gets passed between scenes
 public class SessionData {
