@@ -17,65 +17,29 @@ import Order.Order;
 public class SessionData {
     /**
      * Connection to the database
-     * 
-     * @see DatabaseConnect
      */
-    private final DatabaseConnect database;
+    public final DatabaseConnect database;
 
     /**
      * Identification number of the employee
      */
-    private final int employeeId;
+    public final int employeeId;
 
     /**
      * Represents the current {@link Order} being processed
      */
-    private Order order;
+    public Order order;
 
     /**
      * Constructor
      * 
      * @param database Connection to the database
      * @param employeeId id of the employee
+     * @param order current order
      */
-    SessionData(final DatabaseConnect database, final int employeeId) {
+    SessionData(final DatabaseConnect database, final int employeeId, Order order) {
         this.database = database;
         this.employeeId = employeeId;
-    }
-
-    /**
-     * Gets {@link #database}
-     * 
-     * @return {@link #database}
-     */
-    public DatabaseConnect getDatabase() {
-        return this.database;
-    }
-
-    /**
-     * get {@link #employeeId}
-     * 
-     * @return {@link #employeeId}
-     */
-    public int getEmployeeId() {
-        return this.employeeId;
-    }
-
-    /**
-     * Gets {@link #order}
-     * 
-     * @return {@link #order}
-     */
-    public Order getOrder() {
-        return this.order;
-    }
-
-    /**
-     * Sets {@link #order}
-     * 
-     * @param order {@link #order}
-     */
-    public void setOrder(Order order) {
         this.order = order;
     }
 }
