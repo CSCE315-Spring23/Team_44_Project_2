@@ -6,9 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-
-import javax.naming.spi.DirStateFactory.Result;
-
 import Order.Order;
 
 /**
@@ -74,18 +71,39 @@ public class DatabaseConnect {
     }
 
     /**
+     * Execute a SQL query.
+     * 
+     * @implNote This method will NOT handle UPDATE queries. Use {@link #executeUpdate(String)}
+     *           instead.
      * 
      * @param command query to send to database
-     * @return the result set of the query
+     * @return the {@link ResultSet} of the query
      */
-    public ResultSet executeQuery(String command){
+    public ResultSet executeQuery(final String command) {
         Statement stmt = null;
         ResultSet rs = null;
         try {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(command);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return rs;
+    }
+
+    /**
+     * Handles the UPDATE, INSERT, and DELETE SQL query.
+     * 
+     * @param command update to send to the database
+     * @return the result of the query
+     */
+    public int executeUpdate(final String command) {
+        Statement stmt = null;
+        int rs = 0;
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeUpdate(command);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return rs;
