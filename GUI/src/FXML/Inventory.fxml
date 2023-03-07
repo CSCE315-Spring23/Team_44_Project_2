@@ -2,12 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.InventoryController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.InventoryController">
    <children>
       <VBox alignment="TOP_CENTER" minWidth="150.0" prefHeight="400.0" prefWidth="100.0">
          <children>
@@ -61,12 +62,18 @@
             </Button>
          </children>
       </VBox>
-      <TextArea fx:id="inventoryTable" editable="false" prefHeight="400.0" prefWidth="500.0" />
-      <VBox prefHeight="200.0" prefWidth="150.0">
+      <TableView fx:id="inventoryTable" prefHeight="800.0" prefWidth="800.0">
+        <columns>
+            <TableColumn fx:id="inventoryID" prefWidth="100.0" text="ID" />
+          <TableColumn fx:id="itemName" prefWidth="600.0" text="Item" />
+          <TableColumn fx:id="quantityCol" prefWidth="100.0" text="Quantity" />
+        </columns>
+      </TableView>
+      <VBox prefHeight="200.0" prefWidth="250.0">
          <children>
             <TextField fx:id="itemInput" onKeyTyped="#updateItemName" promptText="Item Name" />
             <TextField fx:id="quantityInput" onKeyTyped="#updateQuantity" promptText="New Quantity" />
-            <Button fx:id="update" mnemonicParsing="false" onMouseClicked="#updateInventory" prefHeight="35.0" prefWidth="150.0" text="Update" />
+            <Button fx:id="update" mnemonicParsing="false" onMouseClicked="#updateInventory" prefHeight="35.0" prefWidth="250.0" text="Update" />
          </children>
       </VBox>
    </children>
