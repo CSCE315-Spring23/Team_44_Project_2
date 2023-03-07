@@ -2,8 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -61,11 +60,6 @@
             </Button>
          </children>
       </VBox>
-      <TableView fx:id="inventoryTable" prefHeight="200.0" prefWidth="510.0">
-        <columns>
-          <TableColumn minWidth="255.0" prefWidth="255.0" resizable="false" text="name" />
-          <TableColumn minWidth="255.0" prefWidth="255.0" resizable="false" text="quantity" />
-        </columns>
-      </TableView>
+      <TextArea fx:id="inventoryTable" prefHeight="400.0" prefWidth="400.0" />
    </children>
 </HBox>
