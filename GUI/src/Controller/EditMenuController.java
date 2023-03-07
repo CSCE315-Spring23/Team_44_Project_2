@@ -22,9 +22,13 @@ public class EditMenuController {
     @FXML
     private ListView menuList;
 
+    public EditMenuController(){
+        
+    }
+
     public EditMenuController(SessionData session) {
         this.session = session;
-        this.database = session.getDatabase();
+        this.database = session.database;
     }
 
     public void initialize() {

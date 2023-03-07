@@ -37,7 +37,7 @@ public class SessionData {
      * @param employeeId id of the employee
      * @param order current order
      */
-    SessionData(final DatabaseConnect database, final int employeeId, Order order) {
+    public SessionData(final DatabaseConnect database, final int employeeId, Order order) {
         this.database = database;
         this.employeeId = employeeId;
         this.order = order;
