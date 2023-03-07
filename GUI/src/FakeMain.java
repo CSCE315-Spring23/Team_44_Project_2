@@ -1,4 +1,3 @@
-import Controller.EditMenuController;
 import Controller.OrderHistoryController;
 import Items.Order;
 import Utils.DatabaseConnect;
@@ -14,8 +13,8 @@ import javafx.stage.Stage;
 
 /*
  * 
- * Hello Everyone, this is a fake main class that shows how we can pass a controller 
- * that has the session in the constructor. If you get an error REMOVE CONTROLLER FROM FXML.
+ * Hello Everyone, this is a fake main class that shows how we can pass a controller that has the
+ * session in the constructor. If you get an error REMOVE CONTROLLER FROM FXML.
  */
 
 public class FakeMain extends Application {
@@ -39,7 +38,7 @@ public class FakeMain extends Application {
         loader.setController(orderHistoryController);
 
         Parent root = loader.load();
-    
+
 
         primaryStage.setTitle("Chick-fil-A");
         primaryStage.getIcons().add(new Image("./resources/logo.png"));

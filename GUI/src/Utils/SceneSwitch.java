@@ -1,15 +1,16 @@
 package Utils;
 
 import java.io.IOException;
-
-import Controller.*;
+import Controller.EditMenuController;
+import Controller.InventoryController;
+import Controller.OrderController;
+import Controller.OrderHistoryController;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class SceneSwitch {
@@ -39,7 +40,7 @@ public class SceneSwitch {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/OrderHistory.fxml"));
 
-        switch(buttonID){
+        switch (buttonID) {
             case "orderButton":
                 System.out.println("Order button clicked");
                 loader = new FXMLLoader(getClass().getResource("../FXML/OrderScene.fxml"));

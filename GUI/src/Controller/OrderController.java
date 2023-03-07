@@ -96,8 +96,7 @@ public class OrderController {
     /**
      * Handles the text change event for the customr name text box
      */
-    public void customerNameOnChanged() {
-    }
+    public void customerNameOnChanged() {}
 
     /**
      * Handles the buttom click event for the submit order button.<br>
@@ -115,7 +114,7 @@ public class OrderController {
             System.out.println("Error: No customer name");
             return;
         }
-        
+
         // finalize order and submit to database
         order.setCustomerName(customerNameField.getText());
 

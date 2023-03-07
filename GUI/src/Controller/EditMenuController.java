@@ -34,21 +34,21 @@ public class EditMenuController {
 
     @FXML
     private TextField menuNameText;
-    
+
     @FXML
     private TextField menuCostText;
-    
+
     @FXML
     private TextField menuNumSoldText;
-    
+
     @FXML
     private CheckBox isDelete;
 
     @FXML
     private Button SubmitMenuChangeBtn;
 
-    public EditMenuController(){
-        
+    public EditMenuController() {
+
     }
 
     public EditMenuController(SessionData session) {
@@ -56,10 +56,11 @@ public class EditMenuController {
         this.database = session.database;
     }
 
-    public SessionData getSession(){
+    public SessionData getSession() {
         return this.session;
     }
-    public void setSession(SessionData session){
+
+    public void setSession(SessionData session) {
         this.session = session;
     }
 
@@ -83,24 +84,24 @@ public class EditMenuController {
         isDelete.setSelected(false);
     }
 
-    public void navButtonClicked(ActionEvent event) throws IOException{
+    public void navButtonClicked(ActionEvent event) throws IOException {
         sceneSwitch = new SceneSwitch(session);
         sceneSwitch.switchScene(event);
     }
 
-    private ResultSet getMenuItemsQuery(){
+    private ResultSet getMenuItemsQuery() {
         String query = "SELECT * FROM menuitem";
         ResultSet rs = database.executeQuery(query);
         return rs;
     }
 
-    private void readMenuItems(ResultSet rs) throws SQLException{
+    private void readMenuItems(ResultSet rs) throws SQLException {
         menuItems = new ArrayList<>();
-        if(rs == null){
+        if (rs == null) {
             menuItems.add("No Menu Items Retrieved");
             return;
         }
-        while(rs.next()){
+        while (rs.next()) {
             String curLine = "";
             curLine += "ID: " + Integer.valueOf(rs.getInt("id")).toString() + ", ";
             curLine += "name: " + rs.getString("name") + ", ";
@@ -110,7 +111,7 @@ public class EditMenuController {
         }
     }
 
-    private void addMenuItemsToListView(){
+    private void addMenuItemsToListView() {
         ObservableList<String> items = FXCollections.observableArrayList(menuItems);
         menuList.setItems(items);
 
@@ -119,19 +120,20 @@ public class EditMenuController {
 
 
     @FXML
-    private void submitMenuChange(ActionEvent e){
-        Integer itemID = (menuIDText.getText() == null) ? null : Integer.parseInt(menuIDText.getText());
+    private void submitMenuChange(ActionEvent e) {
+        Integer itemID =
+                (menuIDText.getText() == null) ? null : Integer.parseInt(menuIDText.getText());
         String itemName = menuNameText.getText();
-        Double itemCost = (menuCostText.getText() == null) ? null: Double.parseDouble(menuCostText.getText());
-        Integer itemNumSold = (menuNumSoldText.getText() == null) ? null : Integer.parseInt(menuNumSoldText.getText());
+        Double itemCost = (menuCostText.getText() == null) ? null
+                : Double.parseDouble(menuCostText.getText());
+        Integer itemNumSold = (menuNumSoldText.getText() == null) ? null
+                : Integer.parseInt(menuNumSoldText.getText());
 
-        if(isDelete.isSelected() == true){
+        if (isDelete.isSelected() == true) {
             deleteMenuItem(itemID);
-        }
-        else if(checkMenuItemExists(itemID) == true){
+        } else if (checkMenuItemExists(itemID) == true) {
             updateMenuItem(itemID, itemName, itemCost, itemNumSold);
-        }
-        else{
+        } else {
             addMenuItem(itemID, itemName, itemCost, itemNumSold);
 
         }
@@ -142,16 +144,15 @@ public class EditMenuController {
     private boolean checkMenuItemExists(Integer itemID) {
         String query = "SELECT COUNT(*) FROM menuitem WHERE id = " + itemID.toString() + ";";
         ResultSet rs = database.executeQuery(query);
-    
+
         try {
-            if(rs.next()){
+            if (rs.next()) {
                 int has = rs.getInt(0);
-                if(has == 0){
+                if (has == 0) {
                     return false;
                 }
-                return true;   
-            }
-            else{
+                return true;
+            } else {
                 return false;
             }
         } catch (SQLException e) {
@@ -161,26 +162,28 @@ public class EditMenuController {
     }
 
     private void addMenuItem(Integer ID, String itemName, Double itemCost, Integer itemNumSold) {
-        String query = "INSERT INTO menuitem (id, name, cost, numbersold) VALUES (" + ID.toString() + ", '" + itemName + "'," + itemCost.toString() + "," + itemNumSold.toString() + ");";
+        String query = "INSERT INTO menuitem (id, name, cost, numbersold) VALUES (" + ID.toString()
+                + ", '" + itemName + "'," + itemCost.toString() + "," + itemNumSold.toString()
+                + ");";
         System.out.println(query);
         database.executeQuery(query);
     }
 
-    private void updateMenuItem(Integer itemID, String itemName, Double itemCost, Integer itemNumSold) {
-        if(itemID == null){
+    private void updateMenuItem(Integer itemID, String itemName, Double itemCost,
+            Integer itemNumSold) {
+        if (itemID == null) {
             return;
         }
 
-        String query = "UPDATE menuitem " + 
-            "SET name = '" + itemName + "', cost = " + itemCost.toString() + 
-            ", numbersold = " + itemNumSold.toString() + 
-            " WHERE id = " + itemID.toString() + ";";
+        String query = "UPDATE menuitem " + "SET name = '" + itemName + "', cost = "
+                + itemCost.toString() + ", numbersold = " + itemNumSold.toString() + " WHERE id = "
+                + itemID.toString() + ";";
 
         System.out.println(query);
         database.executeQuery(query);
     }
 
-    private void deleteMenuItem(Integer ID){
+    private void deleteMenuItem(Integer ID) {
         String query = "DELETE FROM menuitem WHERE id = " + ID.toString() + ";";
         System.err.println(query);
         database.executeQuery(query);

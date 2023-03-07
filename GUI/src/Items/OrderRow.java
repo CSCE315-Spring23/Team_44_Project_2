@@ -2,14 +2,15 @@ package Items;
 
 import javafx.beans.property.SimpleObjectProperty;
 
-public class OrderRow{
+public class OrderRow {
     private final SimpleObjectProperty<Integer> orderID;
     private final SimpleObjectProperty<String> customerName;
     private final SimpleObjectProperty<String> orderDate;
     private final SimpleObjectProperty<Double> orderTotal;
     private final SimpleObjectProperty<String> employeeName;
 
-    public OrderRow(Integer orderID, String customerName, String orderDate, Double orderTotal, String employeeName) {
+    public OrderRow(Integer orderID, String customerName, String orderDate, Double orderTotal,
+            String employeeName) {
         this.orderID = new SimpleObjectProperty<>(orderID);
         this.customerName = new SimpleObjectProperty<>(customerName);
         this.orderDate = new SimpleObjectProperty<>(orderDate);
@@ -54,7 +55,7 @@ public class OrderRow{
     }
 
     public String getOrderTotal() {
-        return String.format("%.2f",orderTotal.get());
+        return String.format("%.2f", orderTotal.get());
     }
 
     public SimpleObjectProperty<String> orderTotalProperty() {
@@ -80,12 +81,8 @@ public class OrderRow{
 
     @Override
     public String toString() {
-        return "OrderRow{" +
-                "orderID=" + orderID.get() +
-                ", customerName=" + customerName.get() +
-                ", orderDate=" + orderDate.get() +
-                ", orderTotal=" + orderTotal.get() +
-                ", employeeName=" + employeeName.get() +
-                '}';
+        return "OrderRow{" + "orderID=" + orderID.get() + ", customerName=" + customerName.get()
+                + ", orderDate=" + orderDate.get() + ", orderTotal=" + orderTotal.get()
+                + ", employeeName=" + employeeName.get() + '}';
     }
 }

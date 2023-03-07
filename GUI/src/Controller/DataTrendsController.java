@@ -1,18 +1,13 @@
 package Controller;
 
-import javafx.event.ActionEvent;
+import java.util.ArrayList;
+import Utils.DatabaseConnect;
+import Utils.SessionData;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.VBox;
-import javafx.scene.chart.Axis;
-// import javafx.scene.control.*;
-
-import java.util.ArrayList;
-
-import Utils.SessionData;
-import Utils.DatabaseConnect;
 
 /**
  * This class handles the data trends scene/tab of the GUI
