@@ -1,5 +1,7 @@
 package Utils;
 
+import Order.Order;
+
 /**
  * Bundle of Information that gets passed between scenes
  * 
@@ -24,6 +26,11 @@ public class SessionData {
      * Identification number of the employee
      */
     private final int employeeId;
+
+    /**
+     * Represents the current {@link Order} being processed
+     */
+    private Order order;
 
     /**
      * Constructor
@@ -52,5 +59,23 @@ public class SessionData {
      */
     public int getEmployeeId() {
         return this.employeeId;
+    }
+
+    /**
+     * Gets {@link #order}
+     * 
+     * @return {@link #order}
+     */
+    public Order getOrder() {
+        return this.order;
+    }
+
+    /**
+     * Sets {@link #order}
+     * 
+     * @param order {@link #order}
+     */
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }
