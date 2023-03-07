@@ -52,6 +52,13 @@ public class EditMenuController {
         this.database = session.database;
     }
 
+    public SessionData getSession(){
+        return this.session;
+    }
+    public void setSession(SessionData session){
+        this.session = session;
+    }
+
     public void initialize() {
         ResultSet rs = getMenuItemsQuery();
 
@@ -102,34 +109,74 @@ public class EditMenuController {
 
     }
 
+
+
+    @FXML
     private void submitMenuChange(ActionEvent e){
-        Integer itemID = Integer.parseInt(menuIDText.getText());
+        Integer itemID = (menuIDText.getText() == null) ? null : Integer.parseInt(menuIDText.getText());
+        String itemName = menuNameText.getText();
+        Double itemCost = (menuCostText.getText() == null) ? null: Double.parseDouble(menuCostText.getText());
+        Integer itemNumSold = (menuNumSoldText.getText() == null) ? null : Integer.parseInt(menuNumSoldText.getText());
+
         if(isDelete.isSelected() == true){
             deleteMenuItem(itemID);
         }
-        else if(checkMenuItemExists() == true){
-            //TODO Update Item
-            updateMenuItem(itemID);
+        else if(checkMenuItemExists(itemID) == true){
+            updateMenuItem(itemID, itemName, itemCost, itemNumSold);
         }
         else{
-            //TODO AddItem
-            addMenuItem(itemID);
+            addMenuItem(itemID, itemName, itemCost, itemNumSold);
 
         }
+        initialize();
 
     }
 
-    private boolean checkMenuItemExists() {
-        return false;
+    private boolean checkMenuItemExists(Integer itemID) {
+        String query = "SELECT COUNT(*) FROM menuitem WHERE id = " + itemID.toString() + ";";
+        ResultSet rs = database.executeQuery(query);
+    
+        try {
+            if(rs.next()){
+                int has = rs.getInt(0);
+                if(has == 0){
+                    return false;
+                }
+                return true;   
+            }
+            else{
+                return false;
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            return false;
+        }
     }
 
-    private void addMenuItem(Integer itemID) {
+    private void addMenuItem(Integer ID, String itemName, Double itemCost, Integer itemNumSold) {
+        String query = "INSERT INTO menuitem (id, name, cost, numbersold) VALUES (" + ID.toString() + ", '" + itemName + "'," + itemCost.toString() + "," + itemNumSold.toString() + ");";
+        System.out.println(query);
+        database.executeQuery(query);
     }
 
-    private void updateMenuItem(Integer itemID) {
+    private void updateMenuItem(Integer itemID, String itemName, Double itemCost, Integer itemNumSold) {
+        if(itemID == null){
+            return;
+        }
+
+        String query = "UPDATE menuitem " + 
+            "SET name = '" + itemName + "', cost = " + itemCost.toString() + 
+            ", numbersold = " + itemNumSold.toString() + 
+            " WHERE id = " + itemID.toString() + ";";
+
+        System.out.println(query);
+        database.executeQuery(query);
     }
 
     private void deleteMenuItem(Integer ID){
+        String query = "DELETE FROM menuitem WHERE id = " + ID.toString() + ";";
+        System.err.println(query);
+        database.executeQuery(query);
 
     }
 }
