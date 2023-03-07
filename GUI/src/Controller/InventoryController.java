@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import Inventory.InventoryItem;
+import Items.InventoryItem;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
 import javafx.fxml.FXML;

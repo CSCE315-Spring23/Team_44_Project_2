@@ -1,6 +1,6 @@
 package Utils;
 
-import Order.Order;
+import Items.Order;
 
 /**
  * Bundle of Information that gets passed between scenes

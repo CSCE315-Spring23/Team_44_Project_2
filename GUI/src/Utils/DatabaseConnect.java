@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import Order.Order;
+import Items.Order;
 
 /**
  * This class establishes a connection to the database and performs queries.<br>

@@ -3,8 +3,7 @@ package Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
-import Order.Order;
+import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.SessionData;
 
@@ -66,8 +65,7 @@ public class OrderController {
     /**
      * Verify Database is Connected
      */
-    public void initialize() {
-    }
+    public void initialize() {}
 
     /**
      * Handles the button click event for the menu items
