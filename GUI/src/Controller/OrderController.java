@@ -3,8 +3,7 @@ package Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
-import Order.Order;
+import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.SessionData;
 
@@ -28,29 +27,18 @@ public class OrderController {
 
     private Order order;
 
-    /**
-     * {@link TextArea} that holds list of currently ordered items
-     */
     @FXML
-    private TextArea orderBox;
+    private Label orderBoxLabel;
 
-    /**
-     * {@link TextArea} that holds total price of the order
-     */
     @FXML
-    private TextArea totalCostTextBox;
+    private TextField customerNameField;
 
-    /**
-     * {@link Button} that completes the order and updates Inventory
-     */
+    @FXML
+    private Label totalCostLabel;
+
     @FXML
     private Button submitOrderButton;
 
-    /**
-     * {@link TextField} that inputs the customer's name
-     */
-    @FXML
-    private TextField customerNameTextBox;
 
     /**
      * Constructor
@@ -66,8 +54,7 @@ public class OrderController {
     /**
      * Verify Database is Connected
      */
-    public void initialize() {
-    }
+    public void initialize() {}
 
     /**
      * Handles the button click event for the menu items
@@ -76,7 +63,7 @@ public class OrderController {
      */
     public void menuItemButtonOnClick(ActionEvent event) {
         Button b = (Button) event.getSource();
-        System.out.println("Button Clicked: " + b.getId());
+        System.out.println("Menu Item Button Clicked: " + b.getId());
 
         // id number starts at the second character
         String id = b.getId().substring(1);
@@ -86,16 +73,14 @@ public class OrderController {
 
         order.addItem(name, cost);
 
-        orderBox.setText(order.getItemCount());
-        totalCostTextBox.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+        orderBoxLabel.setText(order.getItemCount());
+        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
     }
 
     /**
      * Handles the text change event for the customr name text box
      */
     public void customerNameOnChanged() {
-        order.setCustomerName(customerNameTextBox.getText());
-        System.out.println("Customer Name Changed: " + order.getCustomerName());
     }
 
     /**
@@ -110,21 +95,22 @@ public class OrderController {
             return;
         }
 
-        if (order.getCustomerName().isEmpty()) {
+        if (customerNameField.getText().equals("")) {
             System.out.println("Error: No customer name");
             return;
         }
+        
+        // finalize order and submit to database
+        order.setCustomerName(customerNameField.getText());
 
         database.insertOrderItem(order);
         database.insertSoldItem(order);
-
         database.updateInventory(order);
 
         // reset order
-        order = new Order(1, database.getLastId("orderitemtest") + 1);
-        orderBox.setText(order.getItemCount());
-        totalCostTextBox.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
-        customerNameTextBox.setText("");
-
+        order = new Order(employeeId, database.getLastId("orderitemtest") + 1);
+        orderBoxLabel.setText(order.getItemCount());
+        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+        customerNameField.setText("");
     }
 }
