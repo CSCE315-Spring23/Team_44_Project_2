@@ -50,7 +50,7 @@ public class OrderHistoryController {
         database.setUpDatabase();
 
         setUpTable();
-
+        addRowOnClick();
         orderHistoryTable.refresh();
 
     }
@@ -84,7 +84,9 @@ public class OrderHistoryController {
                 String customerName = rs.getString("customer_name");
                 String orderDate = rs.getString("date");
                 Double orderTotal = rs.getDouble("total_cost");
-                String employeeName = rs.getString("employee_id");
+                Integer employeeID = rs.getInt("employee_id");
+
+                String employeeName = getEmployeeName(employeeID);
 
                 OrderRow order = new OrderRow(orderID, customerName, orderDate, orderTotal, employeeName);
                 orders.add(order);
@@ -96,7 +98,35 @@ public class OrderHistoryController {
         return orders;
     }
 
+    private String getEmployeeName(int id){
+        String ret = "";
+        try{
+            ResultSet rs = database.executeQuery("SELECT * FROM employee WHERE id = " + id);
+            while(rs.next()) {
+                ret = rs.getString("name");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    private void addRowOnClick(){
+        orderHistoryTable.setRowFactory(tv -> {
+            TableRow<OrderRow> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 1 && (!row.isEmpty())) {
+                    OrderRow rowData = row.getItem();
+                    System.out.println(rowData.getOrderID());
+                }
+            });
+            return row;
+        });
+    }
+
 }
+
+
 
 class OrderRow{
     private final SimpleObjectProperty<Integer> orderID;
