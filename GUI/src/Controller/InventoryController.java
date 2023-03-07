@@ -4,16 +4,43 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import Items.InventoryItem;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 
 public class InventoryController {
+    private static final class InventoryItem {
+        private final SimpleObjectProperty<Long> id;
+        private final SimpleObjectProperty<String> name;
+        private final SimpleObjectProperty<Long> quantity;
+
+        InventoryItem(final long id, final String name, final long quant) {
+            this.id = new SimpleObjectProperty<>(id);
+            this.name = new SimpleObjectProperty<>(name);
+            this.quantity = new SimpleObjectProperty<>(quant);
+        }
+
+        public SimpleObjectProperty<Long> getId() {
+            return id;
+        }
+
+        public SimpleObjectProperty<String> getName() {
+            return name;
+        }
+
+        public SimpleObjectProperty<Long> getQuantity() {
+            return quantity;
+        }
+    }
+
     DatabaseConnect database;
 
     @FXML
@@ -23,7 +50,16 @@ public class InventoryController {
     private Button update;
 
     @FXML
-    private TextArea inventoryTable;
+    private TableView<InventoryItem> inventoryTable;
+
+    @FXML
+    private TableColumn<InventoryItem, Long> inventoryID;
+
+    @FXML
+    private TableColumn<InventoryItem, String> itemName;
+
+    @FXML
+    private TableColumn<InventoryItem, Long> quantityCol;
 
     @FXML
     private TextField itemInput;
@@ -44,7 +80,9 @@ public class InventoryController {
         database.setUpDatabase();
         System.out.println("Database Connection Established");
 
+        this.setUpTable();
         this.updateTable();
+        this.inventoryTable.refresh();
     }
 
 
@@ -64,6 +102,16 @@ public class InventoryController {
     public void updateQuantity() {
         this.quantity = this.quantityInput.getText();
         System.out.println("Update Quantity:\t" + this.quantity);
+    }
+
+    private void setUpTable() {
+        this.inventoryID.setCellValueFactory(cellData -> cellData.getValue().getId());
+        this.itemName.setCellValueFactory(cellData -> cellData.getValue().getName());
+        this.quantityCol.setCellValueFactory(cellData -> cellData.getValue().getQuantity());
+
+        final ObservableList<InventoryItem> items = this.getInventory();
+
+        this.inventoryTable.setItems(items);
     }
 
     public void updateInventory() {
@@ -104,59 +152,33 @@ public class InventoryController {
                             Long.valueOf(this.quantity), this.item);
             System.out.println(query);
             this.database.executeUpdate(query);
+
             this.updateTable();
         }
     }
 
     private void updateTable() {
-        final ResultSet set = database.executeQuery("SELECT name,quantity FROM inventorytest;");
-        final StringBuilder sb = new StringBuilder();
-        final List<InventoryItem> items = new ArrayList<>();
+        this.inventoryTable.setItems(this.getInventory());
+        this.inventoryTable.refresh();
+    }
 
+    private ObservableList<InventoryItem> getInventory() {
+        ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
         try {
-            // Calculate maximum length of name and quantity fields
-            int maxNameLength = 0;
-            int maxQuantityLength = "Quantity".length();
-            while (set.next()) {
-                String name = set.getString("name");
+            ResultSet rs = database.executeQuery("SELECT * FROM inventorytest ORDER BY id");
+            while (rs.next()) {
+                final long id = rs.getLong("id");
+                final String name = rs.getString("name");
+                final long quant = rs.getLong("quantity");
+
                 if (name.equals("null"))
                     continue;
-
-                long quantity = set.getLong("quantity");
-                InventoryItem item = new InventoryItem(name, quantity);
-                items.add(item);
-                maxNameLength = Math.max(maxNameLength, item.getName().length());
-                maxQuantityLength =
-                        Math.max(maxQuantityLength, String.valueOf(item.getQuantity()).length());
+                orders.add(new InventoryItem(id, name, quant));
             }
-
-            sb.append(String.format("%-" + maxNameLength + "s", "Name"));
-            sb.append(" | ");
-            sb.append(String.format("%" + maxQuantityLength + "s", "Quantity\n"));
-
-            for (int i = 0; i < maxNameLength; ++i)
-                sb.append('-');
-            sb.append("-+-");
-            for (int i = 0; i < maxQuantityLength; ++i)
-                sb.append('-');
-            sb.append('\n');
-
-            for (InventoryItem item : items) {
-                String paddedName = String.format("%-" + maxNameLength + "s", item.getName());
-                String paddedQuantity =
-                        String.format("%" + maxQuantityLength + "s", item.getQuantity());
-                String itemString = paddedName + " | " + paddedQuantity + "\n";
-
-                sb.append(itemString);
-            }
-
-            set.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        // Set text to TextArea
-        this.inventoryTable.setFont(Font.font("Monospaced")); // Use fixed-width font
-        this.inventoryTable.setText(sb.toString());
+        return orders;
     }
 }
