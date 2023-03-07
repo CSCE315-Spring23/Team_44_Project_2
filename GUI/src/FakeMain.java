@@ -1,4 +1,5 @@
 import Controller.EditMenuController;
+import Controller.OrderHistoryController;
 import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
@@ -31,18 +32,18 @@ public class FakeMain extends Application {
 
         SessionData session = new SessionData(database, 0, new Order(0));
 
-        EditMenuController menuController = new EditMenuController(session);
+        // EditMenuController menuController = new EditMenuController(session);
+        OrderHistoryController orderHistoryController = new OrderHistoryController(session);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("./FXML/EditMenu.fxml"));
-
-        loader.setController(menuController);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("./FXML/OrderHistory.fxml"));
+        loader.setController(orderHistoryController);
 
         Parent root = loader.load();
     
 
         primaryStage.setTitle("Chick-fil-A");
         primaryStage.getIcons().add(new Image("./resources/logo.png"));
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 1200, 800));
         primaryStage.show();
     }
 

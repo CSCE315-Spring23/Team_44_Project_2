@@ -3,24 +3,34 @@ package Controller;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
 import Utils.SessionData;
+import Utils.SceneSwitch;
+import Items.OrderRow;
 
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 
 
 public class OrderHistoryController {
 
     private SessionData sessionData;
-    private DatabaseConnect database;
+    private DatabaseConnect database;;
+
+    private SceneSwitch sceneSwitch;
+
 
     @FXML private Button orderButton;
     @FXML private Button orderHistoryButton;
@@ -40,24 +50,22 @@ public class OrderHistoryController {
 
     @FXML private TextArea orderHistoryTextBox;
 
-    // public OrderHistoryController(SessionData sessionData) {
-    //     this.sessionData = sessionData;
-    //     database = sessionData.database;
-    // }
+    public OrderHistoryController(SessionData sessionData) {
+        this.sessionData = sessionData;
+        database = sessionData.database;
+    }
 
     public void initialize() {
-        // database login info
-        String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
-        String username = DatabaseLoginInfo.username;
-        String password = DatabaseLoginInfo.password;
-
-        database = new DatabaseConnect(dbConnectionString, username, password);
-        database.setUpDatabase();
-
         setUpTable();
         addRowOnClick();
         orderHistoryTable.refresh();
     }
+
+    public void navButtonClicked(ActionEvent event) throws IOException{
+        sceneSwitch = new SceneSwitch(sessionData);
+        sceneSwitch.switchScene(event);
+    }
+
 
     private void setUpTable(){
         //define TableView columns
@@ -187,90 +195,3 @@ public class OrderHistoryController {
 
 
 
-class OrderRow{
-    private final SimpleObjectProperty<Integer> orderID;
-    private final SimpleObjectProperty<String> customerName;
-    private final SimpleObjectProperty<String> orderDate;
-    private final SimpleObjectProperty<Double> orderTotal;
-    private final SimpleObjectProperty<String> employeeName;
-
-    public OrderRow(Integer orderID, String customerName, String orderDate, Double orderTotal, String employeeName) {
-        this.orderID = new SimpleObjectProperty<>(orderID);
-        this.customerName = new SimpleObjectProperty<>(customerName);
-        this.orderDate = new SimpleObjectProperty<>(orderDate);
-        this.orderTotal = new SimpleObjectProperty<>(orderTotal);
-        this.employeeName = new SimpleObjectProperty<>(employeeName);
-    }
-
-    public Integer getOrderID() {
-        return orderID.get();
-    }
-
-    public SimpleObjectProperty<Integer> orderIDProperty() {
-        return orderID;
-    }
-
-    public void setOrderID(Integer orderID) {
-        this.orderID.set(orderID);
-    }
-
-    public String getCustomerName() {
-        return customerName.get();
-    }
-
-    public SimpleObjectProperty<String> customerNameProperty() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName.set(customerName);
-    }
-
-    public String getOrderDate() {
-        return orderDate.get();
-    }
-
-    public SimpleObjectProperty<String> orderDateProperty() {
-        return orderDate;
-    }
-
-    public void setOrderDate(String orderDate) {
-        this.orderDate.set(orderDate);
-    }
-
-    public String getOrderTotal() {
-        return String.format("%.2f",orderTotal.get());
-    }
-
-    public SimpleObjectProperty<String> orderTotalProperty() {
-        SimpleObjectProperty<String> ret = new SimpleObjectProperty<String>(getOrderTotal());
-        return ret;
-    }
-
-    public void setOrderTotal(Double orderTotal) {
-        this.orderTotal.set(orderTotal);
-    }
-
-    public String getEmployeeName() {
-        return employeeName.get();
-    }
-
-    public SimpleObjectProperty<String> employeeNameProperty() {
-        return employeeName;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName.set(employeeName);
-    }
-
-    @Override
-    public String toString() {
-        return "OrderRow{" +
-                "orderID=" + orderID.get() +
-                ", customerName=" + customerName.get() +
-                ", orderDate=" + orderDate.get() +
-                ", orderTotal=" + orderTotal.get() +
-                ", employeeName=" + employeeName.get() +
-                '}';
-    }
-}

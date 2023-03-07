@@ -9,18 +9,22 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Utils.SessionData;
 import Utils.DatabaseConnect;
+import Utils.SceneSwitch;
 
 public class EditMenuController {
 
     private DatabaseConnect database;
     private SessionData session;
     private ArrayList<String> menuItems;
+
+    private SceneSwitch sceneSwitch;
 
     @FXML
     private ListView<String> menuList;
@@ -77,8 +81,11 @@ public class EditMenuController {
         menuCostText.setText(null);
         menuNumSoldText.setText(null);
         isDelete.setSelected(false);
-        
+    }
 
+    public void navButtonClicked(ActionEvent event) throws IOException{
+        sceneSwitch = new SceneSwitch(session);
+        sceneSwitch.switchScene(event);
     }
 
     private ResultSet getMenuItemsQuery(){

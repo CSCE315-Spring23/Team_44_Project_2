@@ -1,14 +1,18 @@
 package Controller;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
+import Utils.SceneSwitch;
+import Utils.SessionData;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -41,7 +45,11 @@ public class InventoryController {
         }
     }
 
+    private SessionData session;
+
     DatabaseConnect database;
+
+    private SceneSwitch sceneSwitch;
 
     @FXML
     private Button logOut;
@@ -70,6 +78,12 @@ public class InventoryController {
     private String item;
     private String quantity;
 
+    public InventoryController(SessionData session) {
+        this.item = null;
+        this.quantity = null;
+        this.session = session;
+    }
+
     public void initialize() {
         // database login info
         String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
@@ -83,6 +97,11 @@ public class InventoryController {
         this.setUpTable();
         this.updateTable();
         this.inventoryTable.refresh();
+    }
+
+    public void navButtonClicked(ActionEvent event) throws IOException {
+        sceneSwitch = new SceneSwitch(session);
+        sceneSwitch.switchScene(event);
     }
 
 

@@ -1,11 +1,16 @@
 package Controller;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import java.io.IOException;
+
 import Items.Order;
 import Utils.DatabaseConnect;
+import Utils.SceneSwitch;
 import Utils.SessionData;
+
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
+import javafx.fxml.FXML;
+
 
 /**
  * This class handles initializnig variables for JavaFX.
@@ -21,11 +26,15 @@ import Utils.SessionData;
  */
 public class OrderController {
 
+    private SessionData session;
+
     private final DatabaseConnect database;
 
     private final int employeeId;
 
     private Order order;
+
+    private SceneSwitch sceneSwitch;
 
     @FXML
     private Label orderBoxLabel;
@@ -46,6 +55,7 @@ public class OrderController {
      * @param session Session's Information
      */
     public OrderController(SessionData session) {
+        this.session = session;
         this.database = session.database;
         this.employeeId = session.employeeId;
         this.order = session.order;
@@ -55,6 +65,12 @@ public class OrderController {
      * Verify Database is Connected
      */
     public void initialize() {}
+
+
+    public void navButtonClicked(ActionEvent event) throws IOException {
+        sceneSwitch = new SceneSwitch(session);
+        sceneSwitch.switchScene(event);
+    }
 
     /**
      * Handles the button click event for the menu items
