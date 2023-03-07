@@ -7,7 +7,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.VBox;
 import javafx.scene.chart.Axis;
-//import javafx.scene.control.*;
+// import javafx.scene.control.*;
 
 import java.util.ArrayList;
 
@@ -47,7 +47,7 @@ public class DataTrendsController {
         ArrayList<Integer> dates = decodeDates(rawDates);
 
 
-        //orders per day
+        // orders per day
         ArrayList<Double> orderAverages = getOrderNumAveragesForDates(dates);
         final NumberAxis xAxisOrders = new NumberAxis();
         final NumberAxis yAxisOrders = new NumberAxis();
@@ -57,7 +57,7 @@ public class DataTrendsController {
 
         XYChart.Series ordersSeries = new XYChart.Series();
 
-        for(int i = 0; i < dates.size(); i++){
+        for (int i = 0; i < dates.size(); i++) {
             Integer date = dates.get(i);
             Double curDayOrders = orderAverages.get(i);
             ordersSeries.getData().add(new XYChart.Data(date, curDayOrders));
@@ -66,14 +66,13 @@ public class DataTrendsController {
         ordersPerDay.getData().add(ordersSeries);
         chartStack.getChildren().add(ordersPerDay);
 
-        //price per order
+        // price per order
         ArrayList<Double> orderPricDoubles = getOrderAveragesForDates(dates);
         final NumberAxis xAxisPrices = new NumberAxis();
         final NumberAxis yAxisPrices = new NumberAxis();
 
         ordersPerDay = new LineChart<Number, Number>(xAxisPrices, yAxisPrices);
         ordersPerDay.setTitle("Price Per Order Per Day");
-
 
 
 
@@ -93,7 +92,7 @@ public class DataTrendsController {
         return dates;
     }
 
-    private ArrayList<Integer> decodeDates(ArrayList<String> rawDates){
+    private ArrayList<Integer> decodeDates(ArrayList<String> rawDates) {
         ArrayList<Integer> dates = new ArrayList<>();
 
         return dates;
