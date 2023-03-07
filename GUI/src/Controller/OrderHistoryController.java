@@ -6,7 +6,8 @@ import Utils.SessionData;
 
 
 import java.sql.ResultSet;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -17,6 +18,8 @@ import javafx.scene.control.*;
 
 
 public class OrderHistoryController {
+
+    private SessionData sessionData;
     private DatabaseConnect database;
 
     @FXML
@@ -32,13 +35,17 @@ public class OrderHistoryController {
     @FXML
     private TableColumn<OrderRow, String> orderDate;
     @FXML
-    private TableColumn<OrderRow, Double> orderTotal;
+    private TableColumn<OrderRow, String> orderTotal;
     @FXML
     private TableColumn<OrderRow, String> employeeName;
 
     @FXML
     private TextArea orderHistoryTextBox;
 
+    // public OrderHistoryController(SessionData sessionData) {
+    //     this.sessionData = sessionData;
+    //     database = sessionData.database;
+    // }
 
     public void initialize() {
         // database login info
@@ -56,7 +63,7 @@ public class OrderHistoryController {
     }
 
     private void setUpTable(){
-    //     //define TableView columns
+        //define TableView columns
         orderID.setCellValueFactory(cellData -> cellData.getValue().orderIDProperty());
 
         customerName.setCellValueFactory(cellData -> cellData.getValue().customerNameProperty());
@@ -117,11 +124,66 @@ public class OrderHistoryController {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!row.isEmpty())) {
                     OrderRow rowData = row.getItem();
-                    System.out.println(rowData.getOrderID());
+                    int id = rowData.getOrderID();
+                    ArrayList<Integer> menuIds = getMenuId(id);
+                    HashMap<String, Integer> menuItems = getMenuItems(menuIds);
+                    orderHistoryTextBox.setText("");
+                    for(String name : menuItems.keySet()){
+                        double cost = getMenuCost(name);
+                        String rightside = String.format("$%.2f x%d = $%.2f", cost, menuItems.get(name), cost * menuItems.get(name));
+                        String print = String.format("%-36s %20s\n", name, rightside);
+                        orderHistoryTextBox.appendText(print);
+                    }
                 }
             });
             return row;
         });
+    }
+
+    private ArrayList<Integer> getMenuId(int orderId){
+        ArrayList<Integer> menuIds = new ArrayList<>();
+        try{
+            ResultSet rs = database.executeQuery("SELECT * FROM solditem WHERE orderid = " + orderId);
+            while(rs.next()) {
+                menuIds.add(rs.getInt("menuid"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return menuIds;
+    }
+
+    private HashMap<String, Integer> getMenuItems(ArrayList<Integer> menuIds){
+        HashMap<String, Integer> menuItems = new HashMap<>();
+        for(int id : menuIds){
+            try{
+                ResultSet rs = database.executeQuery("SELECT * FROM menuitem WHERE id = " + id);
+                while(rs.next()) {
+                    if(menuItems.containsKey(rs.getString("name"))){
+                        menuItems.put(rs.getString("name"), menuItems.get(rs.getString("name")) + 1);
+                    } else {
+                        menuItems.put(rs.getString("name"), 1);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return menuItems;
+    }
+
+    private double getMenuCost(String name){
+        double ret = 0;
+        try{
+            ResultSet rs = database.executeQuery("SELECT * FROM menuitem WHERE name = '" + name + "'");
+            while(rs.next()) {
+                ret = rs.getDouble("cost");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
 
 }
@@ -179,12 +241,13 @@ class OrderRow{
         this.orderDate.set(orderDate);
     }
 
-    public Double getOrderTotal() {
-        return orderTotal.get();
+    public String getOrderTotal() {
+        return String.format("%.2f",orderTotal.get());
     }
 
-    public SimpleObjectProperty<Double> orderTotalProperty() {
-        return orderTotal;
+    public SimpleObjectProperty<String> orderTotalProperty() {
+        SimpleObjectProperty<String> ret = new SimpleObjectProperty<String>(getOrderTotal());
+        return ret;
     }
 
     public void setOrderTotal(Double orderTotal) {
