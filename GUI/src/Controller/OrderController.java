@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 
 import Order.Order;
 import Utils.DatabaseConnect;
-import Utils.DatabaseLoginInfo;
+import Utils.SessionData;
 
 /**
  * This class handles initializnig variables for JavaFX.
@@ -22,17 +22,11 @@ import Utils.DatabaseLoginInfo;
  */
 public class OrderController {
 
-    /**
-     * Connection to the database.
-     * 
-     * @see DatabaseConnect
-     */
-    DatabaseConnect database;
+    private final DatabaseConnect database;
 
-    /**
-     * Current {@link Order} being processed
-     */
-    private Order currentOrder;
+    private final int employeeId;
+
+    private Order order;
 
     /**
      * {@link TextArea} that holds list of currently ordered items
@@ -59,20 +53,20 @@ public class OrderController {
     private TextField customerNameTextBox;
 
     /**
-     * Initialize connection to the database
+     * Constructor
+     * 
+     * @param session Session's Information
+     */
+    public OrderController(SessionData session) {
+        this.database = session.database;
+        this.employeeId = session.employeeId;
+        this.order = session.order;
+    }
+
+    /**
+     * Verify Database is Connected
      */
     public void initialize() {
-        // database login info
-        String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
-        String username = DatabaseLoginInfo.username;
-        String password = DatabaseLoginInfo.password;
-
-        database = new DatabaseConnect(dbConnectionString, username, password);
-        database.setUpDatabase();
-        System.out.println("Database Connection Established");
-
-        // TODO: change to orderitem
-        currentOrder = new Order(1, database.getLastId("orderitemtest") + 1);
     }
 
     /**
@@ -90,18 +84,18 @@ public class OrderController {
         String name = database.getMenuItemName(id);
         double cost = database.getMenuItemCost(id);
 
-        currentOrder.addItem(name, cost);
+        order.addItem(name, cost);
 
-        orderBox.setText(currentOrder.getItemCount());
-        totalCostTextBox.setText(String.format("Total Cost: $%.2f", currentOrder.getTotalCost()));
+        orderBox.setText(order.getItemCount());
+        totalCostTextBox.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
     }
 
     /**
      * Handles the text change event for the customr name text box
      */
     public void customerNameOnChanged() {
-        currentOrder.setCustomerName(customerNameTextBox.getText());
-        System.out.println("Customer Name Changed: " + currentOrder.getCustomerName());
+        order.setCustomerName(customerNameTextBox.getText());
+        System.out.println("Customer Name Changed: " + order.getCustomerName());
     }
 
     /**
@@ -111,25 +105,25 @@ public class OrderController {
      * TODO: update inventory
      */
     public void submitOrderOnClick() {
-        if (currentOrder.getTotalCost() == 0.0) {
+        if (order.getTotalCost() == 0.0) {
             System.out.println("Error: No items in order");
             return;
         }
 
-        if (currentOrder.getCustomerName().isEmpty()) {
+        if (order.getCustomerName().isEmpty()) {
             System.out.println("Error: No customer name");
             return;
         }
 
-        database.insertOrderItem(currentOrder);
-        database.insertSoldItem(currentOrder);
+        database.insertOrderItem(order);
+        database.insertSoldItem(order);
 
-        database.updateInventory(currentOrder);
+        database.updateInventory(order);
 
         // reset order
-        currentOrder = new Order(1, database.getLastId("orderitemtest") + 1);
-        orderBox.setText(currentOrder.getItemCount());
-        totalCostTextBox.setText(String.format("Total Cost: $%.2f", currentOrder.getTotalCost()));
+        order = new Order(1, database.getLastId("orderitemtest") + 1);
+        orderBox.setText(order.getItemCount());
+        totalCostTextBox.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
         customerNameTextBox.setText("");
 
     }
