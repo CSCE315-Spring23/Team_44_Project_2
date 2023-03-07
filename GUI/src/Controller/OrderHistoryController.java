@@ -22,25 +22,23 @@ public class OrderHistoryController {
     private SessionData sessionData;
     private DatabaseConnect database;
 
-    @FXML
-    private Button orderHistoryButton;
+    @FXML private Button orderButton;
+    @FXML private Button orderHistoryButton;
+    @FXML private Button inventoryButton;
+    @FXML private Button employeesButton;
+    @FXML private Button editMenuButton;
+    @FXML private Button logoutButton;
 
-    @FXML
-    private TableView<OrderRow> orderHistoryTable;
 
-    @FXML
-    private TableColumn<OrderRow, Integer> orderID;
-    @FXML
-    private TableColumn<OrderRow, String> customerName;
-    @FXML
-    private TableColumn<OrderRow, String> orderDate;
-    @FXML
-    private TableColumn<OrderRow, String> orderTotal;
-    @FXML
-    private TableColumn<OrderRow, String> employeeName;
+    @FXML private TableView<OrderRow> orderHistoryTable;
 
-    @FXML
-    private TextArea orderHistoryTextBox;
+    @FXML private TableColumn<OrderRow, Integer> orderID;
+    @FXML private TableColumn<OrderRow, String> customerName;
+    @FXML private TableColumn<OrderRow, String> orderDate;
+    @FXML private TableColumn<OrderRow, String> orderTotal;
+    @FXML private TableColumn<OrderRow, String> employeeName;
+
+    @FXML private TextArea orderHistoryTextBox;
 
     // public OrderHistoryController(SessionData sessionData) {
     //     this.sessionData = sessionData;
@@ -59,7 +57,6 @@ public class OrderHistoryController {
         setUpTable();
         addRowOnClick();
         orderHistoryTable.refresh();
-
     }
 
     private void setUpTable(){
