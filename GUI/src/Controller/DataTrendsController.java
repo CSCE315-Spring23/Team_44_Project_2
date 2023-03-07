@@ -39,7 +39,7 @@ public class DataTrendsController {
 
     public DataTrendsController(SessionData session) {
         this.session = session;
-        this.database = session.getDatabase();
+        this.database = session.database;
     }
 
     public void initialize() {

@@ -1,4 +1,4 @@
-package Inventory;
+package Items;
 
 public class InventoryItem {
     private final String name;
