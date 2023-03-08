@@ -62,11 +62,11 @@
             </Button>
          </children>
       </VBox>
-      <TableView fx:id="inventoryTable" prefHeight="800.0" prefWidth="800.0">
+      <TableView fx:id="inventoryTable" prefHeight="800.0" prefWidth="850.0">
         <columns>
             <TableColumn fx:id="inventoryID" prefWidth="100.0" text="ID" />
           <TableColumn fx:id="itemName" prefWidth="600.0" text="Item" />
-          <TableColumn fx:id="quantityCol" prefWidth="100.0" text="Quantity" />
+          <TableColumn fx:id="quantityCol" prefWidth="150.0" text="Quantity" />
         </columns>
       </TableView>
       <VBox prefHeight="200.0" prefWidth="250.0">

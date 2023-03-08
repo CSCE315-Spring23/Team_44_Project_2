@@ -99,9 +99,15 @@ public class InventoryController {
      */
     private String quantity;
 
-    public InventoryController(SessionData session) {
-        this.item = null;
-        this.quantity = null;
+    public InventoryController() {
+        this.item = new String();
+        this.quantity = new String();
+        this.session = null;
+    }
+
+    public InventoryController(final SessionData session) {
+        this.item = new String();
+        this.quantity = new String();
         this.session = session;
     }
 
@@ -241,7 +247,7 @@ public class InventoryController {
                 final String name = rs.getString("name");
                 final long quant = rs.getLong("quantity");
 
-                if (name.equals("null"))
+                if (id == 0l)
                     continue;
                 orders.add(new InventoryItem(id, name, quant));
             }

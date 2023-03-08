@@ -28,7 +28,7 @@ public class InventoryItem {
      * @param name of the item as {@link String}
      * @param quant quantity of the item
      */
-    InventoryItem(final long id, final String name, final long quant) {
+    public InventoryItem(final long id, final String name, final long quant) {
         this.id = new SimpleObjectProperty<>(id);
         this.name = new SimpleObjectProperty<>(name);
         this.quantity = new SimpleObjectProperty<>(quant);
