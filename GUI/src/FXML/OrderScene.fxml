@@ -15,7 +15,13 @@
          <children>
             <TilePane prefHeight="150.0" prefWidth="410.0">
                <children>
-                  <Button mnemonicParsing="false" text="Button" />
+                  <Button fx:id="m1" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Chicken Sandwich" />
+                  <Button fx:id="m2" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Deluxe Sandwich" />
+                  <Button fx:id="m3" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Spicy Sandwich" />
+                  <Button fx:id="m4" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Spicy Deluxe" />
+                  <Button fx:id="m5" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="12 ct. Grilled" />
+                  <Button fx:id="m6" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="8 ct. Grilled" />
+                  <Button fx:id="m7" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="12 ct. Nuggets" />
                </children>
             </TilePane>
             <TilePane prefHeight="150.0" prefWidth="410.0">
@@ -88,7 +94,7 @@
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
             <Label text="Current Order" />
-            <Label fx:id="orderListLabel" text="Label" />
+            <Label fx:id="orderBox" text=" " />
             <Label text="Customer Name" />
             <TextField fx:id="customerNameField" />
             <HBox alignment="CENTER" prefHeight="30.0" prefWidth="100.0">

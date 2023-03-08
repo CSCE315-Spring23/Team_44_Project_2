@@ -37,7 +37,7 @@ public class OrderController {
     private SceneSwitch sceneSwitch;
 
     @FXML
-    private Label orderBoxLabel;
+    private Label orderBox;
 
     @FXML
     private TextField customerNameField;
@@ -68,6 +68,7 @@ public class OrderController {
 
 
     public void navButtonClicked(ActionEvent event) throws IOException {
+        SessionData session = new SessionData(database, employeeId, order);
         sceneSwitch = new SceneSwitch(session);
         sceneSwitch.switchScene(event);
     }
@@ -81,15 +82,16 @@ public class OrderController {
         Button b = (Button) event.getSource();
         System.out.println("Menu Item Button Clicked: " + b.getId());
 
-        // id number starts at the second character
+        // add item to order
         String id = b.getId().substring(1);
 
         String name = database.getMenuItemName(id);
         double cost = database.getMenuItemCost(id);
 
         order.addItem(name, cost);
-
-        orderBoxLabel.setText(order.getItemCount());
+        
+        // update order box and cost
+        orderBox.setText(order.getItemCount());
         totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
     }
 
@@ -124,7 +126,7 @@ public class OrderController {
 
         // reset order
         order = new Order(employeeId, database.getLastId("orderitemtest") + 1);
-        orderBoxLabel.setText(order.getItemCount());
+        orderBox.setText(order.getItemCount());
         totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
         customerNameField.setText("");
     }
