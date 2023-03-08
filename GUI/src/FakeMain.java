@@ -42,7 +42,7 @@ public class FakeMain extends Application {
 
         primaryStage.setTitle("Chick-fil-A");
         primaryStage.getIcons().add(new Image("./resources/logo.png"));
-        primaryStage.setScene(new Scene(root, 1200, 800));
+        primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
     }
 
