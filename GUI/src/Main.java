@@ -1,9 +1,4 @@
-import Controller.OrderHistoryController;
 import Controller.LoginController;
-import Items.Order;
-import Utils.DatabaseConnect;
-import Utils.DatabaseLoginInfo;
-import Utils.SessionData;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,21 +16,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        /*
-         * DatabaseConnect database;
-         * String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
-         * String username = DatabaseLoginInfo.username;
-         * String password = DatabaseLoginInfo.password;
-         * 
-         * database = new DatabaseConnect(dbConnectionString, username, password);
-         * database.setUpDatabase();
-         */
+
         LoginController loginController = new LoginController();
-
-        // EditMenuController menuController = new EditMenuController(session);
-        // OrderHistoryController orderHistoryController = new
-        // OrderHistoryController(session);
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("./FXML/Login.fxml"));
         loader.setController(loginController);
 

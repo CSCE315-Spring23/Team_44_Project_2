@@ -184,7 +184,7 @@ public class DatabaseConnect {
      * @param order {@link Order} to insert
      */
     public void insertOrderItem(final Order order) {
-        String databaseName = "orderitemtest"; // TODO: change to orderitem
+        String databaseName = "orderitem";
 
         int id = order.getOrderId();
         String customerName = order.getCustomerName();
@@ -210,7 +210,7 @@ public class DatabaseConnect {
      * @param order
      */
     public void insertSoldItem(final Order order) {
-        String databaseName = "solditemtest"; // TODO: change to solditem
+        String databaseName = "solditem";
 
         int orderId = order.getOrderId();
         HashMap<String, Integer> soldItems = order.getItems();
@@ -279,7 +279,7 @@ public class DatabaseConnect {
      * @param order {@link Order} that will update inventory
      */
     public void updateInventory(final Order order) {
-        final String databaseName = "inventorytest"; // TODO: change to inventory
+        final String databaseName = "inventorys";
 
         HashMap<String, Integer> soldItems = order.getItems();
 

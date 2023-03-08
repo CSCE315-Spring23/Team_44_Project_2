@@ -133,7 +133,6 @@ public class EditMenuController {
         try {
             readMenuItems(rs);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             System.out.println("COULDN'T READ MENU ITEMS");
             e.printStackTrace();
         }
@@ -247,7 +246,6 @@ public class EditMenuController {
                 return false;
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             return false;
         }
     }

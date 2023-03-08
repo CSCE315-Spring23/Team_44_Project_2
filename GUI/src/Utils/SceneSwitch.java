@@ -73,12 +73,12 @@ public class SceneSwitch {
      */
     public SceneSwitch(SessionData session) {
         this.session = session;
-        loginController = new LoginController(session);
-        orderController = new OrderController(session);
-        orderHistoryController = new OrderHistoryController(session);
-        inventoryController = new InventoryController(session);
-        employeeController = new EmployeeController(session);
-        editMenuController = new EditMenuController(session);
+        loginController = new LoginController(this.session);
+        orderController = new OrderController(this.session);
+        orderHistoryController = new OrderHistoryController(this.session);
+        inventoryController = new InventoryController(this.session);
+        employeeController = new EmployeeController(this.session);
+        editMenuController = new EditMenuController(this.session);
     }
 
     /**
@@ -90,7 +90,6 @@ public class SceneSwitch {
 
     public void LoginTransition(ActionEvent event, SessionData session) throws IOException {
         // Pass session object from login page to all scenes
-        SceneSwitch login = new SceneSwitch(session);
         System.out.println("Login Page Initialized");
         Button b = (Button) event.getSource();
         System.out.println(session.employeeId);

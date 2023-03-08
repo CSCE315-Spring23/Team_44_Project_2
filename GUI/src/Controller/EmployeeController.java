@@ -2,13 +2,10 @@ package Controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.sql.ResultSet;
 import Items.EmployeeRow;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
-import javafx.scene.control.TableRow;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import Utils.DatabaseConnect;
