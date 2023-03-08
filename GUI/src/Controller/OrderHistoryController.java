@@ -1,71 +1,151 @@
 package Controller;
 
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
 import Items.OrderRow;
 import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
+
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 
+/**
+ * Controller for the Order History
+ *
+ * @since 2023-03-07
+ * @version 2023-03-07
+ *
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
+*/
 public class OrderHistoryController {
-
+    /**
+     * Current session data
+     *
+     * @see SessionData
+    */
     private SessionData session;
+
+    /**
+     * Connection to the database
+     *
+     * @see DatabaseConnect
+     */
     private DatabaseConnect database;
 
+    /**
+     * Switches between scenes or tabs
+     *
+     * @see SceneSwitch
+     */
     private SceneSwitch sceneSwitch;
 
-    @FXML
-    private Button orderButton;
-    @FXML
-    private Button orderHistoryButton;
-    @FXML
-    private Button inventoryButton;
-    @FXML
-    private Button employeesButton;
-    @FXML
-    private Button editMenuButton;
-    @FXML
-    private Button logoutButton;
+    /**
+     * {@link Button} Button to navigate order scene
+     *
+     */
+    @FXML private Button orderButton;
 
-    @FXML
-    private TableView<OrderRow> orderHistoryTable;
+    /**
+     * {@link Button} Button to navigate order history scene
+     *
+     */
+    @FXML private Button orderHistoryButton;
 
-    @FXML
-    private TableColumn<OrderRow, Integer> orderID;
-    @FXML
-    private TableColumn<OrderRow, String> customerName;
-    @FXML
-    private TableColumn<OrderRow, String> orderDate;
-    @FXML
-    private TableColumn<OrderRow, String> orderTotal;
-    @FXML
-    private TableColumn<OrderRow, String> employeeName;
+    /**
+     * {@link Button} Button to navigate inventory scene
+     *
+     */
+    @FXML private Button inventoryButton;
 
-    @FXML
-    private TextArea orderHistoryTextBox;
+    /**
+     * {@link Button} Button to navigate employees scene
+     *
+     */
+    @FXML private Button employeesButton;
 
+    /**
+     * {@link Button} Button to navigate edit menu scene
+     *
+     */
+    @FXML private Button editMenuButton;
+
+    /**
+     * {@link Button} Button to logout
+     *
+     */
+    @FXML private Button logoutButton;
+
+    /**
+     * {@link TableView} of {@link OrderRow} to display order history
+     *
+     */
+    @FXML private TableView<OrderRow> orderHistoryTable;
+
+    /**
+     * {@link TableColumn} to display order ID
+     *
+     */
+    @FXML private TableColumn<OrderRow, Integer> orderID;
+
+    /**
+     * {@link TableColumn} to display customer name
+     *
+     */
+    @FXML private TableColumn<OrderRow, String> customerName;
+
+    /**
+     * {@link TableColumn} to display order date
+     *
+     */
+    @FXML private TableColumn<OrderRow, String> orderDate;
+
+    /**
+     * {@link TableColumn} to display order total
+     *
+     */
+    @FXML private TableColumn<OrderRow, String> orderTotal;
+
+    /**
+     * {@link TableColumn} to display employee name
+     *
+     */
+    @FXML private TableColumn<OrderRow, String> employeeName;
+
+    /**
+     * {@link TextArea} to display order details
+     *
+     */
+    @FXML private TextArea orderHistoryTextBox;
+
+    /**
+     *  Constructor for OrderHistoryController
+     * @param session
+     */
     public OrderHistoryController(SessionData session) {
         this.session = session;
         database = session.database;
 
     }
 
+    /**
+     * Initializes the Order History scene
+     */
     public void initialize() {
         setUpTable();
         addRowOnClick();
         orderHistoryTable.refresh();
 
+        // set visibility of buttons based on employee role
         if (session.isManager()) {
             System.out.println("Manager");
             editMenuButton.setVisible(true);
@@ -79,11 +159,19 @@ public class OrderHistoryController {
         }
     }
 
+    /**
+     * Navigates to the scene specified by the button clicked
+     * @param event
+     * @throws IOException
+     */
     public void navButtonClicked(ActionEvent event) throws IOException {
         sceneSwitch = new SceneSwitch(session);
         sceneSwitch.switchScene(event);
     }
 
+    /**
+     * Sets up the table to display order history
+     */
     private void setUpTable() {
         // define TableView columns
         orderID.setCellValueFactory(cellData -> cellData.getValue().orderIDProperty());
@@ -101,9 +189,12 @@ public class OrderHistoryController {
 
         // add data to table
         orderHistoryTable.setItems(orders);
-
     }
 
+    /**
+     * Gets the last 20 orders from the database
+     * @return {@link ObservableList} of {@link OrderRow} of the last 20 orders
+     */
     private ObservableList<OrderRow> getOrders() {
         ObservableList<OrderRow> orders = FXCollections.observableArrayList();
         try {
@@ -127,6 +218,11 @@ public class OrderHistoryController {
         return orders;
     }
 
+    /**
+     * Gets the employee name from the database based on the employee ID
+     * @param id
+     * @return {@link String} of the employee name
+     */
     private String getEmployeeName(int id) {
         String ret = "";
         try {
@@ -140,6 +236,9 @@ public class OrderHistoryController {
         return ret;
     }
 
+    /**
+     * Adds a click event to each {@link OrderRow} in table to display order details
+     */
     private void addRowOnClick() {
         orderHistoryTable.setRowFactory(tv -> {
             TableRow<OrderRow> row = new TableRow<>();
@@ -163,6 +262,11 @@ public class OrderHistoryController {
         });
     }
 
+    /**
+     * Gets the Menu IDs from the database based on the order ID
+     * @param orderId
+     * @return {@link ArrayList} of {@link Integer} of the menu IDs
+     */
     private ArrayList<Integer> getMenuId(int orderId) {
         ArrayList<Integer> menuIds = new ArrayList<>();
         try {
@@ -177,6 +281,11 @@ public class OrderHistoryController {
         return menuIds;
     }
 
+    /**
+     * Gets the menu items from the database based on Menu IDs
+     * @param menuIds
+     * @return {@link HashMap} of {@link String} and {@link Integer} of the menu items
+     */
     private HashMap<String, Integer> getMenuItems(ArrayList<Integer> menuIds) {
         HashMap<String, Integer> menuItems = new HashMap<>();
         for (int id : menuIds) {
@@ -197,6 +306,11 @@ public class OrderHistoryController {
         return menuItems;
     }
 
+    /**
+     * Gets the menu cost from the database based on the menu name
+     * @param name
+     * @return {@link Double} of the menu cost
+     */
     private double getMenuCost(String name) {
         double ret = 0;
         try {
