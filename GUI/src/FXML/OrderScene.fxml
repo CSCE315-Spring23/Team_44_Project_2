@@ -5,15 +5,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <VBox prefHeight="400.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <children>
-            <TilePane prefHeight="150.0" prefWidth="410.0">
+            <FlowPane prefHeight="200.0" prefWidth="200.0">
                <children>
                   <Button fx:id="m1" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Chicken Sandwich" />
                   <Button fx:id="m2" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Deluxe Sandwich" />
@@ -22,18 +22,45 @@
                   <Button fx:id="m5" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="12 ct. Grilled" />
                   <Button fx:id="m6" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="8 ct. Grilled" />
                   <Button fx:id="m7" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="12 ct. Nuggets" />
+                  <Button mnemonicParsing="false" text="8 ct. Nuggets" />
+                  <Button mnemonicParsing="false" text="Grilled Sandwich" />
+                  <Button mnemonicParsing="false" text="Grilled Club" />
+                  <Button mnemonicParsing="false" text="Cool Wrap" />
+                  <Button mnemonicParsing="false" text="Cobb Salad" />
+                  <Button mnemonicParsing="false" text="Southwest Salad" />
+                  <Button mnemonicParsing="false" text="Market Salad" />
                </children>
-            </TilePane>
-            <TilePane prefHeight="150.0" prefWidth="410.0">
+            </FlowPane>
+            <FlowPane prefHeight="166.0" prefWidth="397.0">
                <children>
-                  <Button mnemonicParsing="false" text="Button" />
+                  <Button mnemonicParsing="false" text="L. Waffle Fries" />
+                  <Button mnemonicParsing="false" text="M. Waffle Fries" />
+                  <Button mnemonicParsing="false" text="Chips" />
+                  <Button mnemonicParsing="false" text="Fruit Cup" />
+                  <Button mnemonicParsing="false" text="Side Salad" />
+                  <Button mnemonicParsing="false" text="Bottled Water" />
+                  <Button mnemonicParsing="false" text="M. Unsweetened Tea" />
+                  <Button mnemonicParsing="false" text="M. Sweet Tea" />
+                  <Button mnemonicParsing="false" text="M. Lemonade" />
+                  <Button mnemonicParsing="false" text="M. Sunjoy" />
+                  <Button mnemonicParsing="false" text="M. Soft Drink" />
                </children>
-            </TilePane>
-            <TilePane prefHeight="100.0" prefWidth="410.0">
+            </FlowPane>
+            <FlowPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" text="Button" />
+                  <Button mnemonicParsing="false" text="Original Iced Coffee" />
+                  <Button mnemonicParsing="false" text="Vanilla Iced Coffee" />
+                  <Button mnemonicParsing="false" text="C&amp;C Milkshake" />
+                  <Button mnemonicParsing="false" text="Chocolate Milkshake" />
+                  <Button mnemonicParsing="false" text="Strawberry Milkshake" />
+                  <Button mnemonicParsing="false" text="Vanilla Milkshake" />
+                  <Button mnemonicParsing="false" text="Frosted Lemonade" />
+                  <Button mnemonicParsing="false" text="Frosted Coffee" />
+                  <Button mnemonicParsing="false" text="Icedream" />
+                  <Button mnemonicParsing="false" text="Brownie" />
+                  <Button mnemonicParsing="false" text="Cookie" />
                </children>
-            </TilePane>
+            </FlowPane>
          </children></VBox>
    </center>
    <left>
