@@ -1,7 +1,8 @@
-package Order;
+package Items;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class handles the Order Item.
@@ -24,7 +25,7 @@ public class Order {
     /**
      * {@link String} holding the name of the customer who made the order
      */
-    private String customer_name = "";
+    private String customerName = "";
 
     /**
      * {@link LocalDate} holding the current date
@@ -45,6 +46,18 @@ public class Order {
      * {@link HashMap} holding each item and its coresponding price.
      */
     private HashMap<String, Integer> items = new HashMap<String, Integer>();
+
+    /**
+     * Construct an Order
+     * 
+     * @param employeeId
+     */
+    public Order(final int employeeId) {
+        this.employeeId = employeeId;
+        this.orderId = -1;
+        date = LocalDate.now();
+        System.out.println("Order Created:\tcurrent date: " + date + " order id: " + orderId);
+    }
 
     /**
      * Construct an Order
@@ -89,21 +102,21 @@ public class Order {
     }
 
     /**
-     * Sets {@link #customer_name}
+     * Sets {@link #customerName}
      * 
-     * @param name new {@link #customer_name}
+     * @param name new {@link #customerName}
      */
     public void setCustomerName(final String name) {
-        this.customer_name = name;
+        this.customerName = name;
     }
 
     /**
-     * Gets {@link #customer_name}
+     * Gets {@link #customerName}
      * 
-     * @return {@link #customer_name}
+     * @return {@link #customerName}
      */
     public String getCustomerName() {
-        return this.customer_name;
+        return this.customerName;
     }
 
     /**
@@ -158,10 +171,11 @@ public class Order {
      * @return updated count as {@link String}
      */
     public String getItemCount() {
-        String ret = "";
-        for (String key : items.keySet())
-            ret += key + " x" + items.get(key) + "\n";
-        return ret;
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : items.entrySet()) {
+            sb.append(entry.getKey() + " x" + entry.getValue() + '\n');
+        }
+        return sb.toString();
     }
 
     /**

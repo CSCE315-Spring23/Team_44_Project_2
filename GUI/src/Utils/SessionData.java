@@ -1,5 +1,7 @@
 package Utils;
 
+import Items.Order;
+
 /**
  * Bundle of Information that gets passed between scenes
  * 
@@ -15,42 +17,29 @@ package Utils;
 public class SessionData {
     /**
      * Connection to the database
-     * 
-     * @see DatabaseConnect
      */
-    private final DatabaseConnect database;
+    public final DatabaseConnect database;
 
     /**
      * Identification number of the employee
      */
-    private final int employeeId;
+    public final int employeeId;
+
+    /**
+     * Represents the current {@link Order} being processed
+     */
+    public Order order;
 
     /**
      * Constructor
      * 
      * @param database Connection to the database
      * @param employeeId id of the employee
+     * @param order current order
      */
-    SessionData(final DatabaseConnect database, final int employeeId) {
+    public SessionData(final DatabaseConnect database, final int employeeId, Order order) {
         this.database = database;
         this.employeeId = employeeId;
-    }
-
-    /**
-     * Gets {@link #database}
-     * 
-     * @return {@link #database}
-     */
-    public DatabaseConnect getDatabase() {
-        return this.database;
-    }
-
-    /**
-     * get {@link #employeeId}
-     * 
-     * @return {@link #employeeId}
-     */
-    public int getEmployeeId() {
-        return this.employeeId;
+        this.order = order;
     }
 }

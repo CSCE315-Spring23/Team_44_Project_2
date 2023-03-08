@@ -1,12 +1,16 @@
 package Controller;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import java.io.IOException;
 
-import Order.Order;
+import Items.Order;
 import Utils.DatabaseConnect;
-import Utils.DatabaseLoginInfo;
+import Utils.SceneSwitch;
+import Utils.SessionData;
+
+import javafx.event.ActionEvent;
+import javafx.scene.control.*;
+import javafx.fxml.FXML;
+
 
 /**
  * This class handles initializnig variables for JavaFX.
@@ -22,57 +26,50 @@ import Utils.DatabaseLoginInfo;
  */
 public class OrderController {
 
-    /**
-     * Connection to the database.
-     * 
-     * @see DatabaseConnect
-     */
-    DatabaseConnect database;
+    private SessionData session;
 
-    /**
-     * Current {@link Order} being processed
-     */
-    private Order currentOrder;
+    private final DatabaseConnect database;
 
-    /**
-     * {@link TextArea} that holds list of currently ordered items
-     */
+    private final int employeeId;
+
+    private Order order;
+
+    private SceneSwitch sceneSwitch;
+
     @FXML
-    private TextArea orderBox;
+    private Label orderBoxLabel;
 
-    /**
-     * {@link TextArea} that holds total price of the order
-     */
     @FXML
-    private TextArea totalCostTextBox;
+    private TextField customerNameField;
 
-    /**
-     * {@link Button} that completes the order and updates Inventory
-     */
+    @FXML
+    private Label totalCostLabel;
+
     @FXML
     private Button submitOrderButton;
 
-    /**
-     * {@link TextField} that inputs the customer's name
-     */
-    @FXML
-    private TextField customerNameTextBox;
 
     /**
-     * Initialize connection to the database
+     * Constructor
+     * 
+     * @param session Session's Information
      */
-    public void initialize() {
-        // database login info
-        String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
-        String username = DatabaseLoginInfo.username;
-        String password = DatabaseLoginInfo.password;
+    public OrderController(SessionData session) {
+        this.session = session;
+        this.database = session.database;
+        this.employeeId = session.employeeId;
+        this.order = session.order;
+    }
 
-        database = new DatabaseConnect(dbConnectionString, username, password);
-        database.setUpDatabase();
-        System.out.println("Database Connection Established");
+    /**
+     * Verify Database is Connected
+     */
+    public void initialize() {}
 
-        // TODO: change to orderitem
-        currentOrder = new Order(1, database.getLastId("orderitemtest") + 1);
+
+    public void navButtonClicked(ActionEvent event) throws IOException {
+        sceneSwitch = new SceneSwitch(session);
+        sceneSwitch.switchScene(event);
     }
 
     /**
@@ -82,7 +79,7 @@ public class OrderController {
      */
     public void menuItemButtonOnClick(ActionEvent event) {
         Button b = (Button) event.getSource();
-        System.out.println("Button Clicked: " + b.getId());
+        System.out.println("Menu Item Button Clicked: " + b.getId());
 
         // id number starts at the second character
         String id = b.getId().substring(1);
@@ -90,19 +87,16 @@ public class OrderController {
         String name = database.getMenuItemName(id);
         double cost = database.getMenuItemCost(id);
 
-        currentOrder.addItem(name, cost);
+        order.addItem(name, cost);
 
-        orderBox.setText(currentOrder.getItemCount());
-        totalCostTextBox.setText(String.format("Total Cost: $%.2f", currentOrder.getTotalCost()));
+        orderBoxLabel.setText(order.getItemCount());
+        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
     }
 
     /**
      * Handles the text change event for the customr name text box
      */
-    public void customerNameOnChanged() {
-        currentOrder.setCustomerName(customerNameTextBox.getText());
-        System.out.println("Customer Name Changed: " + currentOrder.getCustomerName());
-    }
+    public void customerNameOnChanged() {}
 
     /**
      * Handles the buttom click event for the submit order button.<br>
@@ -111,26 +105,27 @@ public class OrderController {
      * TODO: update inventory
      */
     public void submitOrderOnClick() {
-        if (currentOrder.getTotalCost() == 0.0) {
+        if (order.getTotalCost() == 0.0) {
             System.out.println("Error: No items in order");
             return;
         }
 
-        if (currentOrder.getCustomerName().isEmpty()) {
+        if (customerNameField.getText().equals("")) {
             System.out.println("Error: No customer name");
             return;
         }
 
-        database.insertOrderItem(currentOrder);
-        database.insertSoldItem(currentOrder);
+        // finalize order and submit to database
+        order.setCustomerName(customerNameField.getText());
 
-        database.updateInventory(currentOrder);
+        database.insertOrderItem(order);
+        database.insertSoldItem(order);
+        database.updateInventory(order);
 
         // reset order
-        currentOrder = new Order(1, database.getLastId("orderitemtest") + 1);
-        orderBox.setText(currentOrder.getItemCount());
-        totalCostTextBox.setText(String.format("Total Cost: $%.2f", currentOrder.getTotalCost()));
-        customerNameTextBox.setText("");
-
+        order = new Order(employeeId, database.getLastId("orderitemtest") + 1);
+        orderBoxLabel.setText(order.getItemCount());
+        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+        customerNameField.setText("");
     }
 }
