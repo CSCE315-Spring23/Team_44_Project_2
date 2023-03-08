@@ -75,7 +75,7 @@ public class Order {
     /**
      * Add an item to the order
      * 
-     * @param name of the item to add as a {@link String}
+     * @param name  of the item to add as a {@link String}
      * @param price of the item
      */
     public void addItem(final String name, final double price) {
@@ -86,7 +86,7 @@ public class Order {
     /**
      * Removes an item from the order
      * 
-     * @param name of the item to remove as a {@link String}
+     * @param name  of the item to remove as a {@link String}
      * @param price of the item
      */
     public void removeItem(String name, double price) {
@@ -130,6 +130,7 @@ public class Order {
 
     /**
      * Sets {@link #orderId}
+     * 
      * @return {@link #orderId}
      */
     public void setOrderId(final int orderId) {

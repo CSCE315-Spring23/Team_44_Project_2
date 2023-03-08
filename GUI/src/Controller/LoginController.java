@@ -1,6 +1,8 @@
 package Controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import javafx.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -107,7 +109,7 @@ public class LoginController {
         pinBox.setText(pinBox.getText() + pinNum);
     }
 
-    public SessionData loginInitializer() {
+    public DatabaseConnect databaseInitializer() {
         DatabaseConnect database;
         String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
         String username = DatabaseLoginInfo.username;
@@ -115,8 +117,14 @@ public class LoginController {
 
         database = new DatabaseConnect(dbConnectionString, username, password);
         database.setUpDatabase();
+
+        return database;
+    }
+
+    public SessionData loginInitializer() {
+
         // sessionDataObject will be passed starting from LoginPage
-        SessionData newSession = new SessionData(database, pinNumber, new Order(pinNumber));
+        SessionData newSession = new SessionData(databaseInitializer(), pinNumber, new Order(pinNumber));
 
         return newSession;
     }
@@ -124,11 +132,25 @@ public class LoginController {
     @FXML
     public void loginButtonClicked(ActionEvent event) throws IOException {
         this.pinNumber = Integer.parseInt(pinBox.getText());
-        System.out.println(pinNumber);
-        this.session = loginInitializer();
-        this.sceneSwitch = new SceneSwitch(session);
-        this.sceneSwitch.LoginTransition(event, session);
-        System.out.println("Login button clicked");
+        System.out.println(this.pinNumber);
+        try {
+            String sqlQuery = "SELECT * FROM employee WHERE pin= '" + Integer.toString(pinNumber) + "'";
+            // System.out.println(sqlQuery);
+            DatabaseConnect database = databaseInitializer();
+            // System.out.println(database);
+            ResultSet loginQuery = database.executeQuery(sqlQuery);
+            if (!loginQuery.next()) {
+                System.out.println("Invalid PIN");
+            } else {
+                this.session = loginInitializer();
+                this.sceneSwitch = new SceneSwitch(session);
+                this.sceneSwitch.LoginTransition(event, session);
+                System.out.println("Login authenticated");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

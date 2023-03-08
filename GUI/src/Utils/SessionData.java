@@ -45,7 +45,7 @@ public class SessionData {
         this.order = order;
     }
 
-    public boolean isManager(){
+    public boolean isManager() {
         try {
             ResultSet rs = database.executeQuery("SELECT * FROM Employee WHERE id = " + employeeId);
             rs.next();

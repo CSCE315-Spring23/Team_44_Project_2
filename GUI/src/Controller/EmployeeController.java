@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.sql.ResultSet;
-import Items.OrderRow;
+import Items.EmployeeRow;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.scene.control.TableRow;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -32,6 +33,9 @@ public class EmployeeController {
 
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
+
+    @FXML
+    private TableView<EmployeeRow> employeeTable;
 
     @FXML // fx:id="customerName"
     private TableColumn<?, ?> customerName; // Value injected by FXMLLoader
@@ -67,16 +71,16 @@ public class EmployeeController {
     private TextArea orderHistoryTextBox; // Value injected by FXMLLoader
 
     @FXML // fx:id="randomID"
-    private TableColumn<OrderRow, Integer> randomID; // Value injected by FXMLLoader
+    private TableColumn<EmployeeRow, Integer> randomID; // Value injected by FXMLLoader
 
     @FXML // fx:id="employeeName"
-    private TableColumn<OrderRow, String> employeeName; // Value injected by FXMLLoader
+    private TableColumn<EmployeeRow, String> employeeName; // Value injected by FXMLLoader
 
     @FXML // fx:id="role"
-    private TableColumn<OrderRow, String> role; // Value injected by FXMLLoader
+    private TableColumn<EmployeeRow, String> role; // Value injected by FXMLLoader
 
     @FXML // fx:id="employeePin"
-    private TableColumn<OrderRow, Integer> employeePin; // Value injected by FXMLLoader
+    private TableColumn<EmployeeRow, Integer> employeePin; // Value injected by FXMLLoader
 
     public EmployeeController(SessionData sessionData) {
         this.sessionData = sessionData;
@@ -107,52 +111,44 @@ public class EmployeeController {
      * }
      */
 
-    /*
-     * private void setUpTable() {
-     * // define TableView columns
-     * randomID.setCellValueFactory(cellData ->
-     * cellData.getValue().orderIDProperty());
-     * 
-     * employeeName.setCellValueFactory(cellData ->
-     * cellData.getValue().customerNameProperty());
-     * 
-     * role.setCellValueFactory(cellData ->
-     * cellData.getValue().orderDateProperty());
-     * 
-     * employeePin.setCellValueFactory(cellData ->
-     * cellData.getValue().employeeNameProperty());
-     * 
-     * // generate list of last 20 orders
-     * ObservableList<OrderRow> orders = getOrders();
-     * 
-     * // add data to table
-     * orderHistoryTable.setItems(orders);
-     * 
-     * }
-     */
+    private void setUpTable() {
+        // define TableView columns
+        randomID.setCellValueFactory(cellData -> cellData.getValue().randomIDProperty());
 
-    /*
-     * private ObservableList<OrderRow> getEmployees() {
-     * ObservableList<OrderRow> employees = FXCollections.observableArrayList();
-     * try {
-     * ResultSet rs = database.executeQuery("SELECT * FROM employee");
-     * while (rs.next()) {
-     * Integer randomID = rs.getInt("id");
-     * String employeeName = rs.getString("name");
-     * String role = rs.getString("role");
-     * Integer employeePin = rs.getInt("pin");
-     * 
-     * OrderRow employeeRow = new OrderRow(randomID, employeeName, role,
-     * employeePin);
-     * employees.add(employeeRow);
-     * }
-     * } catch (Exception e) {
-     * e.printStackTrace();
-     * }
-     * 
-     * return employees;
-     * }
-     */
+        employeeName.setCellValueFactory(cellData -> cellData.getValue().employeeNameProperty());
+
+        role.setCellValueFactory(cellData -> cellData.getValue().roleProperty());
+
+        employeePin.setCellValueFactory(cellData -> cellData.getValue().employeePinProperty());
+
+        // generate list of employees
+        ObservableList<EmployeeRow> employees = getEmployees();
+
+        // add data to table
+        employeeTable.setItems(employees);
+
+    }
+
+    private ObservableList<EmployeeRow> getEmployees() {
+        ObservableList<EmployeeRow> employees = FXCollections.observableArrayList();
+        try {
+            ResultSet rs = database.executeQuery("SELECT * FROM employee");
+            while (rs.next()) {
+                Integer randomID = rs.getInt("id");
+                String employeeName = rs.getString("name");
+                String role = rs.getString("role");
+                Integer employeePin = rs.getInt("pin");
+
+                EmployeeRow employeeRow = new EmployeeRow(randomID, employeeName, role,
+                        employeePin);
+                employees.add(employeeRow);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return employees;
+    }
 
     @FXML
     void navButtonClicked(ActionEvent event) throws IOException {

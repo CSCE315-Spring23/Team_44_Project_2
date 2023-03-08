@@ -30,19 +30,17 @@ public class EditMenuController {
      */
     private SessionData session;
 
-
     /**
      * Contains the menu items from database to display in GUI
      */
     private ArrayList<String> menuItems;
 
-
     /**
      * Instance of class to use navbar
      */
     private SceneSwitch sceneSwitch;
-    
-        @FXML
+
+    @FXML
     private Button orderButton;
     @FXML
     private Button orderHistoryButton;
@@ -61,7 +59,6 @@ public class EditMenuController {
     @FXML
     private ListView<String> menuList;
 
-    
     /**
      * Field to input menu item id
      */
@@ -149,13 +146,12 @@ public class EditMenuController {
         menuNumSoldText.setText(null);
         isDelete.setSelected(false);
 
-        if(session.isManager()) {
+        if (session.isManager()) {
             System.out.println("Manager");
             editMenuButton.setVisible(true);
             inventoryButton.setVisible(true);
             employeesButton.setVisible(true);
-        }
-        else{
+        } else {
             System.out.println("Employee");
             editMenuButton.setVisible(false);
             inventoryButton.setVisible(false);
@@ -181,7 +177,8 @@ public class EditMenuController {
     }
 
     /**
-     * Puts menu items into this.menuItems from the ResultSet that getMenuItemsQuery returns
+     * Puts menu items into this.menuItems from the ResultSet that getMenuItemsQuery
+     * returns
      */
     private void readMenuItems(ResultSet rs) throws SQLException {
         menuItems = new ArrayList<>();
@@ -208,15 +205,12 @@ public class EditMenuController {
 
     }
 
-
-
     /**
      * Submits a menu item edit (add,remove,update)
      */
     @FXML
     private void submitMenuChange(ActionEvent e) {
-        Integer itemID =
-                (menuIDText.getText() == null) ? null : Integer.parseInt(menuIDText.getText());
+        Integer itemID = (menuIDText.getText() == null) ? null : Integer.parseInt(menuIDText.getText());
         String itemName = menuNameText.getText();
         Double itemCost = (menuCostText.getText() == null) ? null
                 : Double.parseDouble(menuCostText.getText());
