@@ -16,7 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 /**
- * Controller for the Inventory
+ * Controller for the Login Screen
  * 
  * @since 2023-03-07
  * @version 2023-03-07

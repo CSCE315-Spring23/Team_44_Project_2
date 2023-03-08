@@ -13,7 +13,7 @@ import javafx.fxml.FXML;
 
 
 /**
- * This class handles initializnig variables for JavaFX.
+ * .Controller for the Order Screen
  * 
  * @since 2023-03-07
  * @version 2023-03-07

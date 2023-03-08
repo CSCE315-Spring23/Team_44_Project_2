@@ -16,7 +16,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 /**
- * Controller for the Order History
+ * Controller for the Order History Screen
  *
  * @since 2023-03-07
  * @version 2023-03-07

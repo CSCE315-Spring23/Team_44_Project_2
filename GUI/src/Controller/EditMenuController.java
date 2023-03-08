@@ -18,6 +18,18 @@ import Utils.SessionData;
 import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 
+/**
+ * Controller for the Edit Menu Screen
+ *
+ * @since 2023-03-07
+ * @version 2023-03-07
+ *
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
+ */
 public class EditMenuController {
 
     /**

@@ -18,7 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 /**
- * Controller for the Inventory
+ * Controller for the Inventory Screen
  * 
  * @since 2023-03-07
  * @version 2023-03-07
