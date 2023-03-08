@@ -214,7 +214,7 @@ public class DatabaseConnect {
 
         int orderId = order.getOrderId();
         HashMap<String, Integer> soldItems = order.getItems();
-        int soldItemId = getLastId("solditemtest") + 1;
+        int soldItemId = getLastId("solditem") + 1;
 
         for (String item : soldItems.keySet()) {
             int quantity = soldItems.get(item);
@@ -279,7 +279,7 @@ public class DatabaseConnect {
      * @param order {@link Order} that will update inventory
      */
     public void updateInventory(final Order order) {
-        final String databaseName = "inventorys";
+        final String databaseName = "inventory";
 
         HashMap<String, Integer> soldItems = order.getItems();
 

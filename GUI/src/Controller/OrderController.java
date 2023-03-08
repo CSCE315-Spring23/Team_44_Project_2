@@ -202,7 +202,7 @@ public class OrderController {
         }
 
         // setup order and submit to database
-        order.setOrderId(database.getLastId("orderitemtest") + 1);
+        order.setOrderId(database.getLastId("orderitem") + 1);
         order.setCustomerName(customerNameField.getText());
 
         database.insertOrderItem(order);

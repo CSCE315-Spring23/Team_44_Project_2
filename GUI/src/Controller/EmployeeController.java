@@ -16,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.VBox;
 
 public class EmployeeController {
 
@@ -53,7 +52,7 @@ public class EmployeeController {
     @FXML // fx:id="customerName"
     private TableColumn<?, ?> customerName; // Value injected by FXMLLoader
 
-     /**
+    /**
      * {@link Button} Button to navigate order scene
      *
      */
