@@ -1,23 +1,22 @@
 package Controller;
 
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import Items.MenuItem;
+import Utils.DatabaseConnect;
+import Utils.DatabaseNames;
+import Utils.SceneSwitch;
+import Utils.SessionData;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-
-import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-import Utils.SessionData;
-import Utils.DatabaseConnect;
-import Utils.DatabaseNames;
-import Utils.SceneSwitch;
 
 /**
  * Controller for the Edit Menu Screen
@@ -32,7 +31,6 @@ import Utils.SceneSwitch;
  * @author Mao, Steven
  */
 public class EditMenuController {
-
     /**
      * Current session data
      *
@@ -53,11 +51,6 @@ public class EditMenuController {
      * @see SceneSwitch
      */
     private SceneSwitch sceneSwitch;
-
-    /**
-     * Contains the menu items from database to display in GUI
-     */
-    private ArrayList<String> menuItems;
 
     /**
      * {@link Button} Button to navigate order scene
@@ -102,10 +95,22 @@ public class EditMenuController {
     private Button logoutButton;
 
     /**
-     * FXML List for view in GUI
+     * {@link TableView} of {@link MenuItem} to display
      */
     @FXML
-    private ListView<String> menuList;
+    private TableView<MenuItem> menuTable;
+
+    @FXML
+    private TableColumn<MenuItem, Long> menuID;
+
+    @FXML
+    private TableColumn<MenuItem, String> menuName;
+
+    @FXML
+    private TableColumn<MenuItem, Double> menuPrice;
+
+    @FXML
+    private TableColumn<MenuItem, Long> numberSold;
 
     /**
      * Field to input menu item id
@@ -153,7 +158,7 @@ public class EditMenuController {
     /**
      * Allows for passing session data from scene to scene
      */
-    public EditMenuController(SessionData session) {
+    public EditMenuController(final SessionData session) {
         this.session = session;
         this.database = session.database;
     }
@@ -168,7 +173,7 @@ public class EditMenuController {
     /**
      * Sets the current session object
      */
-    public void setSession(SessionData session) {
+    public void setSession(final SessionData session) {
         this.session = session;
     }
 
@@ -176,16 +181,8 @@ public class EditMenuController {
      * Loads menu items onto screen from database. Sets other fields to null
      */
     public void initialize() {
-        ResultSet rs = getMenuItemsQuery();
-
-        try {
-            readMenuItems(rs);
-        } catch (SQLException e) {
-            System.out.println("COULDN'T READ MENU ITEMS");
-            e.printStackTrace();
-        }
-
-        addMenuItemsToListView();
+        this.setUpTable();
+        this.updateTable();
 
         menuIDText.setText(null);
         menuNameText.setText(null);
@@ -206,49 +203,47 @@ public class EditMenuController {
         }
     }
 
+    private void setUpTable() {
+        this.menuID.setCellValueFactory(cellData -> cellData.getValue().getId());
+        this.menuName.setCellValueFactory(cellData -> cellData.getValue().getName());
+        this.menuPrice.setCellValueFactory(cellData -> cellData.getValue().getPrice());
+        this.numberSold.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
+    }
+
     /**
      * Handle nav bar
      */
     public void navButtonClicked(ActionEvent event) throws IOException {
-        sceneSwitch = new SceneSwitch(session);
-        sceneSwitch.switchScene(event);
+        this.sceneSwitch = new SceneSwitch(session);
+        this.sceneSwitch.switchScene(event);
     }
 
-    /**
-     * Get menu items from database into a ResultSet
-     */
-    private ResultSet getMenuItemsQuery() {
-        final String query = String.format("SELECT * FROM %s", DatabaseNames.MENU_ITEM_DATABASE);
-        final ResultSet rs = database.executeQuery(query);
-        return rs;
-    }
+    private ObservableList<MenuItem> getMenuItems() {
+        ObservableList<MenuItem> menu = FXCollections.observableArrayList();
+        try {
+            final String query =
+                    String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.MENU_ITEM_DATABASE);
+            final ResultSet rs = database.executeQuery(query);
+            while (rs.next()) {
+                final long id = rs.getLong("id");
+                final String name = rs.getString("name");
+                final double price = rs.getDouble("cost");
+                final long quant = rs.getLong("numbersold");
 
-    /**
-     * Puts menu items into this.menuItems from the ResultSet that getMenuItemsQuery returns
-     */
-    private void readMenuItems(final ResultSet rs) throws SQLException {
-        menuItems = new ArrayList<>();
-        if (rs == null) {
-            menuItems.add("No Menu Items Retrieved");
-            return;
+                if (id == 0l)
+                    continue;
+                menu.add(new MenuItem(id, name, price, quant));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        while (rs.next()) {
-            StringBuilder curLine = new StringBuilder("");
-            curLine.append("ID: " + Integer.valueOf(rs.getInt("id")).toString() + ", ");
-            curLine.append("name: " + rs.getString("name") + ", ");
-            curLine.append("cost: " + rs.getString("cost") + ", ");
-            curLine.append("numbersold: " + rs.getString("numbersold") + " ");
-            menuItems.add(curLine.toString());
-        }
+
+        return menu;
     }
 
-    /**
-     * Displays menu items
-     */
-    private void addMenuItemsToListView() {
-        final ObservableList<String> items = FXCollections.observableArrayList(menuItems);
-        menuList.setItems(items);
-
+    private void updateTable() {
+        this.menuTable.setItems(this.getMenuItems());
+        this.menuTable.refresh();
     }
 
     /**
@@ -287,10 +282,7 @@ public class EditMenuController {
         try {
             if (rs.next()) {
                 int has = rs.getInt(0);
-                if (has == 0) {
-                    return false;
-                }
-                return true;
+                return has != 0;
             } else {
                 return false;
             }
@@ -304,11 +296,11 @@ public class EditMenuController {
      */
     private void addMenuItem(Integer ID, String itemName, Double itemCost, Integer itemNumSold) {
         final String query = String.format(
-                "INSERT INTO %s (id, name, cost, numbersold) VALUES (%s, %s, %s, %s);",
+                "INSERT INTO %s (id, name, cost, numbersold) VALUES (%s, '%s', %s, %s);",
                 DatabaseNames.MENU_ITEM_DATABASE, ID.toString(), itemName, itemCost.toString(),
                 itemNumSold.toString());
         System.out.println(query);
-        database.executeQuery(query);
+        this.database.executeQuery(query);
     }
 
     /**
@@ -326,7 +318,7 @@ public class EditMenuController {
                         itemNumSold.toString(), itemID.toString());
 
         System.out.println(query);
-        database.executeQuery(query);
+        this.database.executeQuery(query);
     }
 
     /**
@@ -334,7 +326,7 @@ public class EditMenuController {
      */
     private void deleteMenuItem(Integer ID) {
         final String query = String.format("DELETE FROM menuitem WHERE id = %s;", ID.toString());
-        System.err.println(query);
-        database.executeQuery(query);
+        System.out.println(query);
+        this.database.executeQuery(query);
     }
 }
