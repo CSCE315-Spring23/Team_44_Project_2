@@ -42,6 +42,18 @@ public class EditMenuController {
      */
     private SceneSwitch sceneSwitch;
     
+        @FXML
+    private Button orderButton;
+    @FXML
+    private Button orderHistoryButton;
+    @FXML
+    private Button inventoryButton;
+    @FXML
+    private Button employeesButton;
+    @FXML
+    private Button editMenuButton;
+    @FXML
+    private Button logoutButton;
 
     /**
      * FXML List for view in GUI
@@ -136,6 +148,19 @@ public class EditMenuController {
         menuCostText.setText(null);
         menuNumSoldText.setText(null);
         isDelete.setSelected(false);
+
+        if(session.isManager()) {
+            System.out.println("Manager");
+            editMenuButton.setVisible(true);
+            inventoryButton.setVisible(true);
+            employeesButton.setVisible(true);
+        }
+        else{
+            System.out.println("Employee");
+            editMenuButton.setVisible(false);
+            inventoryButton.setVisible(false);
+            employeesButton.setVisible(false);
+        }
     }
 
     /**

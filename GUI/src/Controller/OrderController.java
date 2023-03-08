@@ -37,6 +37,19 @@ public class OrderController {
     private SceneSwitch sceneSwitch;
 
     @FXML
+    private Button orderButton;
+    @FXML
+    private Button orderHistoryButton;
+    @FXML
+    private Button inventoryButton;
+    @FXML
+    private Button employeesButton;
+    @FXML
+    private Button editMenuButton;
+    @FXML
+    private Button logoutButton;
+
+    @FXML
     private Label orderBox;
 
     @FXML
@@ -64,7 +77,20 @@ public class OrderController {
     /**
      * Verify Database is Connected
      */
-    public void initialize() {}
+    public void initialize() {
+        if(session.isManager()) {
+            System.out.println("Manager");
+            editMenuButton.setVisible(true);
+            inventoryButton.setVisible(true);
+            employeesButton.setVisible(true);
+        }
+        else{
+            System.out.println("Employee");
+            editMenuButton.setVisible(false);
+            inventoryButton.setVisible(false);
+            employeesButton.setVisible(false);
+        }
+    }
 
 
     public void navButtonClicked(ActionEvent event) throws IOException {

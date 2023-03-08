@@ -29,7 +29,7 @@ public class FakeMain extends Application {
         database = new DatabaseConnect(dbConnectionString, username, password);
         database.setUpDatabase();
 
-        SessionData session = new SessionData(database, 0, new Order(0));
+        SessionData session = new SessionData(database, 1, new Order(0));
 
         // EditMenuController menuController = new EditMenuController(session);
         OrderHistoryController orderHistoryController = new OrderHistoryController(session);
@@ -42,7 +42,7 @@ public class FakeMain extends Application {
 
         primaryStage.setTitle("Chick-fil-A");
         primaryStage.getIcons().add(new Image("./resources/logo.png"));
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 1200, 800));
         primaryStage.show();
     }
 
