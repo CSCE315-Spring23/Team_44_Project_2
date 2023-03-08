@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import Utils.SessionData;
 import Utils.DatabaseConnect;
+import Utils.DatabaseNames;
 import Utils.SceneSwitch;
 
 /**
@@ -36,7 +37,7 @@ public class EditMenuController {
      * Current session data
      *
      * @see SessionData
-    */
+     */
     private SessionData session;
 
     /**
@@ -58,41 +59,47 @@ public class EditMenuController {
      */
     private ArrayList<String> menuItems;
 
-        /**
+    /**
      * {@link Button} Button to navigate order scene
      *
      */
-    @FXML private Button orderButton;
+    @FXML
+    private Button orderButton;
 
     /**
      * {@link Button} Button to navigate order history scene
      *
      */
-    @FXML private Button orderHistoryButton;
+    @FXML
+    private Button orderHistoryButton;
 
     /**
      * {@link Button} Button to navigate inventory scene
      *
      */
-    @FXML private Button inventoryButton;
+    @FXML
+    private Button inventoryButton;
 
     /**
      * {@link Button} Button to navigate employees scene
      *
      */
-    @FXML private Button employeesButton;
+    @FXML
+    private Button employeesButton;
 
     /**
      * {@link Button} Button to navigate edit menu scene
      *
      */
-    @FXML private Button editMenuButton;
+    @FXML
+    private Button editMenuButton;
 
     /**
      * {@link Button} Button to logout
      *
      */
-    @FXML private Button logoutButton;
+    @FXML
+    private Button logoutButton;
 
     /**
      * FXML List for view in GUI
@@ -211,28 +218,27 @@ public class EditMenuController {
      * Get menu items from database into a ResultSet
      */
     private ResultSet getMenuItemsQuery() {
-        String query = "SELECT * FROM menuitem";
-        ResultSet rs = database.executeQuery(query);
+        final String query = String.format("SELECT * FROM %s", DatabaseNames.MENU_ITEM_DATABASE);
+        final ResultSet rs = database.executeQuery(query);
         return rs;
     }
 
     /**
-     * Puts menu items into this.menuItems from the ResultSet that getMenuItemsQuery
-     * returns
+     * Puts menu items into this.menuItems from the ResultSet that getMenuItemsQuery returns
      */
-    private void readMenuItems(ResultSet rs) throws SQLException {
+    private void readMenuItems(final ResultSet rs) throws SQLException {
         menuItems = new ArrayList<>();
         if (rs == null) {
             menuItems.add("No Menu Items Retrieved");
             return;
         }
         while (rs.next()) {
-            String curLine = "";
-            curLine += "ID: " + Integer.valueOf(rs.getInt("id")).toString() + ", ";
-            curLine += "name: " + rs.getString("name") + ", ";
-            curLine += "cost: " + rs.getString("cost") + ", ";
-            curLine += "numbersold: " + rs.getString("numbersold") + " ";
-            menuItems.add(curLine);
+            StringBuilder curLine = new StringBuilder("");
+            curLine.append("ID: " + Integer.valueOf(rs.getInt("id")).toString() + ", ");
+            curLine.append("name: " + rs.getString("name") + ", ");
+            curLine.append("cost: " + rs.getString("cost") + ", ");
+            curLine.append("numbersold: " + rs.getString("numbersold") + " ");
+            menuItems.add(curLine.toString());
         }
     }
 
@@ -240,7 +246,7 @@ public class EditMenuController {
      * Displays menu items
      */
     private void addMenuItemsToListView() {
-        ObservableList<String> items = FXCollections.observableArrayList(menuItems);
+        final ObservableList<String> items = FXCollections.observableArrayList(menuItems);
         menuList.setItems(items);
 
     }
@@ -250,7 +256,8 @@ public class EditMenuController {
      */
     @FXML
     private void submitMenuChange(ActionEvent e) {
-        Integer itemID = (menuIDText.getText() == null) ? null : Integer.parseInt(menuIDText.getText());
+        Integer itemID =
+                (menuIDText.getText() == null) ? null : Integer.parseInt(menuIDText.getText());
         String itemName = menuNameText.getText();
         Double itemCost = (menuCostText.getText() == null) ? null
                 : Double.parseDouble(menuCostText.getText());
@@ -273,8 +280,9 @@ public class EditMenuController {
      * Check with the database to see if a primary key exists
      */
     private boolean checkMenuItemExists(Integer itemID) {
-        String query = "SELECT COUNT(*) FROM menuitem WHERE id = " + itemID.toString() + ";";
-        ResultSet rs = database.executeQuery(query);
+        final String query =
+                String.format("SELECT COUNT(*) FROM menuitem WHERE id = %s;", itemID.toString());
+        final ResultSet rs = database.executeQuery(query);
 
         try {
             if (rs.next()) {
@@ -295,9 +303,10 @@ public class EditMenuController {
      * Adds a menu item to database
      */
     private void addMenuItem(Integer ID, String itemName, Double itemCost, Integer itemNumSold) {
-        String query = "INSERT INTO menuitem (id, name, cost, numbersold) VALUES (" + ID.toString()
-                + ", '" + itemName + "'," + itemCost.toString() + "," + itemNumSold.toString()
-                + ");";
+        final String query = String.format(
+                "INSERT INTO %s (id, name, cost, numbersold) VALUES (%s, %s, %s, %s);",
+                DatabaseNames.MENU_ITEM_DATABASE, ID.toString(), itemName, itemCost.toString(),
+                itemNumSold.toString());
         System.out.println(query);
         database.executeQuery(query);
     }
@@ -311,9 +320,10 @@ public class EditMenuController {
             return;
         }
 
-        String query = "UPDATE menuitem " + "SET name = '" + itemName + "', cost = "
-                + itemCost.toString() + ", numbersold = " + itemNumSold.toString() + " WHERE id = "
-                + itemID.toString() + ";";
+        final String query =
+                String.format("UPDATE %s SET = \'%s\', cost = %s, numbersold = %s WHERE id %s;",
+                        DatabaseNames.MENU_ITEM_DATABASE, itemName, itemCost.toString(),
+                        itemNumSold.toString(), itemID.toString());
 
         System.out.println(query);
         database.executeQuery(query);
@@ -323,9 +333,8 @@ public class EditMenuController {
      * deletes a menu item from database
      */
     private void deleteMenuItem(Integer ID) {
-        String query = "DELETE FROM menuitem WHERE id = " + ID.toString() + ";";
+        final String query = String.format("DELETE FROM menuitem WHERE id = %s;", ID.toString());
         System.err.println(query);
         database.executeQuery(query);
-
     }
 }
