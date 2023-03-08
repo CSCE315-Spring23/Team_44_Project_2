@@ -7,9 +7,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /*
- * 
- * Hello Everyone, this is a fake main class that shows how we can pass a controller that has the
- * session in the constructor. If you get an error REMOVE CONTROLLER FROM FXML.
+ * This Main Class serves as the entry point for the POS System Application. It will initialize the
+ * session and load to the login page
  */
 
 public class Main extends Application {
