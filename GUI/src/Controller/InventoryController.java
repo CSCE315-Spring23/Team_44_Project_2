@@ -41,11 +41,23 @@ public class InventoryController {
 
     private SceneSwitch sceneSwitch;
 
-    /**
-     * {@link Button} log out button. Triggers {@link #logOff()}
-     */
     @FXML
-    private Button logOut;
+    private Button orderButton;
+
+    @FXML
+    private Button orderHistoryButton;
+
+    @FXML
+    private Button inventoryButton;
+
+    @FXML
+    private Button employeesButton;
+
+    @FXML
+    private Button editMenuButton;
+
+    @FXML
+    private Button logoutButton;
 
     /**
      * {@link Button} update inventory button. Triggers {@link #updateInventory()}
@@ -132,21 +144,6 @@ public class InventoryController {
     public void navButtonClicked(ActionEvent event) throws IOException {
         sceneSwitch = new SceneSwitch(this.session);
         sceneSwitch.switchScene(event);
-    }
-
-
-    /**
-     * Open the {@link OrderController}
-     */
-    public void openOrders() {
-        System.out.println("Switch to order view");
-    }
-
-    /**
-     * 
-     */
-    public void logOff() {
-        System.out.println("Log off");
     }
 
 
