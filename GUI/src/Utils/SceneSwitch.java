@@ -93,7 +93,7 @@ public class SceneSwitch {
         SceneSwitch login = new SceneSwitch(session);
         System.out.println("Login Page Initialized");
         Button b = (Button) event.getSource();
-
+        System.out.println(session.employeeId);
         // Load Order Scene from login page
         String buttonID = b.getId();
         System.out.println(buttonID);

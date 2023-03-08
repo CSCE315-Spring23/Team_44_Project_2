@@ -75,6 +75,8 @@ public class LoginController {
     private SessionData session;
     private SceneSwitch sceneSwitch;
 
+    private DatabaseConnect database;
+
     int pinNumber;
 
     public LoginController() {}
@@ -97,7 +99,9 @@ public class LoginController {
     public Order order;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize() {}
+    void initialize() {
+        database = databaseInitializer();
+    }
 
     @FXML
     public void setPin(ActionEvent ae) {
@@ -119,9 +123,11 @@ public class LoginController {
 
     public SessionData loginInitializer() {
 
+        int id = getEmployeeId();
+
         // sessionDataObject will be passed starting from LoginPage
         SessionData newSession =
-                new SessionData(databaseInitializer(), pinNumber, new Order(pinNumber));
+                new SessionData(databaseInitializer(), id, new Order(id));
 
         return newSession;
     }
@@ -134,7 +140,7 @@ public class LoginController {
             String sqlQuery =
                     "SELECT * FROM employee WHERE pin= '" + Integer.toString(pinNumber) + "'";
             // System.out.println(sqlQuery);
-            DatabaseConnect database = databaseInitializer();
+
             // System.out.println(database);
             ResultSet loginQuery = database.executeQuery(sqlQuery);
             if (!loginQuery.next()) {
@@ -149,6 +155,19 @@ public class LoginController {
             e.printStackTrace();
         }
 
+    }
+
+    public int getEmployeeId(){
+        int ret = -1;
+        try {
+            ResultSet rs = database.executeQuery("SELECT id FROM employee WHERE pin = '" + Integer.toString(pinNumber) + "'");
+            if(rs.next()){
+                ret = rs.getInt("id");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
 
 }
