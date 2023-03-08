@@ -140,6 +140,19 @@ public class InventoryController {
         this.setUpTable();
         this.updateTable();
         this.inventoryTable.refresh();
+
+        if(session.isManager()) {
+            System.out.println("Manager");
+            editMenuButton.setVisible(true);
+            inventoryButton.setVisible(true);
+            employeesButton.setVisible(true);
+        }
+        else{
+            System.out.println("Employee");
+            editMenuButton.setVisible(false);
+            inventoryButton.setVisible(false);
+            employeesButton.setVisible(false);
+        }
     }
 
     public void navButtonClicked(ActionEvent event) throws IOException {

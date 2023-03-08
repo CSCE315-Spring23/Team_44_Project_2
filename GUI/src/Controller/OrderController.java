@@ -36,15 +36,41 @@ public class OrderController {
 
     private SceneSwitch sceneSwitch;
 
+    // Navbar Buttons
     @FXML
-    private Label orderBoxLabel;
+    private Button orderButton;
+    @FXML
+    private Button orderHistoryButton;
+    @FXML
+    private Button inventoryButton;
+    @FXML
+    private Button employeesButton;
+    @FXML
+    private Button editMenuButton;
+    @FXML
+    private Button logoutButton;
 
+    /*
+     * Text that lists the items in the order
+     */
+    @FXML
+    private Label orderBox;
+
+    /*
+     * Text field to input the customer's name
+     */
     @FXML
     private TextField customerNameField;
 
+    /*
+     * Shows total cost of the order
+     */
     @FXML
     private Label totalCostLabel;
 
+    /*
+     * Button to submit the order
+     */
     @FXML
     private Button submitOrderButton;
 
@@ -64,10 +90,33 @@ public class OrderController {
     /**
      * Verify Database is Connected
      */
-    public void initialize() {}
+    public void initialize() {
+        if(session.isManager()) {
+            System.out.println("Manager");
+            editMenuButton.setVisible(true);
+            inventoryButton.setVisible(true);
+            employeesButton.setVisible(true);
+        }
+        else{
+            System.out.println("Employee");
+            editMenuButton.setVisible(false);
+            inventoryButton.setVisible(false);
+            employeesButton.setVisible(false);
+        }
+        refreshPage();
+    }
+
+    /**
+     * Refreshes the front-end
+     */
+    private void refreshPage() {
+        orderBox.setText(order.getItemCount());
+        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+    }
 
 
     public void navButtonClicked(ActionEvent event) throws IOException {
+        SessionData session = new SessionData(database, employeeId, order);
         sceneSwitch = new SceneSwitch(session);
         sceneSwitch.switchScene(event);
     }
@@ -81,16 +130,16 @@ public class OrderController {
         Button b = (Button) event.getSource();
         System.out.println("Menu Item Button Clicked: " + b.getId());
 
-        // id number starts at the second character
+        // add item to order
         String id = b.getId().substring(1);
 
         String name = database.getMenuItemName(id);
         double cost = database.getMenuItemCost(id);
 
         order.addItem(name, cost);
-
-        orderBoxLabel.setText(order.getItemCount());
-        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+        
+        // update order box and cost
+        refreshPage();
     }
 
     /**
@@ -99,10 +148,8 @@ public class OrderController {
     public void customerNameOnChanged() {}
 
     /**
-     * Handles the buttom click event for the submit order button.<br>
+     * Handles the buttom click event for the submit order button.
      * Inserts the order into both the orderitem and solditem tables.
-     * 
-     * TODO: update inventory
      */
     public void submitOrderOnClick() {
         if (order.getTotalCost() == 0.0) {
@@ -115,17 +162,17 @@ public class OrderController {
             return;
         }
 
-        // finalize order and submit to database
+        // setup order and submit to database
+        order.setOrderId(database.getLastId("orderitemtest") + 1);
         order.setCustomerName(customerNameField.getText());
 
         database.insertOrderItem(order);
         database.insertSoldItem(order);
         database.updateInventory(order);
 
-        // reset order
-        order = new Order(employeeId, database.getLastId("orderitemtest") + 1);
-        orderBoxLabel.setText(order.getItemCount());
-        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+        // reset order and screen
+        order = new Order(employeeId);
+        refreshPage();
         customerNameField.setText("");
     }
 }

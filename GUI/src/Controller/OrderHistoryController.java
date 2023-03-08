@@ -20,7 +20,7 @@ import javafx.scene.control.TextArea;
 
 public class OrderHistoryController {
 
-    private SessionData sessionData;
+    private SessionData session;
     private DatabaseConnect database;
 
     private SceneSwitch sceneSwitch;
@@ -55,19 +55,32 @@ public class OrderHistoryController {
     @FXML
     private TextArea orderHistoryTextBox;
 
-    public OrderHistoryController(SessionData sessionData) {
-        this.sessionData = sessionData;
-        database = sessionData.database;
+    public OrderHistoryController(SessionData session) {
+        this.session = session;
+        database = session.database;
+
     }
 
     public void initialize() {
         setUpTable();
         addRowOnClick();
         orderHistoryTable.refresh();
+
+        if (session.isManager()) {
+            System.out.println("Manager");
+            editMenuButton.setVisible(true);
+            inventoryButton.setVisible(true);
+            employeesButton.setVisible(true);
+        } else {
+            System.out.println("Employee");
+            editMenuButton.setVisible(false);
+            inventoryButton.setVisible(false);
+            employeesButton.setVisible(false);
+        }
     }
 
     public void navButtonClicked(ActionEvent event) throws IOException {
-        sceneSwitch = new SceneSwitch(sessionData);
+        sceneSwitch = new SceneSwitch(session);
         sceneSwitch.switchScene(event);
     }
 

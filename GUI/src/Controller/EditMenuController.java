@@ -20,50 +20,116 @@ import Utils.SceneSwitch;
 
 public class EditMenuController {
 
+    /**
+     * Database object to use in this class
+     */
     private DatabaseConnect database;
+
+    /**
+     * Object to contain the current session
+     */
     private SessionData session;
+
+
+    /**
+     * Contains the menu items from database to display in GUI
+     */
     private ArrayList<String> menuItems;
 
-    private SceneSwitch sceneSwitch;
 
+    /**
+     * Instance of class to use navbar
+     */
+    private SceneSwitch sceneSwitch;
+    
+        @FXML
+    private Button orderButton;
+    @FXML
+    private Button orderHistoryButton;
+    @FXML
+    private Button inventoryButton;
+    @FXML
+    private Button employeesButton;
+    @FXML
+    private Button editMenuButton;
+    @FXML
+    private Button logoutButton;
+
+    /**
+     * FXML List for view in GUI
+     */
     @FXML
     private ListView<String> menuList;
 
+    
+    /**
+     * Field to input menu item id
+     */
     @FXML
     private TextField menuIDText;
 
+    /**
+     * Field to input menu item name
+     */
     @FXML
     private TextField menuNameText;
 
+    /**
+     * Field to input menu item cost
+     */
     @FXML
     private TextField menuCostText;
 
+    /**
+     * Field to input menu item number sold
+     */
     @FXML
     private TextField menuNumSoldText;
 
+    /**
+     * Checkbox to determine if should delete menu item
+     */
     @FXML
     private CheckBox isDelete;
 
+    /**
+     * Submit button for menu item changes
+     */
     @FXML
     private Button SubmitMenuChangeBtn;
 
+    /**
+     * Default constructor to prevent errors
+     */
     public EditMenuController() {
 
     }
 
+    /**
+     * Allows for passing session data from scene to scene
+     */
     public EditMenuController(SessionData session) {
         this.session = session;
         this.database = session.database;
     }
 
+    /**
+     * Returns the current session object
+     */
     public SessionData getSession() {
         return this.session;
     }
 
+    /**
+     * Sets the current session object
+     */
     public void setSession(SessionData session) {
         this.session = session;
     }
 
+    /**
+     * Loads menu items onto screen from database. Sets other fields to null
+     */
     public void initialize() {
         ResultSet rs = getMenuItemsQuery();
 
@@ -82,19 +148,41 @@ public class EditMenuController {
         menuCostText.setText(null);
         menuNumSoldText.setText(null);
         isDelete.setSelected(false);
+
+        if(session.isManager()) {
+            System.out.println("Manager");
+            editMenuButton.setVisible(true);
+            inventoryButton.setVisible(true);
+            employeesButton.setVisible(true);
+        }
+        else{
+            System.out.println("Employee");
+            editMenuButton.setVisible(false);
+            inventoryButton.setVisible(false);
+            employeesButton.setVisible(false);
+        }
     }
 
+    /**
+     * Handle nav bar
+     */
     public void navButtonClicked(ActionEvent event) throws IOException {
         sceneSwitch = new SceneSwitch(session);
         sceneSwitch.switchScene(event);
     }
 
+    /**
+     * Get menu items from database into a ResultSet
+     */
     private ResultSet getMenuItemsQuery() {
         String query = "SELECT * FROM menuitem";
         ResultSet rs = database.executeQuery(query);
         return rs;
     }
 
+    /**
+     * Puts menu items into this.menuItems from the ResultSet that getMenuItemsQuery returns
+     */
     private void readMenuItems(ResultSet rs) throws SQLException {
         menuItems = new ArrayList<>();
         if (rs == null) {
@@ -111,6 +199,9 @@ public class EditMenuController {
         }
     }
 
+    /**
+     * Displays menu items
+     */
     private void addMenuItemsToListView() {
         ObservableList<String> items = FXCollections.observableArrayList(menuItems);
         menuList.setItems(items);
@@ -119,6 +210,9 @@ public class EditMenuController {
 
 
 
+    /**
+     * Submits a menu item edit (add,remove,update)
+     */
     @FXML
     private void submitMenuChange(ActionEvent e) {
         Integer itemID =
@@ -141,6 +235,9 @@ public class EditMenuController {
 
     }
 
+    /**
+     * Check with the database to see if a primary key exists
+     */
     private boolean checkMenuItemExists(Integer itemID) {
         String query = "SELECT COUNT(*) FROM menuitem WHERE id = " + itemID.toString() + ";";
         ResultSet rs = database.executeQuery(query);
@@ -161,6 +258,9 @@ public class EditMenuController {
         }
     }
 
+    /**
+     * Adds a menu item to database
+     */
     private void addMenuItem(Integer ID, String itemName, Double itemCost, Integer itemNumSold) {
         String query = "INSERT INTO menuitem (id, name, cost, numbersold) VALUES (" + ID.toString()
                 + ", '" + itemName + "'," + itemCost.toString() + "," + itemNumSold.toString()
@@ -169,6 +269,9 @@ public class EditMenuController {
         database.executeQuery(query);
     }
 
+    /**
+     * Updates a menu item in the database with user inputed fields
+     */
     private void updateMenuItem(Integer itemID, String itemName, Double itemCost,
             Integer itemNumSold) {
         if (itemID == null) {
@@ -183,6 +286,9 @@ public class EditMenuController {
         database.executeQuery(query);
     }
 
+    /**
+     * deletes a menu item from database
+     */
     private void deleteMenuItem(Integer ID) {
         String query = "DELETE FROM menuitem WHERE id = " + ID.toString() + ";";
         System.err.println(query);

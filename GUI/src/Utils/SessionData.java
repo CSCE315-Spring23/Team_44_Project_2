@@ -2,6 +2,8 @@ package Utils;
 
 import Items.Order;
 
+import java.sql.*;
+
 /**
  * Bundle of Information that gets passed between scenes
  * 
@@ -41,5 +43,16 @@ public class SessionData {
         this.database = database;
         this.employeeId = employeeId;
         this.order = order;
+    }
+
+    public boolean isManager(){
+        try {
+            ResultSet rs = database.executeQuery("SELECT * FROM Employee WHERE id = " + employeeId);
+            rs.next();
+            return rs.getString("role").equals("manager");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -15,16 +15,62 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+/**
+ * The class handles switching scenes when the Navigation buttons are pressed.
+ * 
+ * @since 2023-03-07
+ * @version 2023-03-07
+ * 
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
+ */
 public class SceneSwitch {
+    /**
+     * {@link SessionData} to pass information between the various scenes
+     */
     private SessionData session;
 
+    /**
+     * {@link LoginController} to load the Order window
+     */
     private LoginController loginController;
-    private OrderController orderController;
-    private OrderHistoryController orderHistoryController;
-    private InventoryController inventoryController;
+
+    /**
+     * {@link OrderController} to load the Order window
+     */
     private EmployeeController employeeController;
+
+    /**
+     * {@link OrderController} to load the Order window
+     */
+    private OrderController orderController;
+
+    /**
+     * {@link OrderHistoryController} to load the order history window
+     */
+    private OrderHistoryController orderHistoryController;
+
+    /**
+     * {@link InventoryController} to load the inventory window
+     */
+    private InventoryController inventoryController;
+
+    // private EmployeeController employeeController;
+
+    /**
+     * {@link EditMenuController} to load the menu editting window
+     */
     private EditMenuController editMenuController;
 
+    /**
+     * Constructor
+     * 
+     * @param session {@link SessionData} to send information between the various
+     *                windows
+     */
     public SceneSwitch(SessionData session) {
         this.session = session;
         loginController = new LoginController(session);
@@ -34,6 +80,13 @@ public class SceneSwitch {
         employeeController = new EmployeeController(session);
         editMenuController = new EditMenuController(session);
     }
+
+    /**
+     * Loads a the new window bassed on the navigation button pressed.
+     * 
+     * @param event {@link ActionEvent} passed when pressing a button
+     * @throws IOException if the new window failed to load
+     */
 
     public void LoginTransition(ActionEvent event, SessionData session) throws IOException {
         // Pass session object from login page to all scenes
@@ -100,5 +153,4 @@ public class SceneSwitch {
         stage.setScene(scene);
         stage.show();
     }
-
 }
