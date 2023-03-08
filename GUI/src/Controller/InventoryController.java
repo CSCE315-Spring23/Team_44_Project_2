@@ -30,6 +30,11 @@ import javafx.scene.control.TextField;
  * @author Mao, Steven
  */
 public class InventoryController {
+    /**
+     * Name of the inventory database to connect to as a {@link String}
+     */
+    private static final String INVENTORY_DATABASE = "inventory";
+
     private SessionData session;
 
     /**
@@ -66,8 +71,7 @@ public class InventoryController {
     private Button update;
 
     /**
-     * {@link TableView} of {@link InventoryItem} that will display the entire
-     * inventory
+     * {@link TableView} of {@link InventoryItem} that will display the entire inventory
      */
     @FXML
     private TableView<InventoryItem> inventoryTable;
@@ -141,13 +145,12 @@ public class InventoryController {
         this.updateTable();
         this.inventoryTable.refresh();
 
-        if(session.isManager()) {
+        if (session.isManager()) {
             System.out.println("Manager");
             editMenuButton.setVisible(true);
             inventoryButton.setVisible(true);
             employeesButton.setVisible(true);
-        }
-        else{
+        } else {
             System.out.println("Employee");
             editMenuButton.setVisible(false);
             inventoryButton.setVisible(false);
@@ -204,7 +207,8 @@ public class InventoryController {
         else if (this.quantity.isEmpty())
             return;
 
-        final String probe = String.format("SELECT quantity FROM inventorytest WHERE name=\'%s\';", this.item);
+        final String probe = String.format("SELECT quantity FROM %s WHERE name=\'%s\';",
+                INVENTORY_DATABASE, this.item);
         final ResultSet result = this.database.executeQuery(probe);
 
         long quant = 0l;
@@ -223,8 +227,8 @@ public class InventoryController {
             System.out.println("Item does not exist");
             return;
         } else {
-            final String query = String.format("UPDATE inventorytest SET quantity = %d WHERE name=\'%s\';",
-                    Long.valueOf(this.quantity), this.item);
+            final String query = String.format("UPDATE %s SET quantity = %d WHERE name=\'%s\';",
+                    INVENTORY_DATABASE, Long.valueOf(this.quantity), this.item);
             System.out.println(query);
             this.database.executeUpdate(query);
 
@@ -243,13 +247,13 @@ public class InventoryController {
     /**
      * Helper method to retreive all items from the Inventory.
      * 
-     * @return {@link ObservableList} of {@link InventoryItem} holding every item in
-     *         the inventory
+     * @return {@link ObservableList} of {@link InventoryItem} holding every item in the inventory
      */
     private ObservableList<InventoryItem> getInventory() {
         ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
         try {
-            ResultSet rs = database.executeQuery("SELECT * FROM inventorytest ORDER BY id");
+            final String query = String.format("SELECT * FROM %s ORDER BY id", INVENTORY_DATABASE);
+            final ResultSet rs = database.executeQuery(query);
             while (rs.next()) {
                 final long id = rs.getLong("id");
                 final String name = rs.getString("name");

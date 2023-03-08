@@ -1,21 +1,19 @@
 package Controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import javafx.event.ActionEvent;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import java.lang.Integer;
+import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
 import Utils.SceneSwitch;
 import Utils.SessionData;
-import Items.Order;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
 /**
  * Controller for the Inventory
@@ -79,8 +77,7 @@ public class LoginController {
 
     int pinNumber;
 
-    public LoginController() {
-    }
+    public LoginController() {}
 
     /**
      * Constructor
@@ -100,8 +97,7 @@ public class LoginController {
     public Order order;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize() {
-    }
+    void initialize() {}
 
     @FXML
     public void setPin(ActionEvent ae) {
@@ -124,7 +120,8 @@ public class LoginController {
     public SessionData loginInitializer() {
 
         // sessionDataObject will be passed starting from LoginPage
-        SessionData newSession = new SessionData(databaseInitializer(), pinNumber, new Order(pinNumber));
+        SessionData newSession =
+                new SessionData(databaseInitializer(), pinNumber, new Order(pinNumber));
 
         return newSession;
     }
@@ -134,7 +131,8 @@ public class LoginController {
         this.pinNumber = Integer.parseInt(pinBox.getText());
         System.out.println(this.pinNumber);
         try {
-            String sqlQuery = "SELECT * FROM employee WHERE pin= '" + Integer.toString(pinNumber) + "'";
+            String sqlQuery =
+                    "SELECT * FROM employee WHERE pin= '" + Integer.toString(pinNumber) + "'";
             // System.out.println(sqlQuery);
             DatabaseConnect database = databaseInitializer();
             // System.out.println(database);
