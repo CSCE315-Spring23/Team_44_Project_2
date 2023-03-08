@@ -103,6 +103,15 @@ public class OrderController {
             inventoryButton.setVisible(false);
             employeesButton.setVisible(false);
         }
+        refreshPage();
+    }
+
+    /**
+     * Refreshes the front-end
+     */
+    private void refreshPage() {
+        orderBox.setText(order.getItemCount());
+        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
     }
 
 
@@ -130,8 +139,7 @@ public class OrderController {
         order.addItem(name, cost);
         
         // update order box and cost
-        orderBox.setText(order.getItemCount());
-        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+        refreshPage();
     }
 
     /**
@@ -164,8 +172,7 @@ public class OrderController {
 
         // reset order and screen
         order = new Order(employeeId);
-        orderBox.setText(order.getItemCount());
-        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+        refreshPage();
         customerNameField.setText("");
     }
 }
