@@ -87,6 +87,23 @@ public class EmployeeController {
         database = sessionData.database;
     }
 
+    public void initialize() {
+        setUpTable();
+        employeeTable.refresh();
+
+        if (sessionData.isManager()) {
+            System.out.println("Manager");
+            editMenuButton.setVisible(true);
+            inventoryButton.setVisible(true);
+            employeesButton.setVisible(true);
+        } else {
+            System.out.println("Employee");
+            editMenuButton.setVisible(false);
+            inventoryButton.setVisible(false);
+            employeesButton.setVisible(false);
+        }
+    }
+
     /*
      * private HashMap<String, Integer> getEmployees(ArrayList<String> employeeIds)
      * {
