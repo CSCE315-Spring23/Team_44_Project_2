@@ -1,15 +1,17 @@
 package Controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ResourceBundle;
 import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
 import Utils.SceneSwitch;
 import Utils.SessionData;
+import Utils.DatabaseNames;
+
+import java.io.IOException;
+import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -153,7 +155,7 @@ public class LoginController {
         System.out.println(this.pinNumber);
         try {
             String sqlQuery =
-                    "SELECT * FROM employee WHERE pin= '" + Integer.toString(pinNumber) + "'";
+                    String.format("SELECT * FROM %s WHERE pin= '" + Integer.toString(pinNumber) + "'", DatabaseNames.EMPLOYEE_DATABASE);
             // System.out.println(sqlQuery);
 
             // System.out.println(database);
@@ -175,7 +177,7 @@ public class LoginController {
     public int getEmployeeId(){
         int ret = -1;
         try {
-            ResultSet rs = database.executeQuery("SELECT id FROM employee WHERE pin = '" + Integer.toString(pinNumber) + "'");
+            ResultSet rs = database.executeQuery(String.format("SELECT id FROM %s WHERE pin = '" + Integer.toString(pinNumber) + "'", DatabaseNames.EMPLOYEE_DATABASE));
             if(rs.next()){
                 ret = rs.getInt("id");
             }

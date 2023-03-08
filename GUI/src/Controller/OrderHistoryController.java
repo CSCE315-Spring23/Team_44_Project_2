@@ -4,6 +4,7 @@ import Items.OrderRow;
 import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
+import Utils.DatabaseNames;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -198,7 +199,7 @@ public class OrderHistoryController {
     private ObservableList<OrderRow> getOrders() {
         ObservableList<OrderRow> orders = FXCollections.observableArrayList();
         try {
-            ResultSet rs = database.executeQuery("SELECT * FROM orderitem ORDER BY id DESC LIMIT 20");
+            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s ORDER BY id DESC LIMIT 20", DatabaseNames.ORDER_ITEM_DATABASE));
             while (rs.next()) {
                 Integer orderID = rs.getInt("id");
                 String customerName = rs.getString("customer_name");
@@ -226,7 +227,7 @@ public class OrderHistoryController {
     private String getEmployeeName(int id) {
         String ret = "";
         try {
-            ResultSet rs = database.executeQuery("SELECT * FROM employee WHERE id = " + id);
+            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE id = %d", DatabaseNames.EMPLOYEE_DATABASE,id));
             while (rs.next()) {
                 ret = rs.getString("name");
             }
@@ -270,7 +271,7 @@ public class OrderHistoryController {
     private ArrayList<Integer> getMenuId(int orderId) {
         ArrayList<Integer> menuIds = new ArrayList<>();
         try {
-            ResultSet rs = database.executeQuery("SELECT * FROM solditem WHERE orderid = " + orderId);
+            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE orderid = %d", DatabaseNames.SOLD_ITEM_DATABASE, orderId));
             while (rs.next()) {
                 menuIds.add(rs.getInt("menuid"));
             }
@@ -290,7 +291,7 @@ public class OrderHistoryController {
         HashMap<String, Integer> menuItems = new HashMap<>();
         for (int id : menuIds) {
             try {
-                ResultSet rs = database.executeQuery("SELECT * FROM menuitem WHERE id = " + id);
+                ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE id = %d", DatabaseNames.MENU_ITEM_DATABASE, id));
                 while (rs.next()) {
                     if (menuItems.containsKey(rs.getString("name"))) {
                         menuItems.put(rs.getString("name"),
@@ -314,7 +315,7 @@ public class OrderHistoryController {
     private double getMenuCost(String name) {
         double ret = 0;
         try {
-            ResultSet rs = database.executeQuery("SELECT * FROM menuitem WHERE name = '" + name + "'");
+            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE name = '" + name + "'", DatabaseNames.MENU_ITEM_DATABASE));
             while (rs.next()) {
                 ret = rs.getDouble("cost");
             }

@@ -1,16 +1,18 @@
 package Controller;
 
+import Utils.DatabaseConnect;
+import Utils.SceneSwitch;
+import Utils.DatabaseNames;
+import Utils.SessionData;
+import Items.EmployeeRow;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
-import Items.EmployeeRow;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
-import Utils.DatabaseConnect;
-import Utils.SceneSwitch;
-import Utils.SessionData;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -176,7 +178,7 @@ public class EmployeeController {
     private ObservableList<EmployeeRow> getEmployees() {
         ObservableList<EmployeeRow> employees = FXCollections.observableArrayList();
         try {
-            ResultSet rs = database.executeQuery("SELECT * FROM employee");
+            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s", DatabaseNames.EMPLOYEE_DATABASE));
             while (rs.next()) {
                 Integer randomID = rs.getInt("id");
                 String employeeName = rs.getString("name");
