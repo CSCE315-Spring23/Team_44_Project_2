@@ -1,4 +1,5 @@
 import Controller.OrderHistoryController;
+import Controller.LoginController;
 import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
@@ -10,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-
 /*
  * 
  * Hello Everyone, this is a fake main class that shows how we can pass a controller that has the
@@ -21,24 +21,25 @@ public class FakeMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        DatabaseConnect database;
-        String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
-        String username = DatabaseLoginInfo.username;
-        String password = DatabaseLoginInfo.password;
-
-        database = new DatabaseConnect(dbConnectionString, username, password);
-        database.setUpDatabase();
-
-        SessionData session = new SessionData(database, 0, new Order(0));
+        /*
+         * DatabaseConnect database;
+         * String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
+         * String username = DatabaseLoginInfo.username;
+         * String password = DatabaseLoginInfo.password;
+         * 
+         * database = new DatabaseConnect(dbConnectionString, username, password);
+         * database.setUpDatabase();
+         */
+        LoginController loginController = new LoginController();
 
         // EditMenuController menuController = new EditMenuController(session);
-        OrderHistoryController orderHistoryController = new OrderHistoryController(session);
+        // OrderHistoryController orderHistoryController = new
+        // OrderHistoryController(session);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("./FXML/OrderHistory.fxml"));
-        loader.setController(orderHistoryController);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("./FXML/Login.fxml"));
+        loader.setController(loginController);
 
         Parent root = loader.load();
-
 
         primaryStage.setTitle("Chick-fil-A");
         primaryStage.getIcons().add(new Image("./resources/logo.png"));

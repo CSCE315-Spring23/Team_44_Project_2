@@ -18,14 +18,12 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 
-
 public class OrderHistoryController {
 
     private SessionData sessionData;
-    private DatabaseConnect database;;
+    private DatabaseConnect database;
 
     private SceneSwitch sceneSwitch;
-
 
     @FXML
     private Button orderButton;
@@ -39,7 +37,6 @@ public class OrderHistoryController {
     private Button editMenuButton;
     @FXML
     private Button logoutButton;
-
 
     @FXML
     private TableView<OrderRow> orderHistoryTable;
@@ -74,7 +71,6 @@ public class OrderHistoryController {
         sceneSwitch.switchScene(event);
     }
 
-
     private void setUpTable() {
         // define TableView columns
         orderID.setCellValueFactory(cellData -> cellData.getValue().orderIDProperty());
@@ -98,8 +94,7 @@ public class OrderHistoryController {
     private ObservableList<OrderRow> getOrders() {
         ObservableList<OrderRow> orders = FXCollections.observableArrayList();
         try {
-            ResultSet rs =
-                    database.executeQuery("SELECT * FROM orderitem ORDER BY id DESC LIMIT 20");
+            ResultSet rs = database.executeQuery("SELECT * FROM orderitem ORDER BY id DESC LIMIT 20");
             while (rs.next()) {
                 Integer orderID = rs.getInt("id");
                 String customerName = rs.getString("customer_name");
@@ -109,8 +104,7 @@ public class OrderHistoryController {
 
                 String employeeName = getEmployeeName(employeeID);
 
-                OrderRow order =
-                        new OrderRow(orderID, customerName, orderDate, orderTotal, employeeName);
+                OrderRow order = new OrderRow(orderID, customerName, orderDate, orderTotal, employeeName);
                 orders.add(order);
             }
         } catch (Exception e) {
@@ -159,8 +153,7 @@ public class OrderHistoryController {
     private ArrayList<Integer> getMenuId(int orderId) {
         ArrayList<Integer> menuIds = new ArrayList<>();
         try {
-            ResultSet rs =
-                    database.executeQuery("SELECT * FROM solditem WHERE orderid = " + orderId);
+            ResultSet rs = database.executeQuery("SELECT * FROM solditem WHERE orderid = " + orderId);
             while (rs.next()) {
                 menuIds.add(rs.getInt("menuid"));
             }
@@ -194,8 +187,7 @@ public class OrderHistoryController {
     private double getMenuCost(String name) {
         double ret = 0;
         try {
-            ResultSet rs =
-                    database.executeQuery("SELECT * FROM menuitem WHERE name = '" + name + "'");
+            ResultSet rs = database.executeQuery("SELECT * FROM menuitem WHERE name = '" + name + "'");
             while (rs.next()) {
                 ret = rs.getDouble("cost");
             }
@@ -206,5 +198,3 @@ public class OrderHistoryController {
     }
 
 }
-
-

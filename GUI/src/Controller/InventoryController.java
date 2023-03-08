@@ -66,7 +66,8 @@ public class InventoryController {
     private Button update;
 
     /**
-     * {@link TableView} of {@link InventoryItem} that will display the entire inventory
+     * {@link TableView} of {@link InventoryItem} that will display the entire
+     * inventory
      */
     @FXML
     private TableView<InventoryItem> inventoryTable;
@@ -146,7 +147,6 @@ public class InventoryController {
         sceneSwitch.switchScene(event);
     }
 
-
     /**
      * Updates {@link #item} to current item inputed
      */
@@ -191,8 +191,7 @@ public class InventoryController {
         else if (this.quantity.isEmpty())
             return;
 
-        final String probe =
-                String.format("SELECT quantity FROM inventorytest WHERE name=\'%s\';", this.item);
+        final String probe = String.format("SELECT quantity FROM inventorytest WHERE name=\'%s\';", this.item);
         final ResultSet result = this.database.executeQuery(probe);
 
         long quant = 0l;
@@ -204,7 +203,6 @@ public class InventoryController {
             System.out.println("Query failed.");
         }
 
-
         if (quant < 0l) {
             System.out.println("Cannot update item to a negative number");
             return;
@@ -212,9 +210,8 @@ public class InventoryController {
             System.out.println("Item does not exist");
             return;
         } else {
-            final String query =
-                    String.format("UPDATE inventorytest SET quantity = %d WHERE name=\'%s\';",
-                            Long.valueOf(this.quantity), this.item);
+            final String query = String.format("UPDATE inventorytest SET quantity = %d WHERE name=\'%s\';",
+                    Long.valueOf(this.quantity), this.item);
             System.out.println(query);
             this.database.executeUpdate(query);
 
@@ -233,7 +230,8 @@ public class InventoryController {
     /**
      * Helper method to retreive all items from the Inventory.
      * 
-     * @return {@link ObservableList} of {@link InventoryItem} holding every item in the inventory
+     * @return {@link ObservableList} of {@link InventoryItem} holding every item in
+     *         the inventory
      */
     private ObservableList<InventoryItem> getInventory() {
         ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
