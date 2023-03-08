@@ -22,43 +22,43 @@
                   <Button fx:id="m5" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="12 ct. Grilled" />
                   <Button fx:id="m6" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="8 ct. Grilled" />
                   <Button fx:id="m7" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="12 ct. Nuggets" />
-                  <Button mnemonicParsing="false" text="8 ct. Nuggets" />
-                  <Button mnemonicParsing="false" text="Grilled Sandwich" />
-                  <Button mnemonicParsing="false" text="Grilled Club" />
-                  <Button mnemonicParsing="false" text="Cool Wrap" />
-                  <Button mnemonicParsing="false" text="Cobb Salad" />
-                  <Button mnemonicParsing="false" text="Southwest Salad" />
-                  <Button mnemonicParsing="false" text="Market Salad" />
+                  <Button fx:id="m8" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="8 ct. Nuggets" />
+                  <Button fx:id="m9" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Grilled Sandwich" />
+                  <Button fx:id="m10" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Grilled Club" />
+                  <Button fx:id="m11" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Cool Wrap" />
+                  <Button fx:id="m12" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Cobb Salad" />
+                  <Button fx:id="m13" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Southwest Salad" />
+                  <Button fx:id="m14" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Market Salad" />
                </children>
             </FlowPane>
             <FlowPane prefHeight="166.0" prefWidth="397.0">
                <children>
-                  <Button mnemonicParsing="false" text="L. Waffle Fries" />
-                  <Button mnemonicParsing="false" text="M. Waffle Fries" />
-                  <Button mnemonicParsing="false" text="Chips" />
-                  <Button mnemonicParsing="false" text="Fruit Cup" />
-                  <Button mnemonicParsing="false" text="Side Salad" />
-                  <Button mnemonicParsing="false" text="Bottled Water" />
-                  <Button mnemonicParsing="false" text="M. Unsweetened Tea" />
-                  <Button mnemonicParsing="false" text="M. Sweet Tea" />
-                  <Button mnemonicParsing="false" text="M. Lemonade" />
-                  <Button mnemonicParsing="false" text="M. Sunjoy" />
-                  <Button mnemonicParsing="false" text="M. Soft Drink" />
+                  <Button fx:id="m15" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="L. Waffle Fries" />
+                  <Button fx:id="m16" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="M. Waffle Fries" />
+                  <Button fx:id="m17" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Chips" />
+                  <Button fx:id="m18" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Fruit Cup" />
+                  <Button fx:id="m19" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Side Salad" />
+                  <Button fx:id="m20" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Bottled Water" />
+                  <Button fx:id="m21" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="M. Unsweetened Tea" />
+                  <Button fx:id="m23" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="M. Sweet Tea" />
+                  <Button fx:id="m25" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="M. Lemonade" />
+                  <Button fx:id="m27" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="M. Sunjoy" />
+                  <Button fx:id="m29" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="M. Soft Drink" />
                </children>
             </FlowPane>
             <FlowPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <Button mnemonicParsing="false" text="Original Iced Coffee" />
-                  <Button mnemonicParsing="false" text="Vanilla Iced Coffee" />
-                  <Button mnemonicParsing="false" text="C&amp;C Milkshake" />
-                  <Button mnemonicParsing="false" text="Chocolate Milkshake" />
-                  <Button mnemonicParsing="false" text="Strawberry Milkshake" />
-                  <Button mnemonicParsing="false" text="Vanilla Milkshake" />
-                  <Button mnemonicParsing="false" text="Frosted Lemonade" />
-                  <Button mnemonicParsing="false" text="Frosted Coffee" />
-                  <Button mnemonicParsing="false" text="Icedream" />
-                  <Button mnemonicParsing="false" text="Brownie" />
-                  <Button mnemonicParsing="false" text="Cookie" />
+                  <Button fx:id="m31" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Original Iced Coffee" />
+                  <Button fx:id="m32" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Vanilla Iced Coffee" />
+                  <Button fx:id="m33" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="C&amp;C Milkshake" />
+                  <Button fx:id="m34" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Chocolate Milkshake" />
+                  <Button fx:id="m35" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Strawberry Milkshake" />
+                  <Button fx:id="m36" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Vanilla Milkshake" />
+                  <Button fx:id="m37" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Frosted Lemonade" />
+                  <Button fx:id="m38" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Frosted Coffee" />
+                  <Button fx:id="m39" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Icedream" />
+                  <Button fx:id="m40" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Brownie" />
+                  <Button fx:id="m41" mnemonicParsing="false" onAction="#menuItemButtonOnClick" text="Cookie" />
                </children>
             </FlowPane>
          </children></VBox>
