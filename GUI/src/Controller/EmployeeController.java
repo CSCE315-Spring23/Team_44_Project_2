@@ -20,9 +20,25 @@ import javafx.scene.layout.VBox;
 
 public class EmployeeController {
 
-    private SessionData sessionData;
+    /**
+     * Current session data
+     *
+     * @see SessionData
+    */
+    private SessionData session;
+
+    /**
+     * Connection to the database
+     *
+     * @see DatabaseConnect
+     */
     private DatabaseConnect database;
 
+    /**
+     * Switches between scenes or tabs
+     *
+     * @see SceneSwitch
+     */
     private SceneSwitch sceneSwitch;
 
     @FXML // ResourceBundle that was given to the FXMLLoader
@@ -37,29 +53,44 @@ public class EmployeeController {
     @FXML // fx:id="customerName"
     private TableColumn<?, ?> customerName; // Value injected by FXMLLoader
 
-    @FXML // fx:id="editMenuButton"
-    private Button editMenuButton; // Value injected by FXMLLoader
+     /**
+     * {@link Button} Button to navigate order scene
+     *
+     */
+    @FXML private Button orderButton;
 
-    @FXML // fx:id="employeesButton"
-    private Button employeesButton; // Value injected by FXMLLoader
+    /**
+     * {@link Button} Button to navigate order history scene
+     *
+     */
+    @FXML private Button orderHistoryButton;
 
-    @FXML // fx:id="inventoryButton"
-    private Button inventoryButton; // Value injected by FXMLLoader
+    /**
+     * {@link Button} Button to navigate inventory scene
+     *
+     */
+    @FXML private Button inventoryButton;
 
-    @FXML // fx:id="logoutButton"
-    private Button logoutButton; // Value injected by FXMLLoader
+    /**
+     * {@link Button} Button to navigate employees scene
+     *
+     */
+    @FXML private Button employeesButton;
 
-    @FXML // fx:id="navBar"
-    private VBox navBar; // Value injected by FXMLLoader
+    /**
+     * {@link Button} Button to navigate edit menu scene
+     *
+     */
+    @FXML private Button editMenuButton;
 
-    @FXML // fx:id="orderButton"
-    private Button orderButton; // Value injected by FXMLLoader
+    /**
+     * {@link Button} Button to logout
+     *
+     */
+    @FXML private Button logoutButton;
 
     @FXML // fx:id="orderDate"
     private TableColumn<?, ?> orderDate; // Value injected by FXMLLoader
-
-    @FXML // fx:id="orderHistoryButton"
-    private Button orderHistoryButton; // Value injected by FXMLLoader
 
     @FXML // fx:id="orderHistoryTable"
     private TableView<?> orderHistoryTable; // Value injected by FXMLLoader
@@ -79,16 +110,16 @@ public class EmployeeController {
     @FXML // fx:id="employeePin"
     private TableColumn<EmployeeRow, Integer> employeePin; // Value injected by FXMLLoader
 
-    public EmployeeController(SessionData sessionData) {
-        this.sessionData = sessionData;
-        database = sessionData.database;
+    public EmployeeController(SessionData session) {
+        this.session = session;
+        database = session.database;
     }
 
     public void initialize() {
         setUpTable();
         employeeTable.refresh();
 
-        if (sessionData.isManager()) {
+        if (session.isManager()) {
             System.out.println("Manager");
             editMenuButton.setVisible(true);
             inventoryButton.setVisible(true);
@@ -166,7 +197,7 @@ public class EmployeeController {
 
     @FXML
     void navButtonClicked(ActionEvent event) throws IOException {
-        sceneSwitch = new SceneSwitch(sessionData);
+        sceneSwitch = new SceneSwitch(session);
         sceneSwitch.switchScene(event);
     }
 }

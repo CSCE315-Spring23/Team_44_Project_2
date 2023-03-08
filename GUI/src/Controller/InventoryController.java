@@ -35,6 +35,11 @@ public class InventoryController {
      */
     private static final String INVENTORY_DATABASE = "inventory";
 
+    /**
+     * Current session data
+     *
+     * @see SessionData
+    */
     private SessionData session;
 
     /**
@@ -42,27 +47,50 @@ public class InventoryController {
      *
      * @see DatabaseConnect
      */
-    DatabaseConnect database;
+    private DatabaseConnect database;
 
+    /**
+     * Switches between scenes or tabs
+     *
+     * @see SceneSwitch
+     */
     private SceneSwitch sceneSwitch;
 
-    @FXML
-    private Button orderButton;
+       /**
+     * {@link Button} Button to navigate order scene
+     *
+     */
+    @FXML private Button orderButton;
 
-    @FXML
-    private Button orderHistoryButton;
+    /**
+     * {@link Button} Button to navigate order history scene
+     *
+     */
+    @FXML private Button orderHistoryButton;
 
-    @FXML
-    private Button inventoryButton;
+    /**
+     * {@link Button} Button to navigate inventory scene
+     *
+     */
+    @FXML private Button inventoryButton;
 
-    @FXML
-    private Button employeesButton;
+    /**
+     * {@link Button} Button to navigate employees scene
+     *
+     */
+    @FXML private Button employeesButton;
 
-    @FXML
-    private Button editMenuButton;
+    /**
+     * {@link Button} Button to navigate edit menu scene
+     *
+     */
+    @FXML private Button editMenuButton;
 
-    @FXML
-    private Button logoutButton;
+    /**
+     * {@link Button} Button to logout
+     *
+     */
+    @FXML private Button logoutButton;
 
     /**
      * {@link Button} update inventory button. Triggers {@link #updateInventory()}

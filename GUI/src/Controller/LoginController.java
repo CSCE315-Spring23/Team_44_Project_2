@@ -29,6 +29,26 @@ import javafx.scene.control.TextField;
  */
 
 public class LoginController {
+    /**
+     * Current session data
+     *
+     * @see SessionData
+    */
+    private SessionData session;
+
+    /**
+     * Connection to the database
+     *
+     * @see DatabaseConnect
+     */
+    private DatabaseConnect database;
+
+    /**
+     * Switches between scenes or tabs
+     *
+     * @see SceneSwitch
+     */
+    private SceneSwitch sceneSwitch;
 
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
@@ -71,11 +91,6 @@ public class LoginController {
 
     @FXML // fx:id="pinBox"
     private TextField pinBox; // Value injected by FXMLLoader
-
-    private SessionData session;
-    private SceneSwitch sceneSwitch;
-
-    private DatabaseConnect database;
 
     int pinNumber;
 

@@ -33,37 +33,66 @@ import Utils.SceneSwitch;
 public class EditMenuController {
 
     /**
-     * Database object to use in this class
+     * Current session data
+     *
+     * @see SessionData
+    */
+    private SessionData session;
+
+    /**
+     * Connection to the database
+     *
+     * @see DatabaseConnect
      */
     private DatabaseConnect database;
 
     /**
-     * Object to contain the current session
+     * Switches between scenes or tabs
+     *
+     * @see SceneSwitch
      */
-    private SessionData session;
+    private SceneSwitch sceneSwitch;
 
     /**
      * Contains the menu items from database to display in GUI
      */
     private ArrayList<String> menuItems;
 
-    /**
-     * Instance of class to use navbar
+        /**
+     * {@link Button} Button to navigate order scene
+     *
      */
-    private SceneSwitch sceneSwitch;
+    @FXML private Button orderButton;
 
-    @FXML
-    private Button orderButton;
-    @FXML
-    private Button orderHistoryButton;
-    @FXML
-    private Button inventoryButton;
-    @FXML
-    private Button employeesButton;
-    @FXML
-    private Button editMenuButton;
-    @FXML
-    private Button logoutButton;
+    /**
+     * {@link Button} Button to navigate order history scene
+     *
+     */
+    @FXML private Button orderHistoryButton;
+
+    /**
+     * {@link Button} Button to navigate inventory scene
+     *
+     */
+    @FXML private Button inventoryButton;
+
+    /**
+     * {@link Button} Button to navigate employees scene
+     *
+     */
+    @FXML private Button employeesButton;
+
+    /**
+     * {@link Button} Button to navigate edit menu scene
+     *
+     */
+    @FXML private Button editMenuButton;
+
+    /**
+     * {@link Button} Button to logout
+     *
+     */
+    @FXML private Button logoutButton;
 
     /**
      * FXML List for view in GUI

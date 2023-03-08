@@ -26,29 +26,68 @@ import javafx.fxml.FXML;
  */
 public class OrderController {
 
+    /**
+     * Current session data
+     *
+     * @see SessionData
+    */
     private SessionData session;
 
-    private final DatabaseConnect database;
+    /**
+     * Connection to the database
+     *
+     * @see DatabaseConnect
+     */
+    private DatabaseConnect database;
+
+    /**
+     * Switches between scenes or tabs
+     *
+     * @see SceneSwitch
+     */
+    private SceneSwitch sceneSwitch;
 
     private final int employeeId;
 
     private Order order;
 
-    private SceneSwitch sceneSwitch;
 
     // Navbar Buttons
-    @FXML
-    private Button orderButton;
-    @FXML
-    private Button orderHistoryButton;
-    @FXML
-    private Button inventoryButton;
-    @FXML
-    private Button employeesButton;
-    @FXML
-    private Button editMenuButton;
-    @FXML
-    private Button logoutButton;
+        /**
+     * {@link Button} Button to navigate order scene
+     *
+     */
+    @FXML private Button orderButton;
+
+    /**
+     * {@link Button} Button to navigate order history scene
+     *
+     */
+    @FXML private Button orderHistoryButton;
+
+    /**
+     * {@link Button} Button to navigate inventory scene
+     *
+     */
+    @FXML private Button inventoryButton;
+
+    /**
+     * {@link Button} Button to navigate employees scene
+     *
+     */
+    @FXML private Button employeesButton;
+
+    /**
+     * {@link Button} Button to navigate edit menu scene
+     *
+     */
+    @FXML private Button editMenuButton;
+
+    /**
+     * {@link Button} Button to logout
+     *
+     */
+    @FXML private Button logoutButton;
 
     /*
      * Text that lists the items in the order
