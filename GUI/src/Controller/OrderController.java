@@ -36,6 +36,7 @@ public class OrderController {
 
     private SceneSwitch sceneSwitch;
 
+    // Navbar Buttons
     @FXML
     private Button orderButton;
     @FXML
@@ -49,15 +50,27 @@ public class OrderController {
     @FXML
     private Button logoutButton;
 
+    /*
+     * Text that lists the items in the order
+     */
     @FXML
     private Label orderBox;
 
+    /*
+     * Text field to input the customer's name
+     */
     @FXML
     private TextField customerNameField;
 
+    /*
+     * Shows total cost of the order
+     */
     @FXML
     private Label totalCostLabel;
 
+    /*
+     * Button to submit the order
+     */
     @FXML
     private Button submitOrderButton;
 
@@ -127,10 +140,8 @@ public class OrderController {
     public void customerNameOnChanged() {}
 
     /**
-     * Handles the buttom click event for the submit order button.<br>
+     * Handles the buttom click event for the submit order button.
      * Inserts the order into both the orderitem and solditem tables.
-     * 
-     * TODO: update inventory
      */
     public void submitOrderOnClick() {
         if (order.getTotalCost() == 0.0) {
@@ -143,15 +154,16 @@ public class OrderController {
             return;
         }
 
-        // finalize order and submit to database
+        // setup order and submit to database
+        order.setOrderId(database.getLastId("orderitemtest") + 1);
         order.setCustomerName(customerNameField.getText());
 
         database.insertOrderItem(order);
         database.insertSoldItem(order);
         database.updateInventory(order);
 
-        // reset order
-        order = new Order(employeeId, database.getLastId("orderitemtest") + 1);
+        // reset order and screen
+        order = new Order(employeeId);
         orderBox.setText(order.getItemCount());
         totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
         customerNameField.setText("");

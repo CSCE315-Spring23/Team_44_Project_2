@@ -129,6 +129,14 @@ public class Order {
     }
 
     /**
+     * Sets {@link #orderId}
+     * @return {@link #orderId}
+     */
+    public void setOrderId(final int orderId) {
+        this.orderId = orderId;
+    }
+
+    /**
      * Gets {@link #orderId}
      * 
      * @return {@link #orderId}
