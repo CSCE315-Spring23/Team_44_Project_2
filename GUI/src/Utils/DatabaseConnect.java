@@ -279,7 +279,7 @@ public class DatabaseConnect {
      * @param order {@link Order} that will update inventory
      */
     public void updateInventory(final Order order) {
-        final String databaseName = "inventorys";
+        final String databaseName = "inventory";
 
         HashMap<String, Integer> soldItems = order.getItems();
 
