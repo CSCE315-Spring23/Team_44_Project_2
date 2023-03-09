@@ -29,13 +29,12 @@ import javafx.scene.control.TextField;
  * @author Lai, Huy
  * @author Mao, Steven
  */
-
 public class LoginController {
     /**
      * Current session data
      *
      * @see SessionData
-    */
+     */
     private SessionData session;
 
     /**
@@ -143,8 +142,7 @@ public class LoginController {
         int id = getEmployeeId();
 
         // sessionDataObject will be passed starting from LoginPage
-        SessionData newSession =
-                new SessionData(databaseInitializer(), id, new Order(id));
+        SessionData newSession = new SessionData(databaseInitializer(), id, new Order(id));
 
         return newSession;
     }
@@ -154,8 +152,9 @@ public class LoginController {
         this.pinNumber = Integer.parseInt(pinBox.getText());
         System.out.println(this.pinNumber);
         try {
-            String sqlQuery =
-                    String.format("SELECT * FROM %s WHERE pin= '" + Integer.toString(pinNumber) + "'", DatabaseNames.EMPLOYEE_DATABASE);
+            String sqlQuery = String.format(
+                    "SELECT * FROM %s WHERE pin= '" + Integer.toString(pinNumber) + "'",
+                    DatabaseNames.EMPLOYEE_DATABASE);
             // System.out.println(sqlQuery);
 
             // System.out.println(database);
@@ -174,11 +173,13 @@ public class LoginController {
 
     }
 
-    public int getEmployeeId(){
+    public int getEmployeeId() {
         int ret = -1;
         try {
-            ResultSet rs = database.executeQuery(String.format("SELECT id FROM %s WHERE pin = '" + Integer.toString(pinNumber) + "'", DatabaseNames.EMPLOYEE_DATABASE));
-            if(rs.next()){
+            ResultSet rs = database.executeQuery(String.format(
+                    "SELECT id FROM %s WHERE pin = '" + Integer.toString(pinNumber) + "'",
+                    DatabaseNames.EMPLOYEE_DATABASE));
+            if (rs.next()) {
                 ret = rs.getInt("id");
             }
         } catch (Exception e) {
