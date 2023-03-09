@@ -27,13 +27,13 @@ import javafx.scene.control.*;
  * @author Kuppa Jayaram, Shreeman
  * @author Lai, Huy
  * @author Mao, Steven
-*/
+ */
 public class OrderHistoryController {
     /**
      * Current session data
      *
      * @see SessionData
-    */
+     */
     private SessionData session;
 
     /**
@@ -54,87 +54,101 @@ public class OrderHistoryController {
      * {@link Button} Button to navigate order scene
      *
      */
-    @FXML private Button orderButton;
+    @FXML
+    private Button orderButton;
 
     /**
      * {@link Button} Button to navigate order history scene
      *
      */
-    @FXML private Button orderHistoryButton;
+    @FXML
+    private Button orderHistoryButton;
 
     /**
      * {@link Button} Button to navigate inventory scene
      *
      */
-    @FXML private Button inventoryButton;
+    @FXML
+    private Button inventoryButton;
 
     /**
      * {@link Button} Button to navigate employees scene
      *
      */
-    @FXML private Button employeesButton;
+    @FXML
+    private Button employeesButton;
 
     /**
      * {@link Button} Button to navigate edit menu scene
      *
      */
-    @FXML private Button editMenuButton;
+    @FXML
+    private Button editMenuButton;
 
     /**
      * {@link Button} Button to logout
      *
      */
-    @FXML private Button logoutButton;
+    @FXML
+    private Button logoutButton;
 
     /**
      * {@link TableView} of {@link OrderRow} to display order history
      *
      */
-    @FXML private TableView<OrderRow> orderHistoryTable;
+    @FXML
+    private TableView<OrderRow> orderHistoryTable;
 
     /**
      * {@link TableColumn} to display order ID
      *
      */
-    @FXML private TableColumn<OrderRow, Integer> orderID;
+    @FXML
+    private TableColumn<OrderRow, Long> orderID;
 
     /**
      * {@link TableColumn} to display customer name
      *
      */
-    @FXML private TableColumn<OrderRow, String> customerName;
+    @FXML
+    private TableColumn<OrderRow, String> customerName;
 
     /**
      * {@link TableColumn} to display order date
      *
      */
-    @FXML private TableColumn<OrderRow, String> orderDate;
+    @FXML
+    private TableColumn<OrderRow, String> orderDate;
 
     /**
      * {@link TableColumn} to display order total
      *
      */
-    @FXML private TableColumn<OrderRow, String> orderTotal;
+    @FXML
+    private TableColumn<OrderRow, String> orderTotal;
 
     /**
      * {@link TableColumn} to display employee name
      *
      */
-    @FXML private TableColumn<OrderRow, String> employeeName;
+    @FXML
+    private TableColumn<OrderRow, String> employeeName;
 
     /**
      * {@link TextArea} to display order details
      *
      */
-    @FXML private TextArea orderHistoryTextBox;
+    @FXML
+    private TextArea orderHistoryTextBox;
 
     /**
-     *  Constructor for OrderHistoryController
+     * Constructor for OrderHistoryController
+     * 
      * @param session
      */
-    public OrderHistoryController(SessionData session) {
+    public OrderHistoryController(final SessionData session) {
         this.session = session;
-        database = session.database;
+        this.database = session.database;
 
     }
 
@@ -142,9 +156,10 @@ public class OrderHistoryController {
      * Initializes the Order History scene
      */
     public void initialize() {
-        setUpTable();
-        addRowOnClick();
-        orderHistoryTable.refresh();
+        this.setUpTable();
+        this.updateTable();
+        this.addRowOnClick();
+        this.orderHistoryTable.refresh();
 
         // set visibility of buttons based on employee role
         if (session.isManager()) {
@@ -162,12 +177,13 @@ public class OrderHistoryController {
 
     /**
      * Navigates to the scene specified by the button clicked
-     * @param event
-     * @throws IOException
+     * 
+     * @param event {@link ActionEvent} of {@link Button} in the navigation bar
+     * @throws IOException if loading a window fails
      */
     public void navButtonClicked(ActionEvent event) throws IOException {
-        sceneSwitch = new SceneSwitch(session);
-        sceneSwitch.switchScene(event);
+        this.sceneSwitch = new SceneSwitch(session);
+        this.sceneSwitch.switchScene(event);
     }
 
     /**
@@ -175,42 +191,43 @@ public class OrderHistoryController {
      */
     private void setUpTable() {
         // define TableView columns
-        orderID.setCellValueFactory(cellData -> cellData.getValue().orderIDProperty());
+        this.orderID.setCellValueFactory(cellData -> cellData.getValue().orderIDProperty());
+        this.customerName
+                .setCellValueFactory(cellData -> cellData.getValue().customerNameProperty());
+        this.orderDate.setCellValueFactory(cellData -> cellData.getValue().orderDateProperty());
+        this.orderTotal.setCellValueFactory(cellData -> cellData.getValue().orderTotalProperty());
+        this.employeeName
+                .setCellValueFactory(cellData -> cellData.getValue().employeeNameProperty());
+    }
 
-        customerName.setCellValueFactory(cellData -> cellData.getValue().customerNameProperty());
-
-        orderDate.setCellValueFactory(cellData -> cellData.getValue().orderDateProperty());
-
-        orderTotal.setCellValueFactory(cellData -> cellData.getValue().orderTotalProperty());
-
-        employeeName.setCellValueFactory(cellData -> cellData.getValue().employeeNameProperty());
-
-        // generate list of last 20 orders
-        ObservableList<OrderRow> orders = getOrders();
-
-        // add data to table
-        orderHistoryTable.setItems(orders);
+    /**
+     * Update the {@link #orderHistoryTable}
+     */
+    private void updateTable() {
+        this.orderHistoryTable.setItems(this.getOrders());
+        this.orderHistoryTable.refresh();
     }
 
     /**
      * Gets the last 20 orders from the database
+     * 
      * @return {@link ObservableList} of {@link OrderRow} of the last 20 orders
      */
     private ObservableList<OrderRow> getOrders() {
-        ObservableList<OrderRow> orders = FXCollections.observableArrayList();
+        final ObservableList<OrderRow> orders = FXCollections.observableArrayList();
         try {
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s ORDER BY id DESC LIMIT 20", DatabaseNames.ORDER_ITEM_DATABASE));
+            final ResultSet rs = database
+                    .executeQuery(String.format("SELECT * FROM %s ORDER BY id DESC LIMIT 20",
+                            DatabaseNames.ORDER_ITEM_DATABASE));
             while (rs.next()) {
-                Integer orderID = rs.getInt("id");
-                String customerName = rs.getString("customer_name");
-                String orderDate = rs.getString("date");
-                Double orderTotal = rs.getDouble("total_cost");
-                Integer employeeID = rs.getInt("employee_id");
-
-                String employeeName = getEmployeeName(employeeID);
-
-                OrderRow order = new OrderRow(orderID, customerName, orderDate, orderTotal, employeeName);
-                orders.add(order);
+                final long orderID = rs.getLong("id");
+                final String customerName = rs.getString("customer_name");
+                final String orderDate = rs.getString("date");
+                final Double orderTotal = rs.getDouble("total_cost");
+                final long employeeID = rs.getInt("employee_id");
+                final String employeeName = this.getEmployeeName(employeeID);
+                orders.add(
+                        new OrderRow(orderID, customerName, orderDate, orderTotal, employeeName));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -221,14 +238,16 @@ public class OrderHistoryController {
 
     /**
      * Gets the employee name from the database based on the employee ID
+     * 
      * @param id
      * @return {@link String} of the employee name
      */
-    private String getEmployeeName(int id) {
+    private String getEmployeeName(final long id) {
         String ret = "";
         try {
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE id = %d", DatabaseNames.EMPLOYEE_DATABASE,id));
-            while (rs.next()) {
+            ResultSet rs = database.executeQuery(String.format("SELECT name FROM %s WHERE id = %d",
+                    DatabaseNames.EMPLOYEE_DATABASE, id));
+            if (rs.next()) {
                 ret = rs.getString("name");
             }
         } catch (Exception e) {
@@ -241,21 +260,22 @@ public class OrderHistoryController {
      * Adds a click event to each {@link OrderRow} in table to display order details
      */
     private void addRowOnClick() {
-        orderHistoryTable.setRowFactory(tv -> {
-            TableRow<OrderRow> row = new TableRow<>();
+        this.orderHistoryTable.setRowFactory(tv -> {
+            final TableRow<OrderRow> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!row.isEmpty())) {
-                    OrderRow rowData = row.getItem();
-                    int id = rowData.getOrderID();
-                    ArrayList<Integer> menuIds = getMenuId(id);
-                    HashMap<String, Integer> menuItems = getMenuItems(menuIds);
-                    orderHistoryTextBox.setText("");
-                    for (String name : menuItems.keySet()) {
-                        double cost = getMenuCost(name);
-                        String rightside = String.format("$%.2f x%d = $%.2f", cost,
-                                menuItems.get(name), cost * menuItems.get(name));
-                        String print = String.format("%-36s %20s\n", name, rightside);
-                        orderHistoryTextBox.appendText(print);
+                    final OrderRow rowData = row.getItem();
+                    final long id = rowData.getOrderID();
+                    final ArrayList<Long> menuIds = this.getMenuId(id);
+                    final HashMap<String, Long> menuItems = this.getMenuItems(menuIds);
+                    this.orderHistoryTextBox.setText("");
+                    for (final String name : menuItems.keySet()) {
+                        final double cost = this.getMenuCost(name);
+                        final long quant = menuItems.get(name);
+                        final String rightside =
+                                String.format("$%.2f x%d = $%.2f", cost, quant, cost * quant);
+                        final String print = String.format("%-36s %20s\n", name, rightside);
+                        this.orderHistoryTextBox.appendText(print);
                     }
                 }
             });
@@ -265,15 +285,18 @@ public class OrderHistoryController {
 
     /**
      * Gets the Menu IDs from the database based on the order ID
-     * @param orderId
-     * @return {@link ArrayList} of {@link Integer} of the menu IDs
+     * 
+     * @param orderID identification number of the order
+     * @return {@link ArrayList} of {@link Long} of the menu IDs
      */
-    private ArrayList<Integer> getMenuId(int orderId) {
-        ArrayList<Integer> menuIds = new ArrayList<>();
+    private ArrayList<Long> getMenuId(final long orderID) {
+        final ArrayList<Long> menuIds = new ArrayList<>();
         try {
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE orderid = %d", DatabaseNames.SOLD_ITEM_DATABASE, orderId));
+            final ResultSet rs =
+                    database.executeQuery(String.format("SELECT menuid FROM %s WHERE orderid = %d",
+                            DatabaseNames.SOLD_ITEM_DATABASE, orderID));
             while (rs.next()) {
-                menuIds.add(rs.getInt("menuid"));
+                menuIds.add(rs.getLong("menuid"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -284,20 +307,24 @@ public class OrderHistoryController {
 
     /**
      * Gets the menu items from the database based on Menu IDs
+     * 
      * @param menuIds
-     * @return {@link HashMap} of {@link String} and {@link Integer} of the menu items
+     * @return {@link HashMap} of {@link String} and {@link Long} of the menu items
      */
-    private HashMap<String, Integer> getMenuItems(ArrayList<Integer> menuIds) {
-        HashMap<String, Integer> menuItems = new HashMap<>();
-        for (int id : menuIds) {
+    private HashMap<String, Long> getMenuItems(ArrayList<Long> menuIds) {
+        final HashMap<String, Long> menuItems = new HashMap<>();
+        for (final long menuID : menuIds) {
             try {
-                ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE id = %d", DatabaseNames.MENU_ITEM_DATABASE, id));
+                final ResultSet rs =
+                        database.executeQuery(String.format("SELECT name FROM %s WHERE id = %d",
+                                DatabaseNames.MENU_ITEM_DATABASE, menuID));
+                String name;
                 while (rs.next()) {
-                    if (menuItems.containsKey(rs.getString("name"))) {
-                        menuItems.put(rs.getString("name"),
-                                menuItems.get(rs.getString("name")) + 1);
+                    name = rs.getString("name");
+                    if (menuItems.containsKey(name)) {
+                        menuItems.put(name, menuItems.get(name) + 1);
                     } else {
-                        menuItems.put(rs.getString("name"), 1);
+                        menuItems.put(name, 1l);
                     }
                 }
             } catch (Exception e) {
@@ -309,14 +336,17 @@ public class OrderHistoryController {
 
     /**
      * Gets the menu cost from the database based on the menu name
+     * 
      * @param name
      * @return {@link Double} of the menu cost
      */
     private double getMenuCost(String name) {
         double ret = 0;
         try {
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE name = '" + name + "'", DatabaseNames.MENU_ITEM_DATABASE));
-            while (rs.next()) {
+            final ResultSet rs = database
+                    .executeQuery(String.format("SELECT cost FROM %s WHERE name = '" + name + "'",
+                            DatabaseNames.MENU_ITEM_DATABASE));
+            if (rs.next()) {
                 ret = rs.getDouble("cost");
             }
         } catch (Exception e) {

@@ -1,6 +1,6 @@
 package Items;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class Order {
     /**
      * Indentification number of the order
      */
-    private int orderId;
+    private long orderId;
 
     /**
      * {@link String} holding the name of the customer who made the order
@@ -28,9 +28,9 @@ public class Order {
     private String customerName = "";
 
     /**
-     * {@link LocalDate} holding the current date
+     * {@link LocalDateTime} holding the current date
      */
-    private final LocalDate date;
+    private final LocalDateTime date;
 
     /**
      * Total cost of the order
@@ -40,7 +40,7 @@ public class Order {
     /**
      * Identification number of the employee who created the order
      */
-    private int employeeId;
+    private long employeeId;
 
     /**
      * {@link HashMap} holding each item and its coresponding price.
@@ -52,11 +52,8 @@ public class Order {
      * 
      * @param employeeId
      */
-    public Order(final int employeeId) {
-        this.employeeId = employeeId;
-        this.orderId = -1;
-        date = LocalDate.now();
-        System.out.println("Order Created on " + this.date.toString());
+    public Order(final long employeeId) {
+        this(employeeId, -1l);
     }
 
     /**
@@ -65,10 +62,10 @@ public class Order {
      * @param employeeId
      * @param orderId
      */
-    public Order(final int employeeId, final int orderId) {
+    public Order(final long employeeId, final long orderId) {
         this.employeeId = employeeId;
         this.orderId = orderId;
-        date = LocalDate.now();
+        date = LocalDateTime.now();
         System.out.println("Order Created on " + this.date.toString());
     }
 
@@ -124,7 +121,7 @@ public class Order {
      * 
      * @return
      */
-    public int getEmployeeId() {
+    public long getEmployeeId() {
         return this.employeeId;
     }
 
@@ -142,7 +139,7 @@ public class Order {
      * 
      * @return {@link #orderId}
      */
-    public int getOrderId() {
+    public long getOrderId() {
         return this.orderId;
     }
 
@@ -151,7 +148,7 @@ public class Order {
      * 
      * @return {@link #date}
      */
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return this.date;
     }
 

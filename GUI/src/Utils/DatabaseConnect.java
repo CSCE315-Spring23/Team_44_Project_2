@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import Items.Order;
 
 /**
@@ -70,10 +72,8 @@ public class DatabaseConnect {
     }
 
     /**
-     * Execute a SQL query.
-     * 
-     * @implNote This method will NOT handle UPDATE queries. Use {@link #executeUpdate(String)}
-     *           instead.
+     * Execute a SQL query. This method will NOT handle UPDATE queries. Use
+     * {@link #executeUpdate(String)} instead.
      * 
      * @param command query to send to database
      * @return the {@link ResultSet} of the query

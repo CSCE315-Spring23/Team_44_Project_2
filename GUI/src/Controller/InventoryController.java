@@ -136,25 +136,46 @@ public class InventoryController {
     @FXML
     private Button updateItem;
 
+    /**
+     * {@link TextField} that allows user input to delete an item
+     */
     @FXML
     private TextField deleteItemID;
 
+    /**
+     * {@link Button} that will delete the item
+     */
     @FXML
     private Button deleteItem;
 
+    /**
+     * {@link TextField} that allows user input to add an item
+     */
     @FXML
     private TextField addItemName;
 
+    /**
+     * {@link TextField} that allows user input to add an item
+     */
     @FXML
     private TextField addItemQuant;
 
+    /**
+     * {@link Button} that will add an item
+     */
     @FXML
     private Button addItem;
 
-    public InventoryController() {
-        this.session = null;
-    }
+    /**
+     * Constructor
+     */
+    public InventoryController() {}
 
+    /**
+     * Constructor
+     * 
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
+     */
     public InventoryController(final SessionData session) {
         this.session = session;
     }
@@ -188,6 +209,12 @@ public class InventoryController {
         }
     }
 
+    /**
+     * Handles switching to a new scene
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} being pressing
+     * @throws IOException when loading the new window fails
+     */
     public void navButtonClicked(ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(this.session);
         this.sceneSwitch.switchScene(event);
@@ -202,6 +229,9 @@ public class InventoryController {
         this.quantityCol.setCellValueFactory(cellData -> cellData.getValue().getQuantity());
     }
 
+    /**
+     * Adds an item to the inventory database
+     */
     public void addItem() {
         System.out.println("Add Item to Inventory.");
 
@@ -249,6 +279,9 @@ public class InventoryController {
         this.addItemQuant.setText("");
     }
 
+    /**
+     * Deletes an item from the database
+     */
     public void deleteItem() {
         System.out.println("Delete Item");
 

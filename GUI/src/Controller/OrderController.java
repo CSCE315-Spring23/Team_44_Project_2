@@ -52,7 +52,7 @@ public class OrderController {
     /**
      * ID number of the employee completing the order
      */
-    private final int employeeId;
+    private final long employeeId;
 
     /**
      * {@link Order} being completed
@@ -164,7 +164,12 @@ public class OrderController {
         this.totalCostLabel.setText(String.format("Total Cost: $%.2f", this.order.getTotalCost()));
     }
 
-
+    /**
+     * Handle loading a new window when a navigation button
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} pressed
+     * @throws IOException if loading the new window fails
+     */
     public void navButtonClicked(ActionEvent event) throws IOException {
         SessionData session = new SessionData(this.database, this.employeeId, this.order);
         this.sceneSwitch = new SceneSwitch(session);
@@ -299,11 +304,11 @@ public class OrderController {
      */
     public void insertOrderItem(final Order order) {
 
-        int id = order.getOrderId();
+        long id = order.getOrderId();
         String customerName = order.getCustomerName();
         double totalCost = order.getTotalCost();
         String date = order.getDate().toString();
-        int employeeId = order.getEmployeeId();
+        long employeeId = order.getEmployeeId();
 
         try {
             database.executeUpdate("INSERT INTO " + DatabaseNames.ORDER_ITEM_DATABASE + " VALUES (" + id + ", '"
@@ -322,7 +327,7 @@ public class OrderController {
      */
     public void insertSoldItem(final Order order) {
 
-        int orderId = order.getOrderId();
+        long orderId = order.getOrderId();
         HashMap<String, Integer> soldItems = order.getItems();
         int soldItemId = getLastId("solditem") + 1;
 
