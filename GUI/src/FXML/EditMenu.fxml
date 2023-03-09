@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -73,43 +72,39 @@
             <TableColumn fx:id="numberSold" prefWidth="100.0" text="Number Sold" />
         </columns>
       </TableView>
-      <TitledPane text="Update/Add/Delete Menu Item">
-         <content>
-            <VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="370.0">
-               <children>
-                  <TextField fx:id="menuIDText" prefHeight="25.0" prefWidth="100.0" promptText="Menu Item ID">
-                     <VBox.margin>
-                        <Insets top="30.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <TextField fx:id="menuNameText" layoutX="19.0" layoutY="19.0" promptText="Menu Item Name">
-                     <VBox.margin>
-                        <Insets top="30.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <TextField fx:id="menuCostText" layoutX="19.0" layoutY="45.0" promptText="Menu Item Cost">
-                     <VBox.margin>
-                        <Insets top="30.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <TextField fx:id="menuNumSoldText" layoutX="19.0" layoutY="70.0" promptText="Menu Item Num Sold">
-                     <VBox.margin>
-                        <Insets top="30.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="If updating/adding, fill out all fields. If deleting, you only need ID" />
-                  <CheckBox fx:id="isDelete" mnemonicParsing="false" text="Delete Item?" />
-                  <Button fx:id="submitMenuChangeBtn" mnemonicParsing="false" onAction="#submitMenuChange" text="Submit">
-                     <VBox.margin>
-                        <Insets top="50.0" />
-                     </VBox.margin>
-                     <padding>
-                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                     </padding>
-                  </Button>
-               </children>
-            </VBox>
-         </content>
-      </TitledPane>
+      <VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="365.0">
+         <children>
+            <TitledPane animated="false" text="Update Menu Item">
+               <content>
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <TextField fx:id="updateIDText" promptText="ItemID" />
+                        <TextField fx:id="updateNameText" layoutX="19.0" layoutY="19.0" promptText="Item Name" />
+                        <TextField fx:id="updateCostText" layoutX="19.0" layoutY="45.0" promptText="Item Cost" />
+                        <TextField fx:id="updateNumSoldText" layoutX="19.0" layoutY="70.0" promptText="Item Num Sold" />
+                        <TextField fx:id="updateRecipeText" promptText="Inventory Items for recipe (ex: 12,16,2,4,4)" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Leave any field empty to not change (except ID)" />
+                        <Button fx:id="updateItemButton" mnemonicParsing="false" onAction="#updateItem" prefHeight="73.0" prefWidth="249.0" text="Update Item" />
+                     </children>
+                  </VBox>
+               </content>
+            </TitledPane>
+            <TitledPane animated="false" text="Add Menu Item">
+               <content>
+                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <TextField fx:id="addNameText" promptText="Item Name" />
+                        <TextField fx:id="addCostText" promptText="Item Cost" />
+                        <TextField fx:id="addRecipeText" promptText="Inventory Items for recipe (ex: 12,16,2,4,4)" />
+                        <Button fx:id="addItemButton" mnemonicParsing="false" onAction="#addItem" prefHeight="73.0" prefWidth="249.0" text="Add Item" />
+                     </children>
+                  </VBox>
+               </content>
+            </TitledPane>
+            <TitledPane animated="false" text="Delete Menu Item" />
+            <TextField fx:id="deleteItemID" promptText="Item ID" />
+            <Button fx:id="deleteItemButton" mnemonicParsing="false" onAction="#deleteItem" prefHeight="73.0" prefWidth="249.0" text="Delete Item" />
+         </children>
+      </VBox>
    </children>
 </HBox>
