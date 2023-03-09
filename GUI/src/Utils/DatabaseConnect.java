@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import Items.Order;
 
@@ -187,7 +188,7 @@ public class DatabaseConnect {
         long id = order.getOrderId();
         String customerName = order.getCustomerName();
         double totalCost = order.getTotalCost();
-        String date = order.getDate().toString();
+        String date = order.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         long employeeId = order.getEmployeeId();
 
         try {

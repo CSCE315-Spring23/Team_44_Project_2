@@ -260,7 +260,7 @@ public class OrderHistoryController {
      * Adds a click event to each {@link OrderRow} in table to display order details
      */
     private void addRowOnClick() {
-        orderHistoryTable.setRowFactory(tv -> {
+        this.orderHistoryTable.setRowFactory(tv -> {
             final TableRow<OrderRow> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!row.isEmpty())) {
@@ -271,8 +271,9 @@ public class OrderHistoryController {
                     this.orderHistoryTextBox.setText("");
                     for (final String name : menuItems.keySet()) {
                         final double cost = this.getMenuCost(name);
-                        final String rightside = String.format("$%.2f x%d = $%.2f", cost,
-                                menuItems.get(name), cost * menuItems.get(name));
+                        final long quant = menuItems.get(name);
+                        final String rightside =
+                                String.format("$%.2f x%d = $%.2f", cost, quant, cost * quant);
                         final String print = String.format("%-36s %20s\n", name, rightside);
                         this.orderHistoryTextBox.appendText(print);
                     }
@@ -294,7 +295,7 @@ public class OrderHistoryController {
             final ResultSet rs =
                     database.executeQuery(String.format("SELECT menuid FROM %s WHERE orderid = %d",
                             DatabaseNames.SOLD_ITEM_DATABASE, orderID));
-            if (rs.next()) {
+            while (rs.next()) {
                 menuIds.add(rs.getLong("menuid"));
             }
         } catch (Exception e) {
