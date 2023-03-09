@@ -16,18 +16,18 @@ public class MenuItem {
     }
 
     public SimpleObjectProperty<Long> getId() {
-        return id;
+        return this.id;
     }
 
     public SimpleObjectProperty<String> getName() {
-        return name;
+        return this.name;
     }
 
     public SimpleObjectProperty<Double> getPrice() {
-        return price;
+        return this.price;
     }
 
     public SimpleObjectProperty<Long> getNumSold() {
-        return numSold;
+        return this.numSold;
     }
 }
