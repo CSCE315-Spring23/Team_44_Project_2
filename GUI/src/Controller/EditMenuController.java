@@ -339,6 +339,6 @@ public class EditMenuController {
         final String query = String.format("DELETE FROM %s WHERE id = %d;",
                 DatabaseNames.MENU_ITEM_DATABASE, ID);
         // System.out.println(query);
-        this.database.executeQuery(query);
+        this.database.executeUpdate(query);
     }
 }

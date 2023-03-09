@@ -79,9 +79,23 @@
                      <children>
                         <VBox>
                            <children>
-                              <TextField fx:id="updateItemID" onKeyTyped="#updateItemName" promptText="Item ID" />
-                              <TextField fx:id="updateItemQuant" onKeyTyped="#updateQuantity" promptText="New Quantity" />
-                              <Button fx:id="updateItem" mnemonicParsing="false" onMouseClicked="#updateInventory" prefHeight="35.0" prefWidth="250.0" text="Update" />
+                              <TextField fx:id="updateItemID" promptText="Item ID" />
+                              <TextField fx:id="updateItemQuant" promptText="New Quantity" />
+                              <Button fx:id="updateItem" mnemonicParsing="false" onAction="#updateInventory" prefHeight="35.0" prefWidth="250.0" text="Update Item" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
+            <TitledPane animated="false" prefWidth="250.0" text="Delete Item from Inventory">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefWidth="250.0">
+                           <children>
+                              <TextField fx:id="deleteItemID" promptText="Item ID" />
+                              <Button fx:id="deleteItem" mnemonicParsing="false" onAction="#deleteItem" prefHeight="35.0" prefWidth="250.0" text="Delete Item" />
                            </children>
                         </VBox>
                      </children>
@@ -96,7 +110,7 @@
                            <children>
                               <TextField fx:id="addItemName" promptText="Item Name" />
                               <TextField fx:id="addItemQuant" promptText="Quantity" />
-                              <Button fx:id="addItem" mnemonicParsing="false" prefHeight="35.0" prefWidth="250.0" text="Add Item" />
+                              <Button fx:id="addItem" mnemonicParsing="false" onAction="#addItem" prefHeight="35.0" prefWidth="250.0" text="Add Item" />
                            </children>
                         </VBox>
                      </children>
