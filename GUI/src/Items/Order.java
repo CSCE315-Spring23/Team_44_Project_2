@@ -20,7 +20,7 @@ public class Order {
     /**
      * Indentification number of the order
      */
-    private int orderId;
+    private long orderId;
 
     /**
      * {@link String} holding the name of the customer who made the order
@@ -40,7 +40,7 @@ public class Order {
     /**
      * Identification number of the employee who created the order
      */
-    private int employeeId;
+    private long employeeId;
 
     /**
      * {@link HashMap} holding each item and its coresponding price.
@@ -52,7 +52,7 @@ public class Order {
      * 
      * @param employeeId
      */
-    public Order(final int employeeId) {
+    public Order(final long employeeId) {
         this.employeeId = employeeId;
         this.orderId = -1;
         date = LocalDate.now();
@@ -65,7 +65,7 @@ public class Order {
      * @param employeeId
      * @param orderId
      */
-    public Order(final int employeeId, final int orderId) {
+    public Order(final long employeeId, final long orderId) {
         this.employeeId = employeeId;
         this.orderId = orderId;
         date = LocalDate.now();
@@ -124,7 +124,7 @@ public class Order {
      * 
      * @return
      */
-    public int getEmployeeId() {
+    public long getEmployeeId() {
         return this.employeeId;
     }
 
@@ -142,7 +142,7 @@ public class Order {
      * 
      * @return {@link #orderId}
      */
-    public int getOrderId() {
+    public long getOrderId() {
         return this.orderId;
     }
 

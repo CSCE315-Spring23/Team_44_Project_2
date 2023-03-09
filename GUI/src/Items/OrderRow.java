@@ -3,13 +3,13 @@ package Items;
 import javafx.beans.property.SimpleObjectProperty;
 
 public class OrderRow {
-    private final SimpleObjectProperty<Integer> orderID;
+    private final SimpleObjectProperty<Long> orderID;
     private final SimpleObjectProperty<String> customerName;
     private final SimpleObjectProperty<String> orderDate;
     private final SimpleObjectProperty<Double> orderTotal;
     private final SimpleObjectProperty<String> employeeName;
 
-    public OrderRow(Integer orderID, String customerName, String orderDate, Double orderTotal,
+    public OrderRow(long orderID, String customerName, String orderDate, double orderTotal,
             String employeeName) {
         this.orderID = new SimpleObjectProperty<>(orderID);
         this.customerName = new SimpleObjectProperty<>(customerName);
@@ -18,15 +18,15 @@ public class OrderRow {
         this.employeeName = new SimpleObjectProperty<>(employeeName);
     }
 
-    public Integer getOrderID() {
+    public long getOrderID() {
         return orderID.get();
     }
 
-    public SimpleObjectProperty<Integer> orderIDProperty() {
+    public SimpleObjectProperty<Long> orderIDProperty() {
         return orderID;
     }
 
-    public void setOrderID(Integer orderID) {
+    public void setOrderID(Long orderID) {
         this.orderID.set(orderID);
     }
 

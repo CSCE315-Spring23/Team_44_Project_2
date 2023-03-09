@@ -184,11 +184,11 @@ public class DatabaseConnect {
     public void insertOrderItem(final Order order) {
         String databaseName = "orderitem";
 
-        int id = order.getOrderId();
+        long id = order.getOrderId();
         String customerName = order.getCustomerName();
         double totalCost = order.getTotalCost();
         String date = order.getDate().toString();
-        int employeeId = order.getEmployeeId();
+        long employeeId = order.getEmployeeId();
 
         try {
             Statement stmt = conn.createStatement();
@@ -210,7 +210,7 @@ public class DatabaseConnect {
     public void insertSoldItem(final Order order) {
         String databaseName = "solditem";
 
-        int orderId = order.getOrderId();
+        long orderId = order.getOrderId();
         HashMap<String, Integer> soldItems = order.getItems();
         int soldItemId = getLastId("solditem") + 1;
 

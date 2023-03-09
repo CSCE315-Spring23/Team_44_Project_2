@@ -50,7 +50,7 @@ public class OrderController {
     /**
      * ID number of the employee completing the order
      */
-    private final int employeeId;
+    private final long employeeId;
 
     /**
      * {@link Order} being completed
@@ -162,7 +162,12 @@ public class OrderController {
         this.totalCostLabel.setText(String.format("Total Cost: $%.2f", this.order.getTotalCost()));
     }
 
-
+    /**
+     * Handle loading a new window when a navigation button
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} pressed
+     * @throws IOException if loading the new window fails
+     */
     public void navButtonClicked(ActionEvent event) throws IOException {
         SessionData session = new SessionData(this.database, this.employeeId, this.order);
         this.sceneSwitch = new SceneSwitch(session);
