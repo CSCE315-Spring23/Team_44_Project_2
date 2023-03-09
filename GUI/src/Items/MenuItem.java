@@ -1,6 +1,5 @@
 package Items;
 
-import javax.lang.model.util.SimpleElementVisitor14;
 import javafx.beans.property.SimpleObjectProperty;
 
 public class MenuItem {
