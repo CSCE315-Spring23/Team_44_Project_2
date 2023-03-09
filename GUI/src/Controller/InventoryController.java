@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import Items.InventoryItem;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
+import Utils.DatabaseNames;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.collections.FXCollections;
@@ -31,15 +32,10 @@ import javafx.scene.control.TextField;
  */
 public class InventoryController {
     /**
-     * Name of the inventory database to connect to as a {@link String}
-     */
-    private static final String INVENTORY_DATABASE = "inventory";
-
-    /**
      * Current session data
      *
      * @see SessionData
-    */
+     */
     private SessionData session;
 
     /**
@@ -56,41 +52,47 @@ public class InventoryController {
      */
     private SceneSwitch sceneSwitch;
 
-       /**
+    /**
      * {@link Button} Button to navigate order scene
      *
      */
-    @FXML private Button orderButton;
+    @FXML
+    private Button orderButton;
 
     /**
      * {@link Button} Button to navigate order history scene
      *
      */
-    @FXML private Button orderHistoryButton;
+    @FXML
+    private Button orderHistoryButton;
 
     /**
      * {@link Button} Button to navigate inventory scene
      *
      */
-    @FXML private Button inventoryButton;
+    @FXML
+    private Button inventoryButton;
 
     /**
      * {@link Button} Button to navigate employees scene
      *
      */
-    @FXML private Button employeesButton;
+    @FXML
+    private Button employeesButton;
 
     /**
      * {@link Button} Button to navigate edit menu scene
      *
      */
-    @FXML private Button editMenuButton;
+    @FXML
+    private Button editMenuButton;
 
     /**
      * {@link Button} Button to logout
      *
      */
-    @FXML private Button logoutButton;
+    @FXML
+    private Button logoutButton;
 
     /**
      * {@link Button} update inventory button. Triggers {@link #updateInventory()}
@@ -236,7 +238,7 @@ public class InventoryController {
             return;
 
         final String probe = String.format("SELECT quantity FROM %s WHERE name=\'%s\';",
-                INVENTORY_DATABASE, this.item);
+                DatabaseNames.INVENTORY_DATABASE, this.item);
         final ResultSet result = this.database.executeQuery(probe);
 
         long quant = 0l;
@@ -256,7 +258,7 @@ public class InventoryController {
             return;
         } else {
             final String query = String.format("UPDATE %s SET quantity = %d WHERE name=\'%s\';",
-                    INVENTORY_DATABASE, Long.valueOf(this.quantity), this.item);
+                    DatabaseNames.INVENTORY_DATABASE, Long.valueOf(this.quantity), this.item);
             System.out.println(query);
             this.database.executeUpdate(query);
 
@@ -280,7 +282,8 @@ public class InventoryController {
     private ObservableList<InventoryItem> getInventory() {
         ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
         try {
-            final String query = String.format("SELECT * FROM %s ORDER BY id", INVENTORY_DATABASE);
+            final String query =
+                    String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.INVENTORY_DATABASE);
             final ResultSet rs = database.executeQuery(query);
             while (rs.next()) {
                 final long id = rs.getLong("id");

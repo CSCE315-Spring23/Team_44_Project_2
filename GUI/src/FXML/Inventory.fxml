@@ -5,12 +5,14 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox fx:id="navBar" alignment="TOP_CENTER" prefHeight="400.0" prefWidth="103.0">
+      <VBox fx:id="navBar" alignment="TOP_CENTER" prefHeight="400.0" prefWidth="100.0">
          <children>
             <Button fx:id="orderButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#navButtonClicked" text="Order">
                <VBox.margin>
@@ -71,9 +73,36 @@
       </TableView>
       <VBox prefHeight="200.0" prefWidth="250.0">
          <children>
-            <TextField fx:id="itemInput" onKeyTyped="#updateItemName" promptText="Item Name" />
-            <TextField fx:id="quantityInput" onKeyTyped="#updateQuantity" promptText="New Quantity" />
-            <Button fx:id="update" mnemonicParsing="false" onMouseClicked="#updateInventory" prefHeight="35.0" prefWidth="250.0" text="Update" />
+            <TitledPane animated="false" prefHeight="110.0" prefWidth="250.0" text="Update Inventory">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="250.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <TextField fx:id="updateItemID" onKeyTyped="#updateItemName" promptText="Item ID" />
+                              <TextField fx:id="updateItemQuant" onKeyTyped="#updateQuantity" promptText="New Quantity" />
+                              <Button fx:id="updateItem" mnemonicParsing="false" onMouseClicked="#updateInventory" prefHeight="35.0" prefWidth="250.0" text="Update" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
+            <TitledPane animated="false" prefHeight="110.0" prefWidth="250.0" text="Add Item to Inventory">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefWidth="250.0">
+                           <children>
+                              <TextField fx:id="addItemName" promptText="Item Name" />
+                              <TextField fx:id="addItemQuant" promptText="Quantity" />
+                              <Button fx:id="addItem" mnemonicParsing="false" prefHeight="35.0" prefWidth="250.0" text="Add Item" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
          </children>
       </VBox>
    </children>
