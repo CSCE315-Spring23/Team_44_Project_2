@@ -84,7 +84,7 @@
                         <TextField fx:id="updateNumSoldText" layoutX="19.0" layoutY="70.0" promptText="Item Num Sold" />
                         <TextField fx:id="updateRecipeText" promptText="Inventory Items for recipe (ex: 12,16,2,4,4)" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Leave any field empty to not change (except ID)" />
-                        <Button fx:id="updateItemButton" mnemonicParsing="false" onAction="#updateItem" prefHeight="73.0" prefWidth="249.0" text="Update Item" />
+                        <Button fx:id="updateItemButton" mnemonicParsing="false" onAction="#updateItemClicked" prefHeight="73.0" prefWidth="249.0" text="Update Item" />
                      </children>
                   </VBox>
                </content>
@@ -96,14 +96,14 @@
                         <TextField fx:id="addNameText" promptText="Item Name" />
                         <TextField fx:id="addCostText" promptText="Item Cost" />
                         <TextField fx:id="addRecipeText" promptText="Inventory Items for recipe (ex: 12,16,2,4,4)" />
-                        <Button fx:id="addItemButton" mnemonicParsing="false" onAction="#addItem" prefHeight="73.0" prefWidth="249.0" text="Add Item" />
+                        <Button fx:id="addItemButton" mnemonicParsing="false" onAction="#addItemClicked" prefHeight="73.0" prefWidth="249.0" text="Add Item" />
                      </children>
                   </VBox>
                </content>
             </TitledPane>
             <TitledPane animated="false" text="Delete Menu Item" />
             <TextField fx:id="deleteItemID" promptText="Item ID" />
-            <Button fx:id="deleteItemButton" mnemonicParsing="false" onAction="#deleteItem" prefHeight="73.0" prefWidth="249.0" text="Delete Item" />
+            <Button fx:id="deleteItemButton" mnemonicParsing="false" onAction="#deleteItemClicked" prefHeight="73.0" prefWidth="249.0" text="Delete Item" />
          </children>
       </VBox>
    </children>
