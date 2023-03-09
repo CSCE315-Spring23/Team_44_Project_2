@@ -184,22 +184,22 @@ public class EditMenuController {
         this.setUpTable();
         this.updateTable();
 
-        menuIDText.setText(null);
-        menuNameText.setText(null);
-        menuCostText.setText(null);
-        menuNumSoldText.setText(null);
-        isDelete.setSelected(false);
+        this.menuIDText.setText(null);
+        this.menuNameText.setText(null);
+        this.menuCostText.setText(null);
+        this.menuNumSoldText.setText(null);
+        this.isDelete.setSelected(false);
 
-        if (session.isManager()) {
+        if (this.session.isManager()) {
             System.out.println("Manager");
-            editMenuButton.setVisible(true);
-            inventoryButton.setVisible(true);
-            employeesButton.setVisible(true);
+            this.editMenuButton.setVisible(true);
+            this.inventoryButton.setVisible(true);
+            this.employeesButton.setVisible(true);
         } else {
             System.out.println("Employee");
-            editMenuButton.setVisible(false);
-            inventoryButton.setVisible(false);
-            employeesButton.setVisible(false);
+            this.editMenuButton.setVisible(false);
+            this.inventoryButton.setVisible(false);
+            this.employeesButton.setVisible(false);
         }
     }
 
@@ -251,22 +251,21 @@ public class EditMenuController {
      */
     @FXML
     private void submitMenuChange(ActionEvent e) {
-        Integer itemID =
-                (menuIDText.getText() == null) ? null : Integer.parseInt(menuIDText.getText());
-        String itemName = menuNameText.getText();
-        Double itemCost = (menuCostText.getText() == null) ? null
-                : Double.parseDouble(menuCostText.getText());
-        Integer itemNumSold = (menuNumSoldText.getText() == null) ? null
-                : Integer.parseInt(menuNumSoldText.getText());
+        final long itemID = Long.parseLong(this.menuIDText.getText());
+        final String itemName = this.menuNameText.getText();
+        final double itemCost = this.menuCostText.getText() == null ? -1d
+                : Double.parseDouble(this.menuCostText.getText());
+        final long itemNumSold = this.menuNumSoldText.getText() == null ? -1l
+                : Long.parseLong(this.menuNumSoldText.getText());
 
-        if (isDelete.isSelected() == true) {
-            deleteMenuItem(itemID);
-        } else if (checkMenuItemExists(itemID) == true) {
-            updateMenuItem(itemID, itemName, itemCost, itemNumSold);
+        if (this.isDelete.isSelected()) {
+            this.deleteMenuItem(itemID);
+        } else if (this.checkMenuItemExists(itemID)) {
+            this.updateMenuItem(itemID, itemName, itemCost, itemNumSold);
         } else {
-            addMenuItem(itemID, itemName, itemCost, itemNumSold);
-
+            this.addMenuItem(itemID, itemName, itemCost, itemNumSold);
         }
+
         initialize();
 
     }
@@ -274,18 +273,19 @@ public class EditMenuController {
     /**
      * Check with the database to see if a primary key exists
      */
-    private boolean checkMenuItemExists(Integer itemID) {
-        final String query =
-                String.format("SELECT COUNT(*) FROM menuitem WHERE id = %s;", itemID.toString());
+    private boolean checkMenuItemExists(final long itemID) {
+        if (itemID <= 0l)
+            return false;
+
+        final String query = String.format("SELECT COUNT(*) FROM menuitem WHERE id = %d;", itemID);
         final ResultSet rs = database.executeQuery(query);
 
         try {
             if (rs.next()) {
-                int has = rs.getInt(0);
-                return has != 0;
-            } else {
+                long has = rs.getLong(0);
+                return has != 0l;
+            } else
                 return false;
-            }
         } catch (SQLException e) {
             return false;
         }
@@ -294,39 +294,51 @@ public class EditMenuController {
     /**
      * Adds a menu item to database
      */
-    private void addMenuItem(Integer ID, String itemName, Double itemCost, Integer itemNumSold) {
+    private void addMenuItem(final long ID, final String itemName, final double itemCost,
+            final long itemNumSold) {
+        if (ID <= 0l) {
+            System.out.println("Invalid ID number.\nAbort adding item.");
+            return;
+        }
+
+
         final String query = String.format(
-                "INSERT INTO %s (id, name, cost, numbersold) VALUES (%s, '%s', %s, %s);",
-                DatabaseNames.MENU_ITEM_DATABASE, ID.toString(), itemName, itemCost.toString(),
-                itemNumSold.toString());
-        System.out.println(query);
+                "INSERT INTO %s (id, name, cost, numbersold) VALUES (%d, '%s', %.2f, %d);",
+                DatabaseNames.MENU_ITEM_DATABASE, ID, itemName, itemCost, itemNumSold);
+        // System.out.println(query);
         this.database.executeQuery(query);
     }
 
     /**
      * Updates a menu item in the database with user inputed fields
      */
-    private void updateMenuItem(Integer itemID, String itemName, Double itemCost,
-            Integer itemNumSold) {
-        if (itemID == null) {
+    private void updateMenuItem(final long itemID, final String itemName, final double itemCost,
+            final long itemNumSold) {
+        if (itemID <= 0l) {
+            System.out.println("Invalid ID number.\nAbort updating item.");
             return;
         }
 
         final String query =
-                String.format("UPDATE %s SET = \'%s\', cost = %s, numbersold = %s WHERE id %s;",
-                        DatabaseNames.MENU_ITEM_DATABASE, itemName, itemCost.toString(),
-                        itemNumSold.toString(), itemID.toString());
+                String.format("UPDATE %s SET = \'%s\', cost = %.2f, numbersold = %d WHERE id %d;",
+                        DatabaseNames.MENU_ITEM_DATABASE, itemName, itemCost, itemNumSold, itemID);
 
-        System.out.println(query);
+        // System.out.println(query);
         this.database.executeQuery(query);
     }
 
     /**
      * deletes a menu item from database
      */
-    private void deleteMenuItem(Integer ID) {
-        final String query = String.format("DELETE FROM menuitem WHERE id = %s;", ID.toString());
-        System.out.println(query);
+    private void deleteMenuItem(final long ID) {
+        if (ID <= 0l) {
+            System.out.println("Invalid ID number.\nAbort deleting item.");
+            return;
+        }
+
+        final String query = String.format("DELETE FROM %s WHERE id = %d;",
+                DatabaseNames.MENU_ITEM_DATABASE, ID);
+        // System.out.println(query);
         this.database.executeQuery(query);
     }
 }
