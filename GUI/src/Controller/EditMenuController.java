@@ -134,9 +134,6 @@ public class EditMenuController {
     private TextField updateCostText;
 
     @FXML
-    private TextField updateNumSoldText;
-
-    @FXML
     private TextField updateRecipeText;
 
     @FXML
@@ -176,6 +173,7 @@ public class EditMenuController {
 
     /**
      * Returns the current session object
+     * 
      * @deprecated
      */
     public SessionData getSession() {
@@ -184,6 +182,7 @@ public class EditMenuController {
 
     /**
      * Sets the current session object
+     * 
      * @deprecated
      */
     public void setSession(final SessionData session) {
@@ -215,11 +214,10 @@ public class EditMenuController {
     /**
      * Reset all text fields that get user input for editing a menu item to null
      */
-    public void setEditTextFieldsNull(){
+    public void setEditTextFieldsNull() {
         updateIDText.setText(null);
         updateNameText.setText(null);
         updateCostText.setText(null);
-        updateNumSoldText.setText(null);
         updateRecipeText.setText(null);
 
         addNameText.setText(null);
@@ -317,7 +315,7 @@ public class EditMenuController {
      * 
      * @param itemID ID number of the item
      * @return {@code true} if found, {@code false} otherwise
-     * @deprecated
+     * 
      */
     private boolean checkMenuItemExists(final long itemID) {
         if (itemID <= 0l)
@@ -367,19 +365,18 @@ public class EditMenuController {
      * @param itemName    name of the item
      * @param itemCost    cost of the item
      * @param itemNumSold number of sales
-     * @deprecated
+     * 
      */
-    private void updateMenuItem(final long itemID, final String itemName, final double itemCost,
-            final long itemNumSold) {
+    private void updateMenuItem(final long itemID, final String itemName, String itemCost) {
         if (itemID <= 0l) {
             System.out.println("Invalid ID number.\nAbort updating item.");
             return;
         }
 
-        final String query = String.format("UPDATE %s SET = \'%s\', cost = %.2f, numbersold = %d WHERE id %d;",
-                DatabaseNames.MENU_ITEM_DATABASE, itemName, itemCost, itemNumSold, itemID);
+        final String query = String.format("UPDATE %s SET name = \'%s\', cost = %s WHERE id %d;",
+                DatabaseNames.MENU_ITEM_DATABASE, itemName, itemCost, itemID);
 
-        // System.out.println(query);
+        System.out.println(query);
         this.database.executeQuery(query);
     }
 
@@ -400,4 +397,59 @@ public class EditMenuController {
         // System.out.println(query);
         this.database.executeUpdate(query);
     }
+
+    /**
+     * Update existing item in the menuitem table. First checks if the item exists, 
+     * then updates its values that the user entered that aren't null, then updates
+     * the recipeitem table
+     * @param e
+     */
+    public void updateItemClicked(ActionEvent e) {
+        final String idText = updateIDText.getText();
+        final String costText = updateCostText.getText();
+        final String nameText = updateNameText.getText();
+        final String recipeText = updateRecipeText.getText();
+
+        long itemID;
+        double itemCost;
+        if(idText == null){
+            System.err.println("No ID provided");
+            return;
+        }
+
+        try {
+            itemID = Integer.parseInt(idText);            
+        } catch (Exception error) {
+            // TODO: handle exception
+            System.err.println("Error in input values");
+            return;
+        }
+
+        if(checkMenuItemExists(itemID) == false){
+            return;
+        }
+        
+
+
+
+
+
+    }
+
+    /**
+     * If item doesn't exist, it adds it to menu table and adds its recipe to the recipeitem table
+     * @param e
+     */
+    public void addItemClicked(ActionEvent e) {
+
+    }
+
+    /**
+     * Remove item from menu table and recipe item table if it exists
+     * @param e
+     */
+    public void deleteItemClicked(ActionEvent e) {
+
+    }
+
 }
