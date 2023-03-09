@@ -90,6 +90,9 @@ public class LoginController {
     @FXML // fx:id="num9"
     private Button num9; // Value injected by FXMLLoader
 
+    @FXML // fx:id="backspace"
+    private Button backspace; // Value injected by FXMLLoader
+
     @FXML // fx:id="pinBox"
     private TextField pinBox; // Value injected by FXMLLoader
 
@@ -123,6 +126,14 @@ public class LoginController {
     public void setPin(ActionEvent ae) {
         String pinNum = ((Button) ae.getSource()).getText();
         pinBox.setText(pinBox.getText() + pinNum);
+    }
+
+    public void onBackspace(ActionEvent ae) {
+        String pinNum = pinBox.getText();
+        if (pinNum.length() > 0) {
+            pinNum = pinNum.substring(0, pinNum.length() - 1);
+            pinBox.setText(pinNum);
+        }
     }
 
     public DatabaseConnect databaseInitializer() {
