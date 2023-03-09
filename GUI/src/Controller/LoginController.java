@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 
 /**
  * Controller for the Login Screen
@@ -93,10 +94,20 @@ public class LoginController {
     @FXML // fx:id="backspace"
     private Button backspace; // Value injected by FXMLLoader
 
+    @FXML // fx:id="showPin"
+    private ToggleButton showPin; // Value injected by FXMLLoader
+
     @FXML // fx:id="pinBox"
     private TextField pinBox; // Value injected by FXMLLoader
 
-    int pinNumber;
+    // represents current typed PIN
+    private String pinNumber = "";
+
+    // hiding the PIN
+    private Boolean isShowingPin = false;
+
+    // Max PIN Length
+    private final int MAX_PIN_LENGTH = 4;
 
     public LoginController() {}
 
@@ -122,18 +133,44 @@ public class LoginController {
         database = databaseInitializer();
     }
 
-    @FXML
+    private void updatePin() {
+        pinBox.setText(isShowingPin ? pinNumber : "●".repeat(pinNumber.length()));
+        pinBox.positionCaret(pinNumber.length());
+    }
+
     public void setPin(ActionEvent ae) {
-        String pinNum = ((Button) ae.getSource()).getText();
-        pinBox.setText(pinBox.getText() + pinNum);
+        if (pinNumber.length() < MAX_PIN_LENGTH) {
+            pinNumber = pinNumber + ((Button) ae.getSource()).getText();
+            updatePin();
+        }
+    }
+
+    public void onPinBoxTyped() {
+        int strLength = pinBox.getText().length();
+        if (0 <= strLength && strLength <= MAX_PIN_LENGTH) {
+            if (isShowingPin) {
+                pinNumber = pinBox.getText();
+            } else {
+                if (pinNumber.length() < strLength) {
+                    pinNumber = pinNumber + pinBox.getText().charAt(strLength - 1);
+                } else {
+                    pinNumber = pinNumber.substring(0, strLength);
+                }
+            }
+        }
+        updatePin();
     }
 
     public void onBackspace(ActionEvent ae) {
-        String pinNum = pinBox.getText();
-        if (pinNum.length() > 0) {
-            pinNum = pinNum.substring(0, pinNum.length() - 1);
-            pinBox.setText(pinNum);
+        if (pinNumber.length() > 0) {
+            pinNumber = pinNumber.substring(0, pinNumber.length() - 1);
+            updatePin();
         }
+    }
+
+    public void onShowPin(ActionEvent ae) {
+        isShowingPin = ((ToggleButton) ae.getSource()).isSelected();
+        updatePin();
     }
 
     public DatabaseConnect databaseInitializer() {
@@ -160,11 +197,9 @@ public class LoginController {
 
     @FXML
     public void loginButtonClicked(ActionEvent event) throws IOException {
-        this.pinNumber = Integer.parseInt(pinBox.getText());
-        System.out.println(this.pinNumber);
         try {
             String sqlQuery = String.format(
-                    "SELECT * FROM %s WHERE pin= '" + Integer.toString(pinNumber) + "'",
+                    "SELECT * FROM %s WHERE pin= '" + pinNumber + "'",
                     DatabaseNames.EMPLOYEE_DATABASE);
             // System.out.println(sqlQuery);
 
@@ -188,7 +223,7 @@ public class LoginController {
         int ret = -1;
         try {
             ResultSet rs = database.executeQuery(String.format(
-                    "SELECT id FROM %s WHERE pin = '" + Integer.toString(pinNumber) + "'",
+                    "SELECT id FROM %s WHERE pin = '" + pinNumber + "'",
                     DatabaseNames.EMPLOYEE_DATABASE));
             if (rs.next()) {
                 ret = rs.getInt("id");
