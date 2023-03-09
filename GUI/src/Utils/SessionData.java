@@ -35,9 +35,9 @@ public class SessionData {
     /**
      * Constructor
      * 
-     * @param database   Connection to the database
+     * @param database Connection to the database
      * @param employeeId id of the employee
-     * @param order      current order
+     * @param order current order
      */
     public SessionData(final DatabaseConnect database, int employeeId, Order order) {
         this.database = database;
@@ -45,9 +45,16 @@ public class SessionData {
         this.order = order;
     }
 
+    /**
+     * Determine if the user logging in is a manager
+     * 
+     * @return {@code true} if the user is a manger. {@code false} otherwise
+     */
     public boolean isManager() {
+        final String query = String.format("SELECT role FROM %s WHERE id=%d",
+                DatabaseNames.EMPLOYEE_DATABASE, this.employeeId);
         try {
-            ResultSet rs = database.executeQuery("SELECT * FROM Employee WHERE id = " + employeeId);
+            final ResultSet rs = this.database.executeQuery(query);
             rs.next();
             return rs.getString("role").equals("manager");
         } catch (SQLException e) {

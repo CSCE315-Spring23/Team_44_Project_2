@@ -71,10 +71,8 @@ public class DatabaseConnect {
     }
 
     /**
-     * Execute a SQL query.
-     * 
-     * @implNote This method will NOT handle UPDATE queries. Use {@link #executeUpdate(String)}
-     *           instead.
+     * Execute a SQL query. This method will NOT handle UPDATE queries. Use
+     * {@link #executeUpdate(String)} instead.
      * 
      * @param command query to send to database
      * @return the {@link ResultSet} of the query
@@ -207,7 +205,7 @@ public class DatabaseConnect {
     /**
      * Inserts each individual menu item in an order into the {@code solditem} database
      * 
-     * @param order
+     * @param order {@link Order} to insert into the table
      */
     public void insertSoldItem(final Order order) {
         String databaseName = "solditem";
@@ -241,13 +239,6 @@ public class DatabaseConnect {
         }
     }
 
-    /*
-     * Returns the ID of a menu item given its NAME
-     * 
-     * @param name
-     * 
-     * @return menuitem.id
-     */
     /**
      * Returns the ID of a menu item given its NAME
      * 

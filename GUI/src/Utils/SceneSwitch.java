@@ -58,8 +58,6 @@ public class SceneSwitch {
      */
     private InventoryController inventoryController;
 
-    // private EmployeeController employeeController;
-
     /**
      * {@link EditMenuController} to load the menu editting window
      */
@@ -68,48 +66,56 @@ public class SceneSwitch {
     /**
      * Constructor
      * 
-     * @param session {@link SessionData} to send information between the various
-     *                windows
+     * @param session {@link SessionData} to send information between the various windows
      */
     public SceneSwitch(SessionData session) {
         this.session = session;
-        loginController = new LoginController(this.session);
-        orderController = new OrderController(this.session);
-        orderHistoryController = new OrderHistoryController(this.session);
-        inventoryController = new InventoryController(this.session);
-        employeeController = new EmployeeController(this.session);
-        editMenuController = new EditMenuController(this.session);
+        this.loginController = new LoginController(this.session);
+        this.orderController = new OrderController(this.session);
+        this.orderHistoryController = new OrderHistoryController(this.session);
+        this.inventoryController = new InventoryController(this.session);
+        this.employeeController = new EmployeeController(this.session);
+        this.editMenuController = new EditMenuController(this.session);
     }
 
     /**
      * Loads a the new window bassed on the navigation button pressed.
      * 
-     * @param event {@link ActionEvent} passed when pressing a button
+     * @param event {@link ActionEvent} passed when pressing a {@link Button}
+     * @param session {@link SessionData} to pass between controllers
      * @throws IOException if the new window failed to load
      */
-
     public void LoginTransition(ActionEvent event, SessionData session) throws IOException {
         // Pass session object from login page to all scenes
         System.out.println("Login Page Initialized");
-        Button b = (Button) event.getSource();
-        System.out.println(session.employeeId);
+        // final Button b = (Button) event.getSource();
+        // System.out.println(this.session.employeeId);
+
         // Load Order Scene from login page
-        String buttonID = b.getId();
-        System.out.println(buttonID);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/OrderScene.fxml"));
+        // String buttonID = b.getId();
+        // System.out.println(buttonID);
+        final FXMLLoader loader =
+                new FXMLLoader(this.getClass().getResource("../FXML/OrderScene.fxml"));
         loader.setController(orderController);
-        Parent root = loader.load();
-        Scene scene = new Scene(root, 1200, 800);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        final Parent root = loader.load();
+        final Scene scene = new Scene(root, 1200, 800);
+        final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
 
+    /**
+     * Loads a new Controller based on which navigation button was pressed
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} pressed
+     * @throws IOException if loading the new window failed
+     */
     public void switchScene(ActionEvent event) throws IOException {
-        Button b = (Button) event.getSource();
-        String buttonID = b.getId();
+        final Button b = (Button) event.getSource();
+        final String buttonID = b.getId();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/OrderScene.fxml"));
+        FXMLLoader loader = null;
 
         switch (buttonID) {
             case "orderButton":
@@ -143,12 +149,12 @@ public class SceneSwitch {
                 loader.setController(loginController);
                 break;
             default:
-                break;
+                throw new IllegalStateException("Invalid button pressed");
         }
 
-        Parent root = loader.load();
-        Scene scene = new Scene(root, 1200, 800);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        final Parent root = loader.load();
+        final Scene scene = new Scene(root, 1200, 800);
+        final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
