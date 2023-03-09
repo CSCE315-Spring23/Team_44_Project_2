@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import Items.Order;
 import Utils.DatabaseConnect;
+import Utils.DatabaseNames;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 
@@ -25,12 +26,11 @@ import javafx.fxml.FXML;
  * @author Mao, Steven
  */
 public class OrderController {
-
     /**
      * Current session data
      *
      * @see SessionData
-    */
+     */
     private SessionData session;
 
     /**
@@ -47,47 +47,58 @@ public class OrderController {
      */
     private SceneSwitch sceneSwitch;
 
+    /**
+     * ID number of the employee completing the order
+     */
     private final int employeeId;
 
+    /**
+     * {@link Order} being completed
+     */
     private Order order;
 
 
-    // Navbar Buttons
-        /**
+    /**
      * {@link Button} Button to navigate order scene
      *
      */
-    @FXML private Button orderButton;
+    @FXML
+    private Button orderButton;
 
     /**
      * {@link Button} Button to navigate order history scene
      *
      */
-    @FXML private Button orderHistoryButton;
+    @FXML
+    private Button orderHistoryButton;
 
     /**
      * {@link Button} Button to navigate inventory scene
      *
      */
-    @FXML private Button inventoryButton;
+    @FXML
+    private Button inventoryButton;
 
     /**
      * {@link Button} Button to navigate employees scene
      *
      */
-    @FXML private Button employeesButton;
+    @FXML
+    private Button employeesButton;
 
     /**
      * {@link Button} Button to navigate edit menu scene
      *
      */
-    @FXML private Button editMenuButton;
+    @FXML
+    private Button editMenuButton;
 
     /**
      * {@link Button} Button to logout
      *
      */
-    @FXML private Button logoutButton;
+    @FXML
+    private Button logoutButton;
 
     /*
      * Text that lists the items in the order
@@ -113,7 +124,6 @@ public class OrderController {
     @FXML
     private Button submitOrderButton;
 
-
     /**
      * Constructor
      * 
@@ -130,34 +140,33 @@ public class OrderController {
      * Verify Database is Connected
      */
     public void initialize() {
-        if(session.isManager()) {
+        if (session.isManager()) {
             System.out.println("Manager");
             editMenuButton.setVisible(true);
             inventoryButton.setVisible(true);
             employeesButton.setVisible(true);
-        }
-        else{
+        } else {
             System.out.println("Employee");
             editMenuButton.setVisible(false);
             inventoryButton.setVisible(false);
             employeesButton.setVisible(false);
         }
-        refreshPage();
+        this.refreshPage();
     }
 
     /**
      * Refreshes the front-end
      */
     private void refreshPage() {
-        orderBox.setText(order.getItemCount());
-        totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
+        this.orderBox.setText(this.order.getItemCount());
+        this.totalCostLabel.setText(String.format("Total Cost: $%.2f", this.order.getTotalCost()));
     }
 
 
     public void navButtonClicked(ActionEvent event) throws IOException {
-        SessionData session = new SessionData(database, employeeId, order);
-        sceneSwitch = new SceneSwitch(session);
-        sceneSwitch.switchScene(event);
+        SessionData session = new SessionData(this.database, this.employeeId, this.order);
+        this.sceneSwitch = new SceneSwitch(session);
+        this.sceneSwitch.switchScene(event);
     }
 
     /**
@@ -166,52 +175,54 @@ public class OrderController {
      * @param event {@link ActionEvent} that triggers on button click
      */
     public void menuItemButtonOnClick(ActionEvent event) {
-        Button b = (Button) event.getSource();
+        final Button b = (Button) event.getSource();
         System.out.println("Menu Item Button Clicked: " + b.getId());
 
         // add item to order
-        String id = b.getId().substring(1);
+        final String id = b.getId().substring(1);
 
-        String name = database.getMenuItemName(id);
-        double cost = database.getMenuItemCost(id);
+        final String name = database.getMenuItemName(id);
+        final double cost = database.getMenuItemCost(id);
 
-        order.addItem(name, cost);
-        
+        this.order.addItem(name, cost);
+
         // update order box and cost
-        refreshPage();
+        this.refreshPage();
     }
 
     /**
      * Handles the text change event for the customr name text box
+     * 
+     * @deprecated
      */
     public void customerNameOnChanged() {}
 
     /**
-     * Handles the buttom click event for the submit order button.
-     * Inserts the order into both the orderitem and solditem tables.
+     * Handles the buttom click event for the submit order button. Inserts the order into both the
+     * orderitem and solditem tables.
      */
     public void submitOrderOnClick() {
-        if (order.getTotalCost() == 0.0) {
+        if (this.order.getTotalCost() == 0.0) {
             System.out.println("Error: No items in order");
             return;
         }
 
-        if (customerNameField.getText().equals("")) {
+        if (this.customerNameField.getText().isEmpty()) {
             System.out.println("Error: No customer name");
             return;
         }
 
         // setup order and submit to database
-        order.setOrderId(database.getLastId("orderitem") + 1);
-        order.setCustomerName(customerNameField.getText());
+        this.order.setOrderId(this.database.getLastId(DatabaseNames.ORDER_ITEM_DATABASE) + 1);
+        this.order.setCustomerName(this.customerNameField.getText());
 
-        database.insertOrderItem(order);
-        database.insertSoldItem(order);
-        database.updateInventory(order);
+        this.database.insertOrderItem(this.order);
+        this.database.insertSoldItem(this.order);
+        this.database.updateInventory(this.order);
 
         // reset order and screen
-        order = new Order(employeeId);
-        refreshPage();
-        customerNameField.setText("");
+        this.order = new Order(this.employeeId);
+        this.refreshPage();
+        this.customerNameField.setText("");
     }
 }

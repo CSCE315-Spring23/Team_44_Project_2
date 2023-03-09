@@ -56,7 +56,7 @@ public class Order {
         this.employeeId = employeeId;
         this.orderId = -1;
         date = LocalDate.now();
-        System.out.println("Order Created:\tcurrent date: " + date + " order id: " + orderId);
+        System.out.println("Order Created on " + this.date.toString());
     }
 
     /**
@@ -69,13 +69,13 @@ public class Order {
         this.employeeId = employeeId;
         this.orderId = orderId;
         date = LocalDate.now();
-        System.out.println("Order Created:\tcurrent date: " + date + " order id: " + orderId);
+        System.out.println("Order Created on " + this.date.toString());
     }
 
     /**
      * Add an item to the order
      * 
-     * @param name  of the item to add as a {@link String}
+     * @param name of the item to add as a {@link String}
      * @param price of the item
      */
     public void addItem(final String name, final double price) {
@@ -86,7 +86,7 @@ public class Order {
     /**
      * Removes an item from the order
      * 
-     * @param name  of the item to remove as a {@link String}
+     * @param name of the item to remove as a {@link String}
      * @param price of the item
      */
     public void removeItem(String name, double price) {
