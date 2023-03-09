@@ -134,6 +134,9 @@ public class EditMenuController {
     private TextField updateCostText;
 
     @FXML
+    private TextField updateNumSoldText;
+
+    @FXML
     private TextField updateRecipeText;
 
     @FXML
@@ -146,7 +149,7 @@ public class EditMenuController {
     private TextField addRecipeText;
 
     @FXML
-    private TextField deleteIDText;
+    private TextField deleteItemID;
 
     @FXML
     private Button updateItemButton;
@@ -160,8 +163,7 @@ public class EditMenuController {
     /**
      * Default constructor to prevent errors
      */
-    public EditMenuController() {
-    }
+    public EditMenuController() {}
 
     /**
      * Allows for passing session data from scene to scene
@@ -215,16 +217,17 @@ public class EditMenuController {
      * Reset all text fields that get user input for editing a menu item to null
      */
     public void setEditTextFieldsNull() {
-        updateIDText.setText(null);
-        updateNameText.setText(null);
-        updateCostText.setText(null);
-        updateRecipeText.setText(null);
+        this.updateIDText.setText("");
+        this.updateNameText.setText("");
+        this.updateCostText.setText("");
+        this.updateNumSoldText.setText("");
+        this.updateRecipeText.setText("");
 
-        addNameText.setText(null);
-        addCostText.setText(null);
-        addRecipeText.setText(null);
+        this.addNameText.setText("");
+        this.addCostText.setText("");
+        this.addRecipeText.setText("");
 
-        deleteIDText.setText(null);
+        this.deleteItemID.setText("");
     }
 
     /**
@@ -256,7 +259,8 @@ public class EditMenuController {
     private ObservableList<MenuItem> getMenuItems() {
         final ObservableList<MenuItem> menu = FXCollections.observableArrayList();
         try {
-            final String query = String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.MENU_ITEM_DATABASE);
+            final String query =
+                    String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.MENU_ITEM_DATABASE);
             final ResultSet rs = database.executeQuery(query);
             while (rs.next()) {
                 final long id = rs.getLong("id");
@@ -291,23 +295,7 @@ public class EditMenuController {
      */
     @FXML
     private void submitMenuChange(ActionEvent e) {
-        // final long itemID = Long.parseLong(this.menuIDText.getText());
-        // final String itemName = this.menuNameText.getText();
-        // final double itemCost = this.menuCostText.getText() == null ? -1d
-        // : Double.parseDouble(this.menuCostText.getText());
-        // final long itemNumSold = this.menuNumSoldText.getText() == null ? -1l
-        // : Long.parseLong(this.menuNumSoldText.getText());
-
-        // if (this.isDelete.isSelected()) {
-        // this.deleteMenuItem(itemID);
-        // } else if (this.checkMenuItemExists(itemID)) {
-        // this.updateMenuItem(itemID, itemName, itemCost, itemNumSold);
-        // } else {
-        // this.addMenuItem(itemID, itemName, itemCost, itemNumSold);
-        // }
-
-        initialize();
-
+        this.initialize();
     }
 
     /**
@@ -338,9 +326,9 @@ public class EditMenuController {
     /**
      * Adds a menu item to database
      * 
-     * @param itemID      identification number
-     * @param itemName    name of the item
-     * @param itemCost    cost of the item
+     * @param itemID identification number
+     * @param itemName name of the item
+     * @param itemCost cost of the item
      * @param itemNumSold number of sales
      * @deprecated
      */
@@ -361,11 +349,11 @@ public class EditMenuController {
     /**
      * Updates a menu item in teh database
      * 
-     * @param itemID      identification number
-     * @param itemName    name of the item
-     * @param itemCost    cost of the item
+     * @param itemID identification number
+     * @param itemName name of the item
+     * @param itemCost cost of the item
      * @param itemNumSold number of sales
-     * 
+     * @deprecated
      */
     private void updateMenuItem(final long itemID, final String itemName, String itemCost) {
         if (itemID <= 0l) {
@@ -399,9 +387,9 @@ public class EditMenuController {
     }
 
     /**
-     * Update existing item in the menuitem table. First checks if the item exists, 
-     * then updates its values that the user entered that aren't null, then updates
-     * the recipeitem table
+     * Update existing item in the menuitem table. First checks if the item exists, then updates its
+     * values that the user entered that aren't null, then updates the recipeitem table
+     * 
      * @param e
      */
     public void updateItemClicked(ActionEvent e) {
@@ -412,25 +400,22 @@ public class EditMenuController {
 
         long itemID;
         double itemCost;
-        if(idText == null){
+        if (idText == null) {
             System.err.println("No ID provided");
             return;
         }
 
         try {
-            itemID = Integer.parseInt(idText);            
+            itemID = Integer.parseInt(idText);
         } catch (Exception error) {
             // TODO: handle exception
             System.err.println("Error in input values");
             return;
         }
 
-        if(checkMenuItemExists(itemID) == false){
+        if (checkMenuItemExists(itemID) == false) {
             return;
         }
-        
-
-
 
 
 
@@ -438,6 +423,7 @@ public class EditMenuController {
 
     /**
      * If item doesn't exist, it adds it to menu table and adds its recipe to the recipeitem table
+     * 
      * @param e
      */
     public void addItemClicked(ActionEvent e) {
@@ -446,6 +432,7 @@ public class EditMenuController {
 
     /**
      * Remove item from menu table and recipe item table if it exists
+     * 
      * @param e
      */
     public void deleteItemClicked(ActionEvent e) {
