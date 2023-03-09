@@ -16,3 +16,5 @@ OrderAutoGenerator/__pycache__
 #Ignore computer specific compile scripts
 /GUI/src/localCompile.ps1
 /GUI/Makefile
+
+/GUI/doc
