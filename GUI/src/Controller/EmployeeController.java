@@ -1,23 +1,21 @@
 package Controller;
 
-import Utils.DatabaseConnect;
-import Utils.SceneSwitch;
-import Utils.DatabaseNames;
-import Utils.SessionData;
-import Items.EmployeeRow;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
 import java.util.ResourceBundle;
+import Items.EmployeeRow;
+import Utils.DatabaseConnect;
+import Utils.DatabaseNames;
+import Utils.SceneSwitch;
+import Utils.SessionData;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 
 /**
  * Controller for the Employee Screen

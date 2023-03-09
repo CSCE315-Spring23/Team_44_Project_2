@@ -25,7 +25,7 @@ public class SessionData {
     /**
      * Identification number of the employee
      */
-    public final int employeeId;
+    public final long employeeId;
 
     /**
      * Represents the current {@link Order} being processed
@@ -39,7 +39,7 @@ public class SessionData {
      * @param employeeId id of the employee
      * @param order current order
      */
-    public SessionData(final DatabaseConnect database, int employeeId, Order order) {
+    public SessionData(final DatabaseConnect database, final long employeeId, final Order order) {
         this.database = database;
         this.employeeId = employeeId;
         this.order = order;
