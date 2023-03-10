@@ -33,6 +33,11 @@ public class SessionData {
     public Order order;
 
     /**
+     * Name of the customer
+     */
+    public String customerName = "";
+
+    /**
      * Constructor
      * 
      * @param database Connection to the database
@@ -43,6 +48,13 @@ public class SessionData {
         this.database = database;
         this.employeeId = employeeId;
         this.order = order;
+    }
+
+    public SessionData(final DatabaseConnect database, final long employeeId, final Order order, String customerName) {
+        this.database = database;
+        this.employeeId = employeeId;
+        this.order = order;
+        this.customerName = customerName;
     }
 
     /**
