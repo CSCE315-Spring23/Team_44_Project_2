@@ -13,7 +13,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -178,6 +177,7 @@ public class EditMenuController {
      * 
      * @deprecated
      */
+    @Deprecated
     public SessionData getSession() {
         return this.session;
     }
@@ -187,6 +187,7 @@ public class EditMenuController {
      * 
      * @deprecated
      */
+    @Deprecated
     public void setSession(final SessionData session) {
         this.session = session;
     }
@@ -294,6 +295,7 @@ public class EditMenuController {
      * @deprecated
      */
     @FXML
+    @Deprecated
     private void submitMenuChange(ActionEvent e) {
         this.initialize();
     }
@@ -324,101 +326,30 @@ public class EditMenuController {
     }
 
     /**
-     * Adds a menu item to database
-     * 
-     * @param itemID identification number
-     * @param itemName name of the item
-     * @param itemCost cost of the item
-     * @param itemNumSold number of sales
-     * @deprecated
-     */
-    private void addMenuItem(final long itemID, final String itemName, final double itemCost,
-            final long itemNumSold) {
-        if (itemID <= 0l) {
-            System.out.println("Invalid ID number.\nAbort adding item.");
-            return;
-        }
-
-        final String query = String.format(
-                "INSERT INTO %s (id, name, cost, numbersold) VALUES (%d, '%s', %.2f, %d);",
-                DatabaseNames.MENU_ITEM_DATABASE, itemID, itemName, itemCost, itemNumSold);
-        // System.out.println(query);
-        this.database.executeQuery(query);
-    }
-
-    /**
-     * Updates a menu item in teh database
-     * 
-     * @param itemID identification number
-     * @param itemName name of the item
-     * @param itemCost cost of the item
-     * @param itemNumSold number of sales
-     * @deprecated
-     */
-    private void updateMenuItem(final long itemID, final String itemName, String itemCost) {
-        if (itemID <= 0l) {
-            System.out.println("Invalid ID number.\nAbort updating item.");
-            return;
-        }
-
-        final String query = String.format("UPDATE %s SET name = \'%s\', cost = %s WHERE id %d;",
-                DatabaseNames.MENU_ITEM_DATABASE, itemName, itemCost, itemID);
-
-        System.out.println(query);
-        this.database.executeQuery(query);
-    }
-
-    /**
-     * deletes a menu item from database
-     * 
-     * @param itemID identification number
-     * @deprecated
-     */
-    private void deleteMenuItem(final long itemID) {
-        if (itemID <= 0l) {
-            System.out.println("Invalid ID number.\nAbort deleting item.");
-            return;
-        }
-
-        final String query = String.format("DELETE FROM %s WHERE id = %d;",
-                DatabaseNames.MENU_ITEM_DATABASE, itemID);
-        // System.out.println(query);
-        this.database.executeUpdate(query);
-    }
-
-    /**
      * Update existing item in the menuitem table. First checks if the item exists, then updates its
      * values that the user entered that aren't null, then updates the recipeitem table
      * 
      * @param e
      */
     public void updateItemClicked(ActionEvent e) {
-        final String idText = updateIDText.getText();
-        final String costText = updateCostText.getText();
-        final String nameText = updateNameText.getText();
-        final String recipeText = updateRecipeText.getText();
+        final String idText = this.updateIDText.getText();
 
-        long itemID;
-        double itemCost;
         if (idText == null) {
             System.err.println("No ID provided");
             return;
         }
 
+        long itemID;
         try {
             itemID = Integer.parseInt(idText);
         } catch (Exception error) {
-            // TODO: handle exception
             System.err.println("Error in input values");
             return;
         }
 
-        if (checkMenuItemExists(itemID) == false) {
+        if (!this.checkMenuItemExists(itemID)) {
             return;
         }
-
-
-
     }
 
     /**

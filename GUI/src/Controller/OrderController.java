@@ -157,7 +157,8 @@ public class OrderController {
     private void loadMenuItems() {
         ArrayList<Button> buttons = new ArrayList<Button>();
         try {
-            ResultSet rs = database.executeQuery("SELECT * FROM " + DatabaseNames.MENU_ITEM_DATABASE);
+            ResultSet rs =
+                    database.executeQuery("SELECT * FROM " + DatabaseNames.MENU_ITEM_DATABASE);
             while (rs.next()) {
                 String id = rs.getString("id");
                 String name = rs.getString("name");
@@ -221,6 +222,7 @@ public class OrderController {
      * 
      * @deprecated
      */
+    @Deprecated
     public void customerNameOnChanged() {}
 
     /**
@@ -261,8 +263,9 @@ public class OrderController {
     public String getMenuItemName(final String id) {
         String ret = "";
         try {
-            ResultSet rs = database.executeQuery(String.format("Select name FROM %s where id = %s;", DatabaseNames.MENU_ITEM_DATABASE, id));
-            while(rs.next()){
+            ResultSet rs = database.executeQuery(String.format("Select name FROM %s where id = %s;",
+                    DatabaseNames.MENU_ITEM_DATABASE, id));
+            while (rs.next()) {
                 ret = rs.getString("name");
             }
             rs.close();
@@ -283,7 +286,7 @@ public class OrderController {
         double ret = 0.0;
         try {
             ResultSet rs = database.executeQuery(String.format("SELECT cost FROM %s where id = %s;",
-                DatabaseNames.MENU_ITEM_DATABASE, id));
+                    DatabaseNames.MENU_ITEM_DATABASE, id));
             while (rs.next()) {
                 ret = rs.getDouble("cost");
             }
@@ -330,9 +333,11 @@ public class OrderController {
         long employeeId = order.getEmployeeId();
 
         try {
-            database.executeUpdate("INSERT INTO " + DatabaseNames.ORDER_ITEM_DATABASE + " VALUES (" + id + ", '"
-                    + customerName + "', " + totalCost + ", '" + date + "', " + employeeId + ");");
-            System.out.println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
+            database.executeUpdate("INSERT INTO " + DatabaseNames.ORDER_ITEM_DATABASE + " VALUES ("
+                    + id + ", '" + customerName + "', " + totalCost + ", '" + date + "', "
+                    + employeeId + ");");
+            System.out
+                    .println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error inserting into orderitem");
@@ -360,8 +365,8 @@ public class OrderController {
                     database.executeUpdate(query);
 
                     // final String debug =
-                    //         String.format("Inserted %s with id %d into %s for order %d", item,
-                    //                 soldItemId, DatabaseNames.SOLD_ITEM_DATABASE, orderId);
+                    // String.format("Inserted %s with id %d into %s for order %d", item,
+                    // soldItemId, DatabaseNames.SOLD_ITEM_DATABASE, orderId);
                     // System.out.println(debug);
 
                     // stmt.close();
@@ -390,8 +395,9 @@ public class OrderController {
     public int getMenuItemId(final String name) {
         int ret = -1;
         try {
-            ResultSet rs = database.executeQuery(String.format("SELECT id FROM %s WHERE name = \'%s\';",
-                DatabaseNames.MENU_ITEM_DATABASE, name));
+            ResultSet rs =
+                    database.executeQuery(String.format("SELECT id FROM %s WHERE name = \'%s\';",
+                            DatabaseNames.MENU_ITEM_DATABASE, name));
             while (rs.next()) {
                 ret = rs.getInt("id");
             }
@@ -421,8 +427,9 @@ public class OrderController {
             int count = soldItems.get(item);
 
             try {
-                ResultSet rs = database.executeQuery(String.format("SELECT inventoryid, count FROM %s WHERE menuid = %d;",
-                    DatabaseNames.RECIPE_ITEM_DATABASE, menuItemId));
+                ResultSet rs = database.executeQuery(
+                        String.format("SELECT inventoryid, count FROM %s WHERE menuid = %d;",
+                                DatabaseNames.RECIPE_ITEM_DATABASE, menuItemId));
 
                 while (rs.next()) {
                     inventoryIDs.put(rs.getInt("inventoryid"), rs.getDouble("count"));
@@ -439,8 +446,9 @@ public class OrderController {
 
                 try {
 
-                    database.executeUpdate(String.format("UPDATE %s SET quantity = quantity - %f WHERE id = %s;",
-                    DatabaseNames.INVENTORY_DATABASE, quantity * count, inventoryid));
+                    database.executeUpdate(String.format(
+                            "UPDATE %s SET quantity = quantity - %f WHERE id = %s;",
+                            DatabaseNames.INVENTORY_DATABASE, quantity * count, inventoryid));
 
                     System.out
                             .println("Updated " + databaseName + " for inventoryid " + inventoryid);
@@ -453,7 +461,7 @@ public class OrderController {
 
         }
 
-        //To-Go Bag
+        // To-Go Bag
         database.executeUpdate(String.format("UPDATE %s SET quantity = quantity - 1 WHERE id = 1;",
                 DatabaseNames.INVENTORY_DATABASE));
     }

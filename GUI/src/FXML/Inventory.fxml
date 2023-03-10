@@ -68,7 +68,7 @@
         <columns>
             <TableColumn fx:id="inventoryID" prefWidth="100.0" text="ID" />
           <TableColumn fx:id="itemName" prefWidth="600.0" text="Item" />
-          <TableColumn fx:id="quantityCol" prefWidth="150.0" text="Quantity" />
+          <TableColumn fx:id="quantityCol" prefWidth="135.0" text="Quantity" />
         </columns>
       </TableView>
       <VBox prefHeight="200.0" prefWidth="250.0">

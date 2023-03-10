@@ -121,11 +121,10 @@ public class LoginController {
     }
 
     /**
-     * * Connection to the database
+     * Connection to the database
      *
      * @see DatabaseConnect
      */
-
     public Order order;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -139,9 +138,9 @@ public class LoginController {
     }
 
     public void setPin(ActionEvent ae) {
-        if (pinNumber.length() < MAX_PIN_LENGTH) {
-            pinNumber = pinNumber + ((Button) ae.getSource()).getText();
-            updatePin();
+        if (this.pinNumber.length() < MAX_PIN_LENGTH) {
+            this.pinNumber = this.pinNumber + ((Button) ae.getSource()).getText();
+            this.updatePin();
         }
     }
 
@@ -158,39 +157,38 @@ public class LoginController {
                 }
             }
         }
-        updatePin();
+        this.updatePin();
     }
 
     public void onBackspace(ActionEvent ae) {
         if (pinNumber.length() > 0) {
             pinNumber = pinNumber.substring(0, pinNumber.length() - 1);
-            updatePin();
+            this.updatePin();
         }
     }
 
     public void onShowPin(ActionEvent ae) {
-        isShowingPin = ((ToggleButton) ae.getSource()).isSelected();
-        updatePin();
+        this.isShowingPin = ((ToggleButton) ae.getSource()).isSelected();
+        this.updatePin();
     }
 
     public DatabaseConnect databaseInitializer() {
-        DatabaseConnect database;
-        String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
-        String username = DatabaseLoginInfo.username;
-        String password = DatabaseLoginInfo.password;
+        final String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
+        final String username = DatabaseLoginInfo.username;
+        final String password = DatabaseLoginInfo.password;
 
-        database = new DatabaseConnect(dbConnectionString, username, password);
+        final DatabaseConnect database =
+                new DatabaseConnect(dbConnectionString, username, password);
         database.setUpDatabase();
 
         return database;
     }
 
     public SessionData loginInitializer() {
-
-        int id = getEmployeeId();
+        final long id = this.getEmployeeId();
 
         // sessionDataObject will be passed starting from LoginPage
-        SessionData newSession = new SessionData(databaseInitializer(), id, new Order(id));
+        SessionData newSession = new SessionData(this.databaseInitializer(), id, new Order(id));
 
         return newSession;
     }
@@ -198,8 +196,7 @@ public class LoginController {
     @FXML
     public void loginButtonClicked(ActionEvent event) throws IOException {
         try {
-            String sqlQuery = String.format(
-                    "SELECT * FROM %s WHERE pin= '" + pinNumber + "'",
+            String sqlQuery = String.format("SELECT * FROM %s WHERE pin= '" + pinNumber + "'",
                     DatabaseNames.EMPLOYEE_DATABASE);
             // System.out.println(sqlQuery);
 
@@ -208,7 +205,7 @@ public class LoginController {
             if (!loginQuery.next()) {
                 System.out.println("Invalid PIN");
             } else {
-                this.session = loginInitializer();
+                this.session = this.loginInitializer();
                 this.sceneSwitch = new SceneSwitch(session);
                 this.sceneSwitch.LoginTransition(event, session);
                 System.out.println("Login authenticated");
@@ -219,14 +216,14 @@ public class LoginController {
 
     }
 
-    public int getEmployeeId() {
-        int ret = -1;
+    public long getEmployeeId() {
+        long ret = -1l;
         try {
-            ResultSet rs = database.executeQuery(String.format(
-                    "SELECT id FROM %s WHERE pin = '" + pinNumber + "'",
-                    DatabaseNames.EMPLOYEE_DATABASE));
+            ResultSet rs = database
+                    .executeQuery(String.format("SELECT id FROM %s WHERE pin = '" + pinNumber + "'",
+                            DatabaseNames.EMPLOYEE_DATABASE));
             if (rs.next()) {
-                ret = rs.getInt("id");
+                ret = rs.getLong("id");
             }
         } catch (Exception e) {
             e.printStackTrace();

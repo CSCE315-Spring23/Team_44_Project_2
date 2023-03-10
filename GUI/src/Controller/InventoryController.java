@@ -185,9 +185,9 @@ public class InventoryController {
      */
     public void initialize() {
         // database login info
-        String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
-        String username = DatabaseLoginInfo.username;
-        String password = DatabaseLoginInfo.password;
+        final String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
+        final String username = DatabaseLoginInfo.username;
+        final String password = DatabaseLoginInfo.password;
 
         this.database = new DatabaseConnect(dbConnectionString, username, password);
         this.database.setUpDatabase();
@@ -198,14 +198,14 @@ public class InventoryController {
 
         if (session.isManager()) {
             System.out.println("Manager");
-            editMenuButton.setVisible(true);
-            inventoryButton.setVisible(true);
-            employeesButton.setVisible(true);
+            this.editMenuButton.setVisible(true);
+            this.inventoryButton.setVisible(true);
+            this.employeesButton.setVisible(true);
         } else {
             System.out.println("Employee");
-            editMenuButton.setVisible(false);
-            inventoryButton.setVisible(false);
-            employeesButton.setVisible(false);
+            this.editMenuButton.setVisible(false);
+            this.inventoryButton.setVisible(false);
+            this.employeesButton.setVisible(false);
         }
     }
 
@@ -235,7 +235,7 @@ public class InventoryController {
     public void addItem() {
         System.out.println("Add Item to Inventory.");
 
-        String itemName = this.addItemName.getText();
+        final String itemName = this.addItemName.getText();
         if (itemName.isEmpty()) {
             System.out.println("Invalid item name.\nAbort addition.");
             return;
@@ -382,7 +382,7 @@ public class InventoryController {
      * @return {@link ObservableList} of {@link InventoryItem} holding every item in the inventory
      */
     private ObservableList<InventoryItem> getInventory() {
-        ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
+        final ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
         try {
             final String inventory =
                     String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.INVENTORY_DATABASE);

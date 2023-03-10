@@ -19,6 +19,7 @@ import javafx.stage.Stage;
  * @author Lai, Huy
  * @author Mao, Steven
  */
+@Deprecated
 public class OldMain extends Application {
     /**
      * Load the graphical user interface
