@@ -2,6 +2,7 @@ package Controller;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import Items.Order;
@@ -12,6 +13,7 @@ import Utils.SessionData;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.fxml.FXML;
 
 
@@ -62,45 +64,45 @@ public class OrderController {
 
     /**
      * {@link Button} Button to navigate order scene
-     *
      */
     @FXML
     private Button orderButton;
 
     /**
      * {@link Button} Button to navigate order history scene
-     *
      */
     @FXML
     private Button orderHistoryButton;
 
     /**
      * {@link Button} Button to navigate inventory scene
-     *
      */
     @FXML
     private Button inventoryButton;
 
     /**
      * {@link Button} Button to navigate employees scene
-     *
      */
     @FXML
     private Button employeesButton;
 
     /**
      * {@link Button} Button to navigate edit menu scene
-     *
      */
     @FXML
     private Button editMenuButton;
 
     /**
      * {@link Button} Button to logout
-     *
      */
     @FXML
     private Button logoutButton;
+
+    /**
+     * FlowPane that holds the menu items
+     */
+    @FXML
+    private FlowPane menuPane;
 
     /*
      * Text that lists the items in the order
@@ -142,18 +144,33 @@ public class OrderController {
      * Verify Database is Connected
      */
     public void initialize() {
-        if (session.isManager()) {
-            System.out.println("Manager");
-            editMenuButton.setVisible(true);
-            inventoryButton.setVisible(true);
-            employeesButton.setVisible(true);
-        } else {
-            System.out.println("Employee");
-            editMenuButton.setVisible(false);
-            inventoryButton.setVisible(false);
-            employeesButton.setVisible(false);
-        }
+        loadMenuItems();
+        boolean isManager = session.isManager();
+        System.out.println("Logged In As " + (isManager ? "Manager" : "Employee"));
+        editMenuButton.setVisible(isManager);
+        inventoryButton.setVisible(isManager);
+        employeesButton.setVisible(isManager);
         this.refreshPage();
+    }
+
+    private void loadMenuItems() {
+        ArrayList<Button> buttons = new ArrayList<Button>();
+        try {
+            ResultSet rs = database.executeQuery("SELECT * FROM " + DatabaseNames.MENU_ITEM_DATABASE);
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+
+                Button button = new Button(name);
+                button.setId("b" + id);
+                button.setOnAction(this::menuItemButtonOnClick);
+
+                buttons.add(button);
+            }
+            menuPane.getChildren().addAll(buttons);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -168,7 +185,7 @@ public class OrderController {
      * Handle loading a new window when a navigation button
      * 
      * @param event {@link ActionEvent} of the {@link Button} pressed
-     * @throws IOException if loading the new window fails
+     * @throws IOException if loading the nindow fails
      */
     public void navButtonClicked(ActionEvent event) throws IOException {
         SessionData session = new SessionData(this.database, this.employeeId, this.order);
