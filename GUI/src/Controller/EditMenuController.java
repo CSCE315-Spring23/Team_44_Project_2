@@ -133,9 +133,6 @@ public class EditMenuController {
     private TextField updateCostText;
 
     @FXML
-    private TextField updateNumSoldText;
-
-    @FXML
     private TextField updateRecipeText;
 
     @FXML
@@ -221,7 +218,6 @@ public class EditMenuController {
         this.updateIDText.setText("");
         this.updateNameText.setText("");
         this.updateCostText.setText("");
-        this.updateNumSoldText.setText("");
         this.updateRecipeText.setText("");
 
         this.addNameText.setText("");

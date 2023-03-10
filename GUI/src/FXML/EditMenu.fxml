@@ -81,7 +81,6 @@
                         <TextField fx:id="updateIDText" promptText="ItemID" />
                         <TextField fx:id="updateNameText" layoutX="19.0" layoutY="19.0" promptText="Item Name" />
                         <TextField fx:id="updateCostText" layoutX="19.0" layoutY="45.0" promptText="Item Cost" />
-                        <TextField fx:id="updateNumSoldText" layoutX="19.0" layoutY="70.0" promptText="Item Num Sold" />
                         <TextField fx:id="updateRecipeText" promptText="Inventory Items for recipe (ex: 12,16,2,4,4)" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Leave any field empty to not change (except ID)" />
                         <Button fx:id="updateItemButton" mnemonicParsing="false" onAction="#updateItemClicked" prefHeight="73.0" prefWidth="249.0" text="Update Item" />
