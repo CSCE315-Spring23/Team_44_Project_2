@@ -3,6 +3,7 @@ package Controller;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import Items.MenuItem;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
@@ -297,6 +298,9 @@ public class EditMenuController {
      */
     public void updateItemClicked(ActionEvent e) {
         final String idText = this.updateIDText.getText();
+        String cost = this.updateCostText.getText();
+        String name = this.updateNameText.getText();
+
         long itemID = -1L;
         try {
             itemID = Long.valueOf(idText);
@@ -304,11 +308,21 @@ public class EditMenuController {
             System.err.println("Invalid ID Provided");
         }
 
-        if(!(itemID > 0L && checkMenuItemExists(itemID))){
+        if(itemID < 0L){
             return;
         }
+        if(cost != null){
+            cost = "cost = " + cost;
+        }
+        if(name != null){
+            name = "name = " + name;
+        }
+        //Update Menu Item Table
+        String query = String.format("UPDATE menuitem SET {} {} WHERE id = {}", name, cost, itemID);
+        database.executeUpdate(query);
 
-
+        //update recipe table
+        //TODO create functions clearRecipe, parseRecipeString, addRecipeItems
 
     }
 
