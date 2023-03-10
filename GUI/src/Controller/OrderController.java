@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 
 
 /**
@@ -164,6 +165,7 @@ public class OrderController {
                 Button button = new Button(name);
                 button.setId("b" + id);
                 button.setOnAction(this::menuItemButtonOnClick);
+                button.setPadding(new Insets(8, 16, 8, 16));
 
                 buttons.add(button);
             }
@@ -388,7 +390,6 @@ public class OrderController {
     public int getMenuItemId(final String name) {
         int ret = -1;
         try {
-
             ResultSet rs = database.executeQuery(String.format("SELECT id FROM %s WHERE name = \'%s\';",
                 DatabaseNames.MENU_ITEM_DATABASE, name));
             while (rs.next()) {
