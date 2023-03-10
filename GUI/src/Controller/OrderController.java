@@ -3,6 +3,7 @@ package Controller;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import Items.Order;
@@ -14,6 +15,7 @@ import Utils.SessionData;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
+import javafx.util.Pair;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 
@@ -61,6 +63,12 @@ public class OrderController {
      * {@link Order} being completed
      */
     private Order order;
+
+    /**
+     * {@link HashMap} of the menu items
+     * Elements: <id, <name, price>>
+     */
+    private HashMap<String, Pair<String, Double>> menuItems;
 
 
     /**
@@ -139,22 +147,14 @@ public class OrderController {
         this.database = session.database;
         this.employeeId = session.employeeId;
         this.order = session.order;
+        this.menuItems = new HashMap<String, Pair<String, Double>>();
     }
 
     /**
-     * Verify Database is Connected
+     * Set up page. Load menu table into hash map, load buttons from hash map, set navbar visibility, and refresh page
      */
     public void initialize() {
-        loadMenuItems();
-        boolean isManager = session.isManager();
-        System.out.println("Logged In As " + (isManager ? "Manager" : "Employee"));
-        editMenuButton.setVisible(isManager);
-        inventoryButton.setVisible(isManager);
-        employeesButton.setVisible(isManager);
-        this.refreshPage();
-    }
-
-    private void loadMenuItems() {
+        // using database (menuitem), load into hashmap and create corresponding button
         ArrayList<Button> buttons = new ArrayList<Button>();
         try {
             ResultSet rs =
@@ -162,7 +162,12 @@ public class OrderController {
             while (rs.next()) {
                 String id = rs.getString("id");
                 String name = rs.getString("name");
+                Double price = rs.getDouble("cost");
 
+                // insert into hashmap
+                this.menuItems.put(id, new Pair<String, Double>(name, price));
+
+                // create and insert button
                 Button button = new Button(name);
                 button.setId("b" + id);
                 button.setOnAction(this::menuItemButtonOnClick);
@@ -174,6 +179,19 @@ public class OrderController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        for (String key : this.menuItems.keySet()) {
+            System.out.println(key + " " + this.menuItems.get(key));
+        }
+
+        // set navbar visibility
+        boolean isManager = session.isManager();
+        System.out.println("Logged In As " + (isManager ? "Manager" : "Employee"));
+        editMenuButton.setVisible(isManager);
+        inventoryButton.setVisible(isManager);
+        employeesButton.setVisible(isManager);
+        this.refreshPage();
+        this.customerNameField.setText(this.session.customerName);
     }
 
     /**
@@ -191,7 +209,7 @@ public class OrderController {
      * @throws IOException if loading the nindow fails
      */
     public void navButtonClicked(ActionEvent event) throws IOException {
-        SessionData session = new SessionData(this.database, this.employeeId, this.order);
+        SessionData session = new SessionData(this.database, this.employeeId, this.order, this.customerNameField.getText());
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
     }
@@ -203,15 +221,10 @@ public class OrderController {
      */
     public void menuItemButtonOnClick(ActionEvent event) {
         final Button b = (Button) event.getSource();
-        System.out.println("Menu Item Button Clicked: " + b.getId());
 
         // add item to order
         final String id = b.getId().substring(1);
-
-        final String name = getMenuItemName(id);
-        final double cost = getMenuItemCost(id);
-
-        this.order.addItem(name, cost);
+        this.order.addItem(getMenuItemName(id), getMenuItemCost(id));
 
         // update order box and cost
         this.refreshPage();
@@ -234,7 +247,6 @@ public class OrderController {
             System.out.println("Error: No items in order");
             return;
         }
-
         if (this.customerNameField.getText().isEmpty()) {
             System.out.println("Error: No customer name");
             return;
@@ -261,19 +273,11 @@ public class OrderController {
      * @return the name of the menu item
      */
     public String getMenuItemName(final String id) {
-        String ret = "";
-        try {
-            ResultSet rs = database.executeQuery(String.format("Select name FROM %s where id = %s;",
-                    DatabaseNames.MENU_ITEM_DATABASE, id));
-            while (rs.next()) {
-                ret = rs.getString("name");
-            }
-            rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Pair<String, Double> result;
+        if ((result = this.menuItems.get(id)) == null) {
             System.out.println("Error getting menu item name");
         }
-        return ret;
+        return result.getKey();
     }
 
     /**
@@ -283,19 +287,11 @@ public class OrderController {
      * @return the cost of the menu item
      */
     public double getMenuItemCost(final String id) {
-        double ret = 0.0;
-        try {
-            ResultSet rs = database.executeQuery(String.format("SELECT cost FROM %s where id = %s;",
-                    DatabaseNames.MENU_ITEM_DATABASE, id));
-            while (rs.next()) {
-                ret = rs.getDouble("cost");
-            }
-            rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        Pair<String, Double> result;
+        if ((result = this.menuItems.get(id)) == null) {
             System.out.println("Error getting menu item cost");
         }
-        return ret;
+        return result.getValue(); 
     }
 
     /**
@@ -363,13 +359,6 @@ public class OrderController {
                     final String query = String.format("INSERT INTO %s VALUES (%d, %d, %d);",
                             DatabaseNames.SOLD_ITEM_DATABASE, soldItemId, menuItemId, orderId);
                     database.executeUpdate(query);
-
-                    // final String debug =
-                    // String.format("Inserted %s with id %d into %s for order %d", item,
-                    // soldItemId, DatabaseNames.SOLD_ITEM_DATABASE, orderId);
-                    // System.out.println(debug);
-
-                    // stmt.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Error inserting into solditem");
@@ -379,13 +368,6 @@ public class OrderController {
         }
     }
 
-    /*
-     * Returns the ID of a menu item given its NAME
-     *
-     * @param name
-     *
-     * @return menuitem.id
-     */
     /**
      * Returns the ID of a menu item given its NAME
      *
