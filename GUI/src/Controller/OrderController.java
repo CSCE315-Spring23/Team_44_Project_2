@@ -1,23 +1,23 @@
 package Controller;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-
 import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
 import Utils.SceneSwitch;
 import Utils.SessionData;
-
 import javafx.event.ActionEvent;
-import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
-import javafx.util.Pair;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.util.Pair;
 
 
 /**
@@ -65,8 +65,7 @@ public class OrderController {
     private Order order;
 
     /**
-     * {@link HashMap} of the menu items
-     * Elements: <id, <name, price>>
+     * {@link HashMap} of the menu items Elements: <id, <name, price>>
      */
     private HashMap<String, Pair<String, Double>> menuItems;
 
@@ -151,7 +150,8 @@ public class OrderController {
     }
 
     /**
-     * Set up page. Load menu table into hash map, load buttons from hash map, set navbar visibility, and refresh page
+     * Set up page. Load menu table into hash map, load buttons from hash map, set navbar
+     * visibility, and refresh page
      */
     public void initialize() {
         // using database (menuitem), load into hashmap and create corresponding button
@@ -209,7 +209,8 @@ public class OrderController {
      * @throws IOException if loading the nindow fails
      */
     public void navButtonClicked(ActionEvent event) throws IOException {
-        SessionData session = new SessionData(this.database, this.employeeId, this.order, this.customerNameField.getText());
+        SessionData session = new SessionData(this.database, this.employeeId, this.order,
+                this.customerNameField.getText());
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
     }
@@ -291,7 +292,7 @@ public class OrderController {
         if ((result = this.menuItems.get(id)) == null) {
             System.out.println("Error getting menu item cost");
         }
-        return result.getValue(); 
+        return result.getValue();
     }
 
     /**

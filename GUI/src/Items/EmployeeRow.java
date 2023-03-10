@@ -1,5 +1,6 @@
 package Items;
 
+import Utils.EmployeeRole;
 import javafx.beans.property.SimpleObjectProperty;
 
 /**
@@ -29,7 +30,7 @@ public class EmployeeRow {
     /**
      * {@link SimpleObjectProperty} of {@link String} storing the role of the Employee
      */
-    private final SimpleObjectProperty<String> role;
+    private final SimpleObjectProperty<EmployeeRole> role;
 
     /**
      * {@link SimpleObjectProperty} of {@link Integer} storing the pin of the Employee
@@ -44,7 +45,7 @@ public class EmployeeRow {
      * @param role of the employee
      * @param employeePin pin of the employee
      */
-    public EmployeeRow(final long randomID, final String employeeName, final String role,
+    public EmployeeRow(final long randomID, final String employeeName, final EmployeeRole role,
             final int employeePin) {
         this.randomID = new SimpleObjectProperty<>(randomID);
         this.employeeName = new SimpleObjectProperty<>(employeeName);
@@ -111,7 +112,7 @@ public class EmployeeRow {
      * 
      * @return {@link #role}
      */
-    public String getRole() {
+    public EmployeeRole getRole() {
         return this.role.get();
     }
 
@@ -120,7 +121,7 @@ public class EmployeeRow {
      * 
      * @return
      */
-    public SimpleObjectProperty<String> roleProperty() {
+    public SimpleObjectProperty<EmployeeRole> roleProperty() {
         return this.role;
     }
 
@@ -129,7 +130,7 @@ public class EmployeeRow {
      * 
      * @param role new {@link #role}
      */
-    public void setRoleProperty(final String role) {
+    public void setRoleProperty(final EmployeeRole role) {
         this.role.set(role);
     }
 
