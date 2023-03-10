@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import Items.Order;
 import Utils.DatabaseConnect;
@@ -68,7 +70,7 @@ public class OrderController {
      * {@link HashMap} of the menu items
      * Elements: <id, <name, price>>
      */
-    private HashMap<String, Pair<String, Double>> menuItems;
+    private TreeMap<String, Pair<String, Double>> menuItems;
 
 
     /**
@@ -147,7 +149,7 @@ public class OrderController {
         this.database = session.database;
         this.employeeId = session.employeeId;
         this.order = session.order;
-        this.menuItems = new HashMap<String, Pair<String, Double>>();
+        this.menuItems = new TreeMap<String, Pair<String, Double>>(Comparator.comparingInt(Integer::parseInt));
     }
 
     /**
@@ -166,22 +168,19 @@ public class OrderController {
 
                 // insert into hashmap
                 this.menuItems.put(id, new Pair<String, Double>(name, price));
-
+            }
+            
+            for (String id : this.menuItems.keySet()) {
                 // create and insert button
-                Button button = new Button(name);
+                Button button = new Button(this.menuItems.get(id).getKey());
                 button.setId("b" + id);
                 button.setOnAction(this::menuItemButtonOnClick);
                 button.setPadding(new Insets(8, 16, 8, 16));
-
                 buttons.add(button);
             }
             menuPane.getChildren().addAll(buttons);
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-
-        for (String key : this.menuItems.keySet()) {
-            System.out.println(key + " " + this.menuItems.get(key));
         }
 
         // set navbar visibility
@@ -257,8 +256,6 @@ public class OrderController {
         this.order.setCustomerName(this.customerNameField.getText());
 
         insertOrderItem(this.order);
-        insertSoldItem(this.order);
-        updateInventory(this.order);
 
         // reset order and screen
         this.order = new Order(this.employeeId);
@@ -329,15 +326,17 @@ public class OrderController {
         long employeeId = order.getEmployeeId();
 
         try {
-            database.executeUpdate("INSERT INTO " + DatabaseNames.ORDER_ITEM_DATABASE + " VALUES ("
-                    + id + ", '" + customerName + "', " + totalCost + ", '" + date + "', "
-                    + employeeId + ");");
-            System.out
-                    .println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
+            database.executeUpdate(String.format("INSERT INTO %s VALUES (%s, '%s', %s, '%s', %s);",
+                    DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date, employeeId));
+            System.out.println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error inserting into orderitem");
         }
+
+        // update solditems based on order, menuitem's num_sold, and inventory
+        insertSoldItem(order);
+        updateInventory(order);
     }
 
     /**
@@ -367,6 +366,7 @@ public class OrderController {
             }
         }
     }
+
 
     /**
      * Returns the ID of a menu item given its NAME
@@ -427,18 +427,14 @@ public class OrderController {
                 double quantity = inventoryIDs.get(inventoryid);
 
                 try {
-
                     database.executeUpdate(String.format(
                             "UPDATE %s SET quantity = quantity - %f WHERE id = %s;",
                             DatabaseNames.INVENTORY_DATABASE, quantity * count, inventoryid));
-
-                    System.out
-                            .println("Updated " + databaseName + " for inventoryid " + inventoryid);
+                    System.out.println("Updated " + databaseName + " for inventoryid " + inventoryid);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Error updating inventory");
                 }
-
             }
 
         }
