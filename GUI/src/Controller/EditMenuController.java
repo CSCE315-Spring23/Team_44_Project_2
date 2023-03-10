@@ -170,26 +170,6 @@ public class EditMenuController {
     }
 
     /**
-     * Returns the current session object
-     * 
-     * @deprecated
-     */
-    @Deprecated
-    public SessionData getSession() {
-        return this.session;
-    }
-
-    /**
-     * Sets the current session object
-     * 
-     * @deprecated
-     */
-    @Deprecated
-    public void setSession(final SessionData session) {
-        this.session = session;
-    }
-
-    /**
      * Loads menu items onto screen from database. Sets other fields to null
      */
     public void initialize() {
@@ -285,18 +265,6 @@ public class EditMenuController {
     }
 
     /**
-     * Submits a menu item edit (add, remove, update)
-     * 
-     * @param e {@link ActionEvent} of the {@link Button} pressed
-     * @deprecated
-     */
-    @FXML
-    @Deprecated
-    private void submitMenuChange(ActionEvent e) {
-        this.initialize();
-    }
-
-    /**
      * Check if a primary key exists within the database
      * 
      * @param itemID ID number of the item
@@ -329,23 +297,19 @@ public class EditMenuController {
      */
     public void updateItemClicked(ActionEvent e) {
         final String idText = this.updateIDText.getText();
-
-        if (idText == null) {
-            System.err.println("No ID provided");
-            return;
-        }
-
-        long itemID;
+        long itemID = -1L;
         try {
-            itemID = Integer.parseInt(idText);
-        } catch (Exception error) {
-            System.err.println("Error in input values");
+            itemID = Long.valueOf(idText);
+        } catch (Exception exc) {
+            System.err.println("Invalid ID Provided");
+        }
+
+        if(!(itemID > 0L && checkMenuItemExists(itemID))){
             return;
         }
 
-        if (!this.checkMenuItemExists(itemID)) {
-            return;
-        }
+
+
     }
 
     /**
