@@ -88,11 +88,18 @@ public class InventoryController {
     private Button editMenuButton;
 
     /**
+     * {@link Button} Button to navigate to the data trends scene
+     */
+    @FXML
+    private Button dataTrendsButton;
+
+    /**
      * {@link Button} Button to logout
      *
      */
     @FXML
     private Button logoutButton;
+
 
     /**
      * {@link TableView} of {@link InventoryItem} that will display the entire inventory

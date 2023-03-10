@@ -85,6 +85,13 @@ public class OrderHistoryController {
     @FXML
     private Button editMenuButton;
 
+
+    /**
+     * {@link Button} Button to navigate to the data trends scene
+     */
+    @FXML
+    private Button dataTrendsButton;
+
     /**
      * {@link Button} Button to logout
      *
