@@ -124,36 +124,69 @@ public class EditMenuController {
     @FXML
     private TableColumn<MenuItem, Long> numberSold;
 
+    /**
+     * {@link TextField} to allow for user input to update a {@link MenuItem}
+     */
     @FXML
     private TextField updateIDText;
 
+    /**
+     * {@link TextField} to allow for user input to update a {@link MenuItem}
+     */
     @FXML
     private TextField updateNameText;
 
+    /**
+     * {@link TextField} to allow for user input to update a {@link MenuItem}
+     */
     @FXML
     private TextField updateCostText;
 
+    /**
+     * {@link TextField} to allow for user input to update a {@link MenuItem}
+     */
     @FXML
     private TextField updateRecipeText;
 
+    /**
+     * {@link TextField} to allow for user input to add a {@link MenuItem}
+     */
     @FXML
     private TextField addNameText;
 
+    /**
+     * {@link TextField} to allow for user input to add a {@link MenuItem}
+     */
     @FXML
     private TextField addCostText;
 
+    /**
+     * {@link TextField} to allow for user input to add a {@link MenuItem}
+     */
     @FXML
     private TextField addRecipeText;
 
+    /**
+     * {@link TextField} to allow for user input to remove a {@link MenuItem}
+     */
     @FXML
     private TextField deleteItemID;
 
+    /**
+     * {@link Button} that will trigger {@link #updateItemClicked(ActionEvent)}
+     */
     @FXML
     private Button updateItemButton;
 
+    /**
+     * {@link Button} that will trigger {@link #addItemClicked(ActionEvent)}
+     */
     @FXML
     private Button addItemButton;
 
+    /**
+     * {@link Button} that will trigger {@link #deleteItemClicked(ActionEvent)}
+     */
     @FXML
     private Button deleteItemButton;
 
@@ -164,6 +197,8 @@ public class EditMenuController {
 
     /**
      * Allows for passing session data from scene to scene
+     * 
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
      */
     public EditMenuController(final SessionData session) {
         this.session = session;
@@ -270,8 +305,9 @@ public class EditMenuController {
      * 
      * @param itemID ID number of the item
      * @return {@code true} if found, {@code false} otherwise
-     * 
+     * @deprecated
      */
+    @Deprecated
     private boolean checkMenuItemExists(final long itemID) {
         if (itemID <= 0l)
             return false;
@@ -294,7 +330,7 @@ public class EditMenuController {
      * Update existing item in the menuitem table. First checks if the item exists, then updates its
      * values that the user entered that aren't null, then updates the recipeitem table
      * 
-     * @param e
+     * @param e {@link ActionEvent} of {@link #updateItemButton}
      */
     public void updateItemClicked(ActionEvent e) {
         final String idText = this.updateIDText.getText();
@@ -308,28 +344,28 @@ public class EditMenuController {
             System.err.println("Invalid ID Provided");
         }
 
-        if(itemID < 0L){
+        if (itemID < 0L) {
             return;
         }
-        if(cost != null){
+        if (cost != null) {
             cost = "cost = " + cost;
         }
-        if(name != null){
+        if (name != null) {
             name = "name = " + name;
         }
-        //Update Menu Item Table
+        // Update Menu Item Table
         String query = String.format("UPDATE menuitem SET {} {} WHERE id = {}", name, cost, itemID);
         database.executeUpdate(query);
 
-        //update recipe table
-        //TODO create functions clearRecipe, parseRecipeString, addRecipeItems
+        // update recipe table
+        // TODO create functions clearRecipe, parseRecipeString, addRecipeItems
 
     }
 
     /**
      * If item doesn't exist, it adds it to menu table and adds its recipe to the recipeitem table
      * 
-     * @param e
+     * @param e {@link ActionEvent} of {@link #addItemButton}
      */
     public void addItemClicked(ActionEvent e) {
 
@@ -338,7 +374,7 @@ public class EditMenuController {
     /**
      * Remove item from menu table and recipe item table if it exists
      * 
-     * @param e
+     * @param e {@link ActionEvent} of {@link #deleteItemClicked(ActionEvent)}
      */
     public void deleteItemClicked(ActionEvent e) {
 
