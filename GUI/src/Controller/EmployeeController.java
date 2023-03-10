@@ -115,7 +115,7 @@ public class EmployeeController {
      * {@link TableColumn} displaying the identification number of all Employees
      */
     @FXML
-    private TableColumn<EmployeeRow, Integer> randomID;
+    private TableColumn<EmployeeRow, Long> randomID;
 
     /**
      * {@link TableColumn} displaying the name of all Employees
