@@ -1,25 +1,26 @@
 package Controller;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.HashMap;
 
 import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
 import Utils.SceneSwitch;
 import Utils.SessionData;
-
 import javafx.event.ActionEvent;
-import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
-import javafx.util.Pair;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.util.Pair;
 
 
 /**
@@ -336,6 +337,7 @@ public class OrderController {
 
         // update solditems based on order, menuitem's num_sold, and inventory
         insertSoldItem(order);
+        updateMenuItem(order);
         updateInventory(order);
     }
 
@@ -367,6 +369,24 @@ public class OrderController {
         }
     }
 
+    /**
+     * Updates the {@code menuitem} database based on an {@link Order}
+     * @param order
+     */
+    public void updateMenuItem(final Order order) {
+        HashMap<String, Integer> soldItems = order.getItems();
+        for (String item : soldItems.keySet()) {
+            int quantity = soldItems.get(item);
+            int menuItemId = getMenuItemId(item);
+            try {
+                database.executeUpdate(String.format("UPDATE %s SET numbersold = numbersold + %d WHERE id = %d;",
+                    DatabaseNames.MENU_ITEM_DATABASE, quantity, menuItemId));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error updating menuitem");
+            }
+        }
+    }
 
     /**
      * Returns the ID of a menu item given its NAME

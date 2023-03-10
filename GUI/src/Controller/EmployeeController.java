@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import Items.EmployeeRow;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
+import Utils.EmployeeRole;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.collections.FXCollections;
@@ -99,6 +100,12 @@ public class EmployeeController {
     private Button editMenuButton;
 
     /**
+     * {@link Button} Button to navigate to the data trends scene
+     */
+    @FXML
+    private Button dataTrendsButton;
+
+    /**
      * {@link Button} Button to logout
      *
      */
@@ -115,7 +122,7 @@ public class EmployeeController {
      * {@link TableColumn} displaying the identification number of all Employees
      */
     @FXML
-    private TableColumn<EmployeeRow, Integer> randomID;
+    private TableColumn<EmployeeRow, Long> randomID;
 
     /**
      * {@link TableColumn} displaying the name of all Employees
@@ -127,7 +134,7 @@ public class EmployeeController {
      * {@link TableColumn} displaying the roles of all Employees
      */
     @FXML
-    private TableColumn<EmployeeRow, String> role;
+    private TableColumn<EmployeeRow, EmployeeRole> role;
 
     /**
      * {@link TableColumn} displaying the pin number of all Employees
@@ -196,13 +203,15 @@ public class EmployeeController {
             ResultSet rs = database.executeQuery(
                     String.format("SELECT * FROM %s", DatabaseNames.EMPLOYEE_DATABASE));
             while (rs.next()) {
-                Integer randomID = rs.getInt("id");
-                String employeeName = rs.getString("name");
-                String role = rs.getString("role");
-                Integer employeePin = rs.getInt("pin");
+                final long randomID = rs.getLong("id");
+                final String employeeName = rs.getString("name");
+                final String role = rs.getString("role");
+                final EmployeeRole employeeRole =
+                        role.equals("manager") ? EmployeeRole.Manager : EmployeeRole.Server;
+                final int employeePin = rs.getInt("pin");
 
                 EmployeeRow employeeRow =
-                        new EmployeeRow(randomID, employeeName, role, employeePin);
+                        new EmployeeRow(randomID, employeeName, employeeRole, employeePin);
                 employees.add(employeeRow);
             }
         } catch (Exception e) {

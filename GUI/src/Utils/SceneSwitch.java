@@ -2,6 +2,7 @@ package Utils;
 
 import java.io.IOException;
 import Controller.LoginController;
+import Controller.DataTrendsController;
 import Controller.EditMenuController;
 import Controller.InventoryController;
 import Controller.EmployeeController;
@@ -64,6 +65,11 @@ public class SceneSwitch {
     private EditMenuController editMenuController;
 
     /**
+     * {@link DataTrendsController} to load the menu editting window
+     */
+    private DataTrendsController dataTrendsController;
+
+    /**
      * Constructor
      * 
      * @param session {@link SessionData} to send information between the various windows
@@ -76,6 +82,7 @@ public class SceneSwitch {
         this.inventoryController = new InventoryController(this.session);
         this.employeeController = new EmployeeController(this.session);
         this.editMenuController = new EditMenuController(this.session);
+        this.dataTrendsController = new DataTrendsController(this.session);
     }
 
     /**
@@ -142,6 +149,11 @@ public class SceneSwitch {
                 System.out.println("Edit Menu button clicked");
                 loader = new FXMLLoader(getClass().getResource("../FXML/EditMenu.fxml"));
                 loader.setController(editMenuController);
+                break;
+            case "dataTrendsButton":
+                System.out.println("Data Trends button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/DataTrends.fxml"));
+                loader.setController(dataTrendsController);
                 break;
             case "logoutButton":
                 System.out.println("Logout button clicked");
