@@ -1,22 +1,23 @@
 package Controller;
 
-import Items.Order;
-import Utils.DatabaseConnect;
-import Utils.DatabaseLoginInfo;
-import Utils.SceneSwitch;
-import Utils.SessionData;
-import Utils.DatabaseNames;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import Items.Order;
+import Utils.DatabaseConnect;
+import Utils.DatabaseLoginInfo;
+import Utils.DatabaseNames;
+import Utils.SceneSwitch;
+import Utils.SessionData;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  * Controller for the Login Screen
@@ -129,45 +130,49 @@ public class LoginController {
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        database = databaseInitializer();
+        this.database = this.databaseInitializer();
     }
 
     private void updatePin() {
-        pinBox.setText(isShowingPin ? pinNumber : "●".repeat(pinNumber.length()));
-        pinBox.positionCaret(pinNumber.length());
+        this.pinBox
+                .setText(this.isShowingPin ? this.pinNumber : "●".repeat(this.pinNumber.length()));
+        this.pinBox.positionCaret(this.pinNumber.length());
     }
 
-    public void setPin(ActionEvent ae) {
+    public void setPin(final ActionEvent event) {
+        final Button button = (Button) event.getSource();
         if (this.pinNumber.length() < MAX_PIN_LENGTH) {
-            this.pinNumber = this.pinNumber + ((Button) ae.getSource()).getText();
+            this.pinNumber += button.getText();
             this.updatePin();
         }
     }
 
-    public void onPinBoxTyped() {
-        int strLength = pinBox.getText().length();
+    public void onPinBoxTyped(final KeyEvent event) {
+        final char keyTyped = (char) event.getCode().getCode();
+
+        final int strLength = pinBox.getText().length();
         if (0 <= strLength && strLength <= MAX_PIN_LENGTH) {
-            if (isShowingPin) {
-                pinNumber = pinBox.getText();
+            if (this.isShowingPin) {
+                this.pinNumber = this.pinBox.getText();
             } else {
-                if (pinNumber.length() < strLength) {
-                    pinNumber = pinNumber + pinBox.getText().charAt(strLength - 1);
+                if (this.pinNumber.length() < strLength) {
+                    this.pinNumber += keyTyped;
                 } else {
-                    pinNumber = pinNumber.substring(0, strLength);
+                    this.pinNumber = this.pinNumber.substring(0, strLength);
                 }
             }
         }
         this.updatePin();
     }
 
-    public void onBackspace(ActionEvent ae) {
-        if (pinNumber.length() > 0) {
-            pinNumber = pinNumber.substring(0, pinNumber.length() - 1);
+    public void onBackspace(final ActionEvent ae) {
+        if (this.pinNumber.length() > 0) {
+            this.pinNumber = this.pinNumber.substring(0, this.pinNumber.length() - 1);
             this.updatePin();
         }
     }
 
-    public void onShowPin(ActionEvent ae) {
+    public void onShowPin(final ActionEvent ae) {
         this.isShowingPin = ((ToggleButton) ae.getSource()).isSelected();
         this.updatePin();
     }
@@ -196,12 +201,12 @@ public class LoginController {
     @FXML
     public void loginButtonClicked(ActionEvent event) throws IOException {
         try {
-            String sqlQuery = String.format("SELECT * FROM %s WHERE pin= '" + pinNumber + "'",
-                    DatabaseNames.EMPLOYEE_DATABASE);
+            final String sqlQuery = String.format("SELECT * FROM %s WHERE pin=\'%s\'",
+                    DatabaseNames.EMPLOYEE_DATABASE, this.pinNumber);
             // System.out.println(sqlQuery);
 
             // System.out.println(database);
-            ResultSet loginQuery = database.executeQuery(sqlQuery);
+            final ResultSet loginQuery = database.executeQuery(sqlQuery);
             if (!loginQuery.next()) {
                 System.out.println("Invalid PIN");
             } else {
@@ -219,9 +224,9 @@ public class LoginController {
     public long getEmployeeId() {
         long ret = -1l;
         try {
-            ResultSet rs = database
-                    .executeQuery(String.format("SELECT id FROM %s WHERE pin = '" + pinNumber + "'",
-                            DatabaseNames.EMPLOYEE_DATABASE));
+            ResultSet rs =
+                    database.executeQuery(String.format("SELECT id FROM %s WHERE pin = \'%s\'",
+                            DatabaseNames.EMPLOYEE_DATABASE, this.pinNumber));
             if (rs.next()) {
                 ret = rs.getLong("id");
             }

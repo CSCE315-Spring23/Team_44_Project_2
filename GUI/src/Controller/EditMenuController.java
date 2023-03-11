@@ -317,7 +317,8 @@ public class EditMenuController {
         if (itemID <= 0l)
             return false;
 
-        final String query = String.format("SELECT COUNT(*) FROM menuitem WHERE id = %d;", itemID);
+        final String query = String.format("SELECT COUNT(*) FROM %s WHERE id = %d;",
+                DatabaseNames.MENU_ITEM_DATABASE, itemID);
         final ResultSet rs = database.executeQuery(query);
 
         try {

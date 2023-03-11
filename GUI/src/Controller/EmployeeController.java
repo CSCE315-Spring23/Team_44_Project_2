@@ -198,7 +198,7 @@ public class EmployeeController {
      * @return {@link ObservableList} of {@link EmployeeRow}
      */
     private ObservableList<EmployeeRow> getEmployees() {
-        ObservableList<EmployeeRow> employees = FXCollections.observableArrayList();
+        final ObservableList<EmployeeRow> employees = FXCollections.observableArrayList();
         try {
             ResultSet rs = database.executeQuery(
                     String.format("SELECT * FROM %s", DatabaseNames.EMPLOYEE_DATABASE));
@@ -209,10 +209,7 @@ public class EmployeeController {
                 final EmployeeRole employeeRole =
                         role.equals("manager") ? EmployeeRole.Manager : EmployeeRole.Server;
                 final int employeePin = rs.getInt("pin");
-
-                EmployeeRow employeeRow =
-                        new EmployeeRow(randomID, employeeName, employeeRole, employeePin);
-                employees.add(employeeRow);
+                employees.add(new EmployeeRow(randomID, employeeName, employeeRole, employeePin));
             }
         } catch (Exception e) {
             e.printStackTrace();
