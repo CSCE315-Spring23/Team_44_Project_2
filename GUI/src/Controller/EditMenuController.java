@@ -217,7 +217,7 @@ public class EditMenuController {
         this.setUpTable();
         this.updateTable();
 
-        setEditTextFieldsNull();
+        this.clearTextFields();
 
         if (this.session.isManager()) {
             System.out.println("Manager");
@@ -235,7 +235,7 @@ public class EditMenuController {
     /**
      * Reset all text fields that get user input for editing a menu item to null
      */
-    public void setEditTextFieldsNull() {
+    public void clearTextFields() {
         this.updateIDText.setText("");
         this.updateNameText.setText("");
         this.updateCostText.setText("");
