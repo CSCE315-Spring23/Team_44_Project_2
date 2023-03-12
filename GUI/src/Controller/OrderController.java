@@ -358,7 +358,7 @@ public class OrderController {
 
         final long orderId = order.getOrderID();
         final HashMap<String, Integer> soldItems = order.getItems();
-        final long soldItemId = this.getLastId("solditem") + 1;
+        long soldItemId = this.getLastId("solditem") + 1;
 
         for (final String item : soldItems.keySet()) {
             final int quantity = soldItems.get(item);
@@ -366,11 +366,12 @@ public class OrderController {
             for (int i = 0; i < quantity; ++i) {
                 try {
                     final String query = String.format("INSERT INTO %s VALUES (%d, %d, %d);",
-                            DatabaseNames.SOLD_ITEM_DATABASE, soldItemId + i, menuItemId, orderId);
+                            DatabaseNames.SOLD_ITEM_DATABASE, soldItemId, menuItemId, orderId);
                     database.executeUpdate(query);
+                    ++soldItemId;
                 } catch (Exception e) {
-                    e.printStackTrace();
                     System.out.println("Error inserting into solditem");
+                    // e.printStackTrace();
                 }
             }
         }
