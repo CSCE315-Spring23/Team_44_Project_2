@@ -5,9 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.TreeMap;
 import java.util.HashMap;
-
+import java.util.List;
+import java.util.TreeMap;
 import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
@@ -159,28 +159,29 @@ public class OrderController {
      */
     public void initialize() {
         // using database (menuitem), load into hashmap and create corresponding button
-        ArrayList<Button> buttons = new ArrayList<Button>();
+        final List<Button> buttons = new ArrayList<Button>();
         try {
-            ResultSet rs =
-                    database.executeQuery("SELECT * FROM " + DatabaseNames.MENU_ITEM_DATABASE);
+            final String query =
+                    String.format("SELECT * FROM %s", DatabaseNames.MENU_ITEM_DATABASE);
+            final ResultSet rs = database.executeQuery(query);
             while (rs.next()) {
-                String id = rs.getString("id");
-                String name = rs.getString("name");
-                Double price = rs.getDouble("cost");
+                final String id = rs.getString("id");
+                final String name = rs.getString("name");
+                final double price = rs.getDouble("cost");
 
                 // insert into hashmap
                 this.menuItems.put(id, new Pair<String, Double>(name, price));
             }
 
-            for (String id : this.menuItems.keySet()) {
+            for (final String id : this.menuItems.keySet()) {
                 // create and insert button
-                Button button = new Button(this.menuItems.get(id).getKey());
+                final Button button = new Button(this.menuItems.get(id).getKey());
                 button.setId("b" + id);
                 button.setOnAction(this::menuItemButtonOnClick);
                 button.setPadding(new Insets(8, 16, 8, 16));
                 buttons.add(button);
             }
-            menuPane.getChildren().addAll(buttons);
+            this.menuPane.getChildren().addAll(buttons);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -188,9 +189,9 @@ public class OrderController {
         // set navbar visibility
         boolean isManager = session.isManager();
         System.out.println("Logged In As " + (isManager ? "Manager" : "Employee"));
-        editMenuButton.setVisible(isManager);
-        inventoryButton.setVisible(isManager);
-        employeesButton.setVisible(isManager);
+        this.editMenuButton.setVisible(isManager);
+        this.inventoryButton.setVisible(isManager);
+        this.employeesButton.setVisible(isManager);
         this.refreshPage();
         this.customerNameField.setText(this.session.customerName);
     }
@@ -226,7 +227,7 @@ public class OrderController {
 
         // add item to order
         final String id = b.getId().substring(1);
-        this.order.addItem(getMenuItemName(id), getMenuItemCost(id));
+        this.order.addItem(this.getMenuItemName(id), this.getMenuItemCost(id));
 
         // update order box and cost
         this.refreshPage();
@@ -255,10 +256,10 @@ public class OrderController {
         }
 
         // setup order and submit to database
-        this.order.setOrderId(getLastId(DatabaseNames.ORDER_ITEM_DATABASE) + 1);
+        this.order.setOrderId(this.getLastId(DatabaseNames.ORDER_ITEM_DATABASE) + 1l);
         this.order.setCustomerName(this.customerNameField.getText());
 
-        insertOrderItem(this.order);
+        this.insertOrderItem(this.order);
 
         // reset order and screen
         this.order = new Order(this.employeeId);
@@ -276,6 +277,7 @@ public class OrderController {
         Pair<String, Double> result;
         if ((result = this.menuItems.get(id)) == null) {
             System.out.println("Error getting menu item name");
+            return new String();
         }
         return result.getKey();
     }
@@ -290,6 +292,7 @@ public class OrderController {
         Pair<String, Double> result;
         if ((result = this.menuItems.get(id)) == null) {
             System.out.println("Error getting menu item cost");
+            return -1d;
         }
         return result.getValue();
     }
@@ -300,12 +303,13 @@ public class OrderController {
      * @param table table name
      * @return the last ID in the table
      */
-    public int getLastId(final String table) {
-        int ret = 0;
+    public long getLastId(final String table) {
+        long ret = 0;
         try {
-            ResultSet rs = database.executeQuery(String.format("SELECT MAX(id) from %s;", table));
-            while (rs.next()) {
-                ret = rs.getInt("max");
+            final ResultSet rs =
+                    database.executeQuery(String.format("SELECT MAX(id) from %s;", table));
+            if (rs.next()) {
+                ret = rs.getLong("max");
             }
             rs.close();
         } catch (Exception e) {
@@ -321,17 +325,17 @@ public class OrderController {
      * @param order {@link Order} to insert
      */
     public void insertOrderItem(final Order order) {
-
-        long id = order.getOrderID();
-        String customerName = order.getCustomerName();
-        double totalCost = order.getTotalCost();
-        String date = order.getDate().toString();
-        long employeeId = order.getEmployeeId();
+        final long id = order.getOrderID();
+        final String customerName = order.getCustomerName();
+        final double totalCost = order.getTotalCost();
+        final String date = order.getDate().toString();
+        final long employeeId = order.getEmployeeId();
 
         try {
-            database.executeUpdate(String.format("INSERT INTO %s VALUES (%s, '%s', %s, '%s', %s);",
-                    DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date,
-                    employeeId));
+            this.database
+                    .executeUpdate(String.format("INSERT INTO %s VALUES (%s, '%s', %s, '%s', %s);",
+                            DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date,
+                            employeeId));
             System.out
                     .println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
         } catch (Exception e) {
@@ -340,9 +344,9 @@ public class OrderController {
         }
 
         // update solditems based on order, menuitem's num_sold, and inventory
-        insertSoldItem(order);
-        updateMenuItem(order);
-        updateInventory(order);
+        this.insertSoldItem(order);
+        this.updateMenuItem(order);
+        this.updateInventory(order);
     }
 
     /**
@@ -352,23 +356,22 @@ public class OrderController {
      */
     public void insertSoldItem(final Order order) {
 
-        long orderId = order.getOrderID();
-        HashMap<String, Integer> soldItems = order.getItems();
-        int soldItemId = getLastId("solditem") + 1;
+        final long orderId = order.getOrderID();
+        final HashMap<String, Integer> soldItems = order.getItems();
+        final long soldItemId = this.getLastId("solditem") + 1;
 
-        for (String item : soldItems.keySet()) {
-            int quantity = soldItems.get(item);
-            int menuItemId = getMenuItemId(item);
+        for (final String item : soldItems.keySet()) {
+            final int quantity = soldItems.get(item);
+            final long menuItemId = this.getMenuItemId(item);
             for (int i = 0; i < quantity; ++i) {
                 try {
                     final String query = String.format("INSERT INTO %s VALUES (%d, %d, %d);",
-                            DatabaseNames.SOLD_ITEM_DATABASE, soldItemId, menuItemId, orderId);
+                            DatabaseNames.SOLD_ITEM_DATABASE, soldItemId + i, menuItemId, orderId);
                     database.executeUpdate(query);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Error inserting into solditem");
                 }
-                ++soldItemId;
             }
         }
     }
@@ -380,9 +383,9 @@ public class OrderController {
      */
     public void updateMenuItem(final Order order) {
         HashMap<String, Integer> soldItems = order.getItems();
-        for (String item : soldItems.keySet()) {
+        for (final String item : soldItems.keySet()) {
             int quantity = soldItems.get(item);
-            int menuItemId = getMenuItemId(item);
+            final long menuItemId = this.getMenuItemId(item);
             try {
                 database.executeUpdate(
                         String.format("UPDATE %s SET numbersold = numbersold + %d WHERE id = %d;",
@@ -400,14 +403,14 @@ public class OrderController {
      * @param name of the menu item as a {@link String}
      * @return the Identification number, -1 when not found
      */
-    public int getMenuItemId(final String name) {
-        int ret = -1;
+    public long getMenuItemId(final String name) {
+        long ret = -1l;
         try {
-            ResultSet rs =
+            final ResultSet rs =
                     database.executeQuery(String.format("SELECT id FROM %s WHERE name = \'%s\';",
                             DatabaseNames.MENU_ITEM_DATABASE, name));
-            while (rs.next()) {
-                ret = rs.getInt("id");
+            if (rs.next()) {
+                ret = rs.getLong("id");
             }
             rs.close();
         } catch (Exception e) {
@@ -424,18 +427,16 @@ public class OrderController {
      * @param order {@link Order} that will update inventory
      */
     public void updateInventory(final Order order) {
-        final String databaseName = "inventory";
-
-        HashMap<String, Integer> soldItems = order.getItems();
+        final HashMap<String, Integer> soldItems = order.getItems();
 
         for (final String item : soldItems.keySet()) {
-            HashMap<Integer, Double> inventoryIDs = new HashMap<Integer, Double>();
+            final HashMap<Integer, Double> inventoryIDs = new HashMap<Integer, Double>();
 
-            int menuItemId = this.getMenuItemId(item);
-            int count = soldItems.get(item);
+            final long menuItemId = this.getMenuItemId(item);
+            final int count = soldItems.get(item);
 
             try {
-                ResultSet rs = database.executeQuery(
+                final ResultSet rs = database.executeQuery(
                         String.format("SELECT inventoryid, count FROM %s WHERE menuid = %d;",
                                 DatabaseNames.RECIPE_ITEM_DATABASE, menuItemId));
 
@@ -449,15 +450,13 @@ public class OrderController {
                 System.out.println("Error getting recipeitem");
             }
 
-            for (int inventoryid : inventoryIDs.keySet()) {
+            for (final int inventoryid : inventoryIDs.keySet()) {
                 double quantity = inventoryIDs.get(inventoryid);
 
                 try {
-                    database.executeUpdate(String.format(
+                    this.database.executeUpdate(String.format(
                             "UPDATE %s SET quantity = quantity - %f WHERE id = %s;",
                             DatabaseNames.INVENTORY_DATABASE, quantity * count, inventoryid));
-                    System.out
-                            .println("Updated " + databaseName + " for inventoryid " + inventoryid);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Error updating inventory");
@@ -467,7 +466,8 @@ public class OrderController {
         }
 
         // To-Go Bag
-        database.executeUpdate(String.format("UPDATE %s SET quantity = quantity - 1 WHERE id = 1;",
-                DatabaseNames.INVENTORY_DATABASE));
+        this.database
+                .executeUpdate(String.format("UPDATE %s SET quantity = quantity - 1 WHERE id = 1;",
+                        DatabaseNames.INVENTORY_DATABASE));
     }
 }

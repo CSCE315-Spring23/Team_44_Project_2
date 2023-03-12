@@ -139,7 +139,7 @@ public class Order {
      * 
      * @param orderID new identification number of the order
      */
-    public void setOrderId(final int orderID) {
+    public void setOrderId(final long orderID) {
         this.orderID = orderID;
     }
 
