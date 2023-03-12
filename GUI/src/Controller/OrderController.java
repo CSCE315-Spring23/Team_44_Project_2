@@ -355,25 +355,27 @@ public class OrderController {
      * @param order {@link Order} to insert into the database
      */
     public void insertSoldItem(final Order order) {
-
         final long orderId = order.getOrderID();
-        final HashMap<String, Integer> soldItems = order.getItems();
+        final HashMap<String, Long> soldItems = order.getItems();
         long soldItemId = this.getLastId("solditem") + 1;
 
         for (final String item : soldItems.keySet()) {
-            final int quantity = soldItems.get(item);
+            final long quantity = soldItems.get(item);
             final long menuItemId = this.getMenuItemId(item);
-            for (int i = 0; i < quantity; ++i) {
+            for (long i = 0; i < quantity; ++i) {
+                final String query = String.format("INSERT INTO %s VALUES (%d, %d, %d);",
+                        DatabaseNames.SOLD_ITEM_DATABASE, soldItemId, menuItemId, orderId);
                 try {
-                    final String query = String.format("INSERT INTO %s VALUES (%d, %d, %d);",
-                            DatabaseNames.SOLD_ITEM_DATABASE, soldItemId, menuItemId, orderId);
                     database.executeUpdate(query);
                     ++soldItemId;
                 } catch (Exception e) {
                     System.out.println("Error inserting into solditem");
-                    // e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
+            final String debug = String.format("Inserted %dx %s into %s", quantity, item,
+                    DatabaseNames.SOLD_ITEM_DATABASE);
+            System.out.println(debug);
         }
     }
 
@@ -383,17 +385,19 @@ public class OrderController {
      * @param order {@link Order} to insert into the database
      */
     public void updateMenuItem(final Order order) {
-        HashMap<String, Integer> soldItems = order.getItems();
+        final HashMap<String, Long> soldItems = order.getItems();
         for (final String item : soldItems.keySet()) {
-            int quantity = soldItems.get(item);
+            final long quantity = soldItems.get(item);
             final long menuItemId = this.getMenuItemId(item);
+            final String query =
+                    String.format("UPDATE %s SET numbersold = numbersold + %d WHERE id = %d;",
+                            DatabaseNames.MENU_ITEM_DATABASE, quantity, menuItemId);
+
             try {
-                database.executeUpdate(
-                        String.format("UPDATE %s SET numbersold = numbersold + %d WHERE id = %d;",
-                                DatabaseNames.MENU_ITEM_DATABASE, quantity, menuItemId));
+                database.executeUpdate(query);
             } catch (Exception e) {
-                e.printStackTrace();
                 System.out.println("Error updating menuitem");
+                e.printStackTrace();
             }
         }
     }
@@ -428,47 +432,44 @@ public class OrderController {
      * @param order {@link Order} that will update inventory
      */
     public void updateInventory(final Order order) {
-        final HashMap<String, Integer> soldItems = order.getItems();
+        final HashMap<String, Long> soldItems = order.getItems();
 
         for (final String item : soldItems.keySet()) {
-            final HashMap<Integer, Double> inventoryIDs = new HashMap<Integer, Double>();
+            final HashMap<Long, Long> inventoryIDs = new HashMap<>();
 
             final long menuItemId = this.getMenuItemId(item);
-            final int count = soldItems.get(item);
+            final long count = soldItems.get(item);
 
+            final String query =
+                    String.format("SELECT inventoryid, count FROM %s WHERE menuid = %d;",
+                            DatabaseNames.RECIPE_ITEM_DATABASE, menuItemId);
             try {
-                final ResultSet rs = database.executeQuery(
-                        String.format("SELECT inventoryid, count FROM %s WHERE menuid = %d;",
-                                DatabaseNames.RECIPE_ITEM_DATABASE, menuItemId));
-
-                while (rs.next()) {
-                    inventoryIDs.put(rs.getInt("inventoryid"), rs.getDouble("count"));
-                }
+                final ResultSet rs = database.executeQuery(query);
+                while (rs.next())
+                    inventoryIDs.put(rs.getLong("inventoryid"), rs.getLong("count"));
                 rs.close();
-
             } catch (Exception e) {
-                e.printStackTrace();
                 System.out.println("Error getting recipeitem");
+                e.printStackTrace();
             }
 
-            for (final int inventoryid : inventoryIDs.keySet()) {
-                double quantity = inventoryIDs.get(inventoryid);
-
+            for (final long inventoryid : inventoryIDs.keySet()) {
+                final long quantity = inventoryIDs.get(inventoryid);
+                final String update =
+                        String.format("UPDATE %s SET quantity = quantity - %d WHERE id = %d;",
+                                DatabaseNames.INVENTORY_DATABASE, quantity * count, inventoryid);
                 try {
-                    this.database.executeUpdate(String.format(
-                            "UPDATE %s SET quantity = quantity - %f WHERE id = %s;",
-                            DatabaseNames.INVENTORY_DATABASE, quantity * count, inventoryid));
+                    this.database.executeUpdate(update);
                 } catch (Exception e) {
-                    e.printStackTrace();
                     System.out.println("Error updating inventory");
+                    e.printStackTrace();
                 }
             }
-
         }
 
         // To-Go Bag
-        this.database
-                .executeUpdate(String.format("UPDATE %s SET quantity = quantity - 1 WHERE id = 1;",
-                        DatabaseNames.INVENTORY_DATABASE));
+        final String togo = String.format("UPDATE %s SET quantity = quantity - 1 WHERE id = 1;",
+                DatabaseNames.INVENTORY_DATABASE);
+        this.database.executeUpdate(togo);
     }
 }

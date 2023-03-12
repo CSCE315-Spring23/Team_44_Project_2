@@ -46,7 +46,7 @@ public class Order {
     /**
      * {@link HashMap} holding each item and its coresponding price.
      */
-    private HashMap<String, Integer> items = new HashMap<String, Integer>();
+    private HashMap<String, Long> items = new HashMap<>();
 
     /**
      * Construct an Order
@@ -73,7 +73,7 @@ public class Order {
     public Order(final long employeeId, final long orderId) {
         this.employeeId = employeeId;
         this.orderID = orderId;
-        date = LocalDateTime.now();
+        this.date = LocalDateTime.now();
         System.out.println("Order Created on "
                 + this.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
@@ -85,7 +85,7 @@ public class Order {
      * @param price of the item
      */
     public void addItem(final String name, final double price) {
-        items.put(name, items.containsKey(name) ? items.get(name) + 1 : 1);
+        this.items.put(name, items.containsKey(name) ? items.get(name) + 1l : 1l);
         this.totalCost += price;
     }
 
@@ -96,13 +96,12 @@ public class Order {
      * @param price of the item
      */
     public void removeItem(String name, double price) {
-        if (items.containsKey(name)) {
-            if (items.get(name) == 1) {
-                items.remove(name);
-            } else {
-                items.put(name, items.get(name) - 1);
-            }
-        }
+        if (!this.items.containsKey(name))
+            return;
+        if (this.items.get(name) == 1)
+            this.items.remove(name);
+        else
+            this.items.put(name, this.items.get(name) - 1);
 
         this.totalCost -= price;
     }
@@ -176,8 +175,8 @@ public class Order {
      * @param name of the item as a {@link String}
      * @return amount of the item
      */
-    public int getItemCount(String name) {
-        return items.containsKey(name) ? items.get(name) : 0;
+    public long getItemCount(String name) {
+        return items.containsKey(name) ? items.get(name) : 0l;
     }
 
     /**
@@ -187,9 +186,8 @@ public class Order {
      */
     public String getItemCount() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : items.entrySet()) {
+        for (final Map.Entry<String, Long> entry : items.entrySet())
             sb.append(entry.getKey() + " x" + entry.getValue() + '\n');
-        }
         return sb.toString();
     }
 
@@ -198,7 +196,7 @@ public class Order {
      * 
      * @return {@link #items}
      */
-    public HashMap<String, Integer> getItems() {
+    public HashMap<String, Long> getItems() {
         return this.items;
     }
 }
