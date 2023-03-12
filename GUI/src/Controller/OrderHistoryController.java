@@ -151,7 +151,7 @@ public class OrderHistoryController {
     /**
      * Constructor for OrderHistoryController
      * 
-     * @param session
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
      */
     public OrderHistoryController(final SessionData session) {
         this.session = session;

@@ -1,6 +1,7 @@
 package Items;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public class Order {
     /**
      * Indentification number of the order
      */
-    private long orderId;
+    private long orderID;
 
     /**
      * {@link String} holding the name of the customer who made the order
@@ -49,8 +50,15 @@ public class Order {
 
     /**
      * Construct an Order
+     */
+    public Order() {
+        this(-1l, -1l);
+    }
+
+    /**
+     * Construct an Order
      * 
-     * @param employeeId
+     * @param employeeId ID number of the Employee completing the order
      */
     public Order(final long employeeId) {
         this(employeeId, -1l);
@@ -59,14 +67,15 @@ public class Order {
     /**
      * Construct an Order
      * 
-     * @param employeeId
-     * @param orderId
+     * @param employeeId ID number of the Employee completing the order
+     * @param orderId ID number of the Order
      */
     public Order(final long employeeId, final long orderId) {
         this.employeeId = employeeId;
-        this.orderId = orderId;
+        this.orderID = orderId;
         date = LocalDateTime.now();
-        System.out.println("Order Created on " + this.date.toString());
+        System.out.println("Order Created on "
+                + this.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     /**
@@ -119,28 +128,28 @@ public class Order {
     /**
      * Gets {@link #employeeId}
      * 
-     * @return
+     * @return {@link #employeeId}
      */
     public long getEmployeeId() {
         return this.employeeId;
     }
 
     /**
-     * Sets {@link #orderId}
+     * Sets {@link #orderID}
      * 
-     * @return {@link #orderId}
+     * @param orderID new identification number of the order
      */
-    public void setOrderId(final int orderId) {
-        this.orderId = orderId;
+    public void setOrderId(final int orderID) {
+        this.orderID = orderID;
     }
 
     /**
-     * Gets {@link #orderId}
+     * Gets {@link #orderID}
      * 
-     * @return {@link #orderId}
+     * @return {@link #orderID}
      */
-    public long getOrderId() {
-        return this.orderId;
+    public long getOrderID() {
+        return this.orderID;
     }
 
     /**
@@ -155,7 +164,7 @@ public class Order {
     /**
      * Gets {@link #totalCost}
      * 
-     * @return
+     * @return {@link #totalCost}
      */
     public double getTotalCost() {
         return this.totalCost;

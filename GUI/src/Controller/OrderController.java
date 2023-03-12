@@ -68,8 +68,7 @@ public class OrderController {
     private Order order;
 
     /**
-     * {@link HashMap} of the menu items
-     * Elements: <id, <name, price>>
+     * {@link HashMap} of the menu items Elements: <id, <name, price>>
      */
     private TreeMap<String, Pair<String, Double>> menuItems;
 
@@ -150,11 +149,13 @@ public class OrderController {
         this.database = session.database;
         this.employeeId = session.employeeId;
         this.order = session.order;
-        this.menuItems = new TreeMap<String, Pair<String, Double>>(Comparator.comparingInt(Integer::parseInt));
+        this.menuItems = new TreeMap<String, Pair<String, Double>>(
+                Comparator.comparingInt(Integer::parseInt));
     }
 
     /**
-     * Set up page. Load menu table into hash map, load buttons from hash map, set navbar visibility, and refresh page
+     * Set up page. Load menu table into hash map, load buttons from hash map, set navbar
+     * visibility, and refresh page
      */
     public void initialize() {
         // using database (menuitem), load into hashmap and create corresponding button
@@ -170,7 +171,7 @@ public class OrderController {
                 // insert into hashmap
                 this.menuItems.put(id, new Pair<String, Double>(name, price));
             }
-            
+
             for (String id : this.menuItems.keySet()) {
                 // create and insert button
                 Button button = new Button(this.menuItems.get(id).getKey());
@@ -209,7 +210,8 @@ public class OrderController {
      * @throws IOException if loading the nindow fails
      */
     public void navButtonClicked(ActionEvent event) throws IOException {
-        SessionData session = new SessionData(this.database, this.employeeId, this.order, this.customerNameField.getText());
+        SessionData session = new SessionData(this.database, this.employeeId, this.order,
+                this.customerNameField.getText());
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
     }
@@ -289,7 +291,7 @@ public class OrderController {
         if ((result = this.menuItems.get(id)) == null) {
             System.out.println("Error getting menu item cost");
         }
-        return result.getValue(); 
+        return result.getValue();
     }
 
     /**
@@ -320,7 +322,7 @@ public class OrderController {
      */
     public void insertOrderItem(final Order order) {
 
-        long id = order.getOrderId();
+        long id = order.getOrderID();
         String customerName = order.getCustomerName();
         double totalCost = order.getTotalCost();
         String date = order.getDate().toString();
@@ -328,8 +330,10 @@ public class OrderController {
 
         try {
             database.executeUpdate(String.format("INSERT INTO %s VALUES (%s, '%s', %s, '%s', %s);",
-                    DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date, employeeId));
-            System.out.println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
+                    DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date,
+                    employeeId));
+            System.out
+                    .println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error inserting into orderitem");
@@ -344,11 +348,11 @@ public class OrderController {
     /**
      * Inserts each individual menu item in an order into the {@code solditem} database
      *
-     * @param order
+     * @param order {@link Order} to insert into the database
      */
     public void insertSoldItem(final Order order) {
 
-        long orderId = order.getOrderId();
+        long orderId = order.getOrderID();
         HashMap<String, Integer> soldItems = order.getItems();
         int soldItemId = getLastId("solditem") + 1;
 
@@ -371,7 +375,8 @@ public class OrderController {
 
     /**
      * Updates the {@code menuitem} database based on an {@link Order}
-     * @param order
+     * 
+     * @param order {@link Order} to insert into the database
      */
     public void updateMenuItem(final Order order) {
         HashMap<String, Integer> soldItems = order.getItems();
@@ -379,8 +384,9 @@ public class OrderController {
             int quantity = soldItems.get(item);
             int menuItemId = getMenuItemId(item);
             try {
-                database.executeUpdate(String.format("UPDATE %s SET numbersold = numbersold + %d WHERE id = %d;",
-                    DatabaseNames.MENU_ITEM_DATABASE, quantity, menuItemId));
+                database.executeUpdate(
+                        String.format("UPDATE %s SET numbersold = numbersold + %d WHERE id = %d;",
+                                DatabaseNames.MENU_ITEM_DATABASE, quantity, menuItemId));
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Error updating menuitem");
@@ -450,7 +456,8 @@ public class OrderController {
                     database.executeUpdate(String.format(
                             "UPDATE %s SET quantity = quantity - %f WHERE id = %s;",
                             DatabaseNames.INVENTORY_DATABASE, quantity * count, inventoryid));
-                    System.out.println("Updated " + databaseName + " for inventoryid " + inventoryid);
+                    System.out
+                            .println("Updated " + databaseName + " for inventoryid " + inventoryid);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("Error updating inventory");

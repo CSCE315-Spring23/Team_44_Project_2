@@ -1,5 +1,16 @@
 package Utils;
 
+/**
+ * Role of the Employee logging in
+ */
 public enum EmployeeRole {
-    Manager, Server;
+    /**
+     * Manager view
+     */
+    Manager,
+
+    /**
+     * Server view
+     */
+    Server;
 }
