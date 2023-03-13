@@ -5,7 +5,7 @@ import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import Utils.DatabaseNames;
-
+import Utils.DatabaseUtils;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -171,14 +171,14 @@ public class OrderHistoryController {
         // set visibility of buttons based on employee role
         if (session.isManager()) {
             System.out.println("Manager");
-            editMenuButton.setVisible(true);
-            inventoryButton.setVisible(true);
-            employeesButton.setVisible(true);
+            this.editMenuButton.setVisible(true);
+            this.inventoryButton.setVisible(true);
+            this.employeesButton.setVisible(true);
         } else {
             System.out.println("Employee");
-            editMenuButton.setVisible(false);
-            inventoryButton.setVisible(false);
-            employeesButton.setVisible(false);
+            this.editMenuButton.setVisible(false);
+            this.inventoryButton.setVisible(false);
+            this.employeesButton.setVisible(false);
         }
     }
 
@@ -222,17 +222,18 @@ public class OrderHistoryController {
      */
     private ObservableList<OrderRow> getOrders() {
         final ObservableList<OrderRow> orders = FXCollections.observableArrayList();
+        final String query = String.format("SELECT * FROM %s ORDER BY id DESC LIMIT 20",
+                DatabaseNames.ORDER_ITEM_DATABASE);
+        final ResultSet rs = database.executeQuery(query);
         try {
-            final ResultSet rs = database
-                    .executeQuery(String.format("SELECT * FROM %s ORDER BY id DESC LIMIT 20",
-                            DatabaseNames.ORDER_ITEM_DATABASE));
             while (rs.next()) {
                 final long orderID = rs.getLong("id");
                 final String customerName = rs.getString("customer_name");
                 final String orderDate = rs.getString("date");
                 final Double orderTotal = rs.getDouble("total_cost");
                 final long employeeID = rs.getInt("employee_id");
-                final String employeeName = this.getEmployeeName(employeeID);
+                final String employeeName =
+                        DatabaseUtils.getEmployeeName(this.database, employeeID);
                 orders.add(
                         new OrderRow(orderID, customerName, orderDate, orderTotal, employeeName));
             }
@@ -243,25 +244,7 @@ public class OrderHistoryController {
         return orders;
     }
 
-    /**
-     * Gets the employee name from the database based on the employee ID
-     * 
-     * @param id
-     * @return {@link String} of the employee name
-     */
-    private String getEmployeeName(final long id) {
-        String ret = "";
-        try {
-            ResultSet rs = database.executeQuery(String.format("SELECT name FROM %s WHERE id = %d",
-                    DatabaseNames.EMPLOYEE_DATABASE, id));
-            if (rs.next()) {
-                ret = rs.getString("name");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
+
 
     /**
      * Adds a click event to each {@link OrderRow} in table to display order details
@@ -298,13 +281,12 @@ public class OrderHistoryController {
      */
     private ArrayList<Long> getMenuId(final long orderID) {
         final ArrayList<Long> menuIds = new ArrayList<>();
+        final String query = String.format("SELECT menuid FROM %s WHERE orderid = %d",
+                DatabaseNames.SOLD_ITEM_DATABASE, orderID);
+        final ResultSet rs = database.executeQuery(query);
         try {
-            final ResultSet rs =
-                    database.executeQuery(String.format("SELECT menuid FROM %s WHERE orderid = %d",
-                            DatabaseNames.SOLD_ITEM_DATABASE, orderID));
-            while (rs.next()) {
+            while (rs.next())
                 menuIds.add(rs.getLong("menuid"));
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -318,21 +300,20 @@ public class OrderHistoryController {
      * @param menuIds
      * @return {@link HashMap} of {@link String} and {@link Long} of the menu items
      */
-    private HashMap<String, Long> getMenuItems(ArrayList<Long> menuIds) {
+    private HashMap<String, Long> getMenuItems(final ArrayList<Long> menuIds) {
         final HashMap<String, Long> menuItems = new HashMap<>();
         for (final long menuID : menuIds) {
+            final String query = String.format("SELECT name FROM %s WHERE id = %d",
+                    DatabaseNames.MENU_ITEM_DATABASE, menuID);
+            final ResultSet rs = database.executeQuery(query);
             try {
-                final ResultSet rs =
-                        database.executeQuery(String.format("SELECT name FROM %s WHERE id = %d",
-                                DatabaseNames.MENU_ITEM_DATABASE, menuID));
                 String name;
                 while (rs.next()) {
                     name = rs.getString("name");
-                    if (menuItems.containsKey(name)) {
+                    if (menuItems.containsKey(name))
                         menuItems.put(name, menuItems.get(name) + 1);
-                    } else {
+                    else
                         menuItems.put(name, 1l);
-                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -344,18 +325,17 @@ public class OrderHistoryController {
     /**
      * Gets the menu cost from the database based on the menu name
      * 
-     * @param name
+     * @param name of the customer making the order
      * @return {@link Double} of the menu cost
      */
-    private double getMenuCost(String name) {
+    private double getMenuCost(final String name) {
         double ret = 0;
+        final String query = String.format("SELECT cost FROM %s WHERE name = \'%s\'",
+                DatabaseNames.MENU_ITEM_DATABASE, name);
+        final ResultSet rs = database.executeQuery(query);
         try {
-            final ResultSet rs = database
-                    .executeQuery(String.format("SELECT cost FROM %s WHERE name = '" + name + "'",
-                            DatabaseNames.MENU_ITEM_DATABASE));
-            if (rs.next()) {
+            if (rs.next())
                 ret = rs.getDouble("cost");
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

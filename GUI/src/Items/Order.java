@@ -1,9 +1,9 @@
 package Items;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import Utils.DatabaseUtils;
 
 /**
  * This class handles the Order Item.
@@ -74,8 +74,9 @@ public class Order {
         this.employeeId = employeeId;
         this.orderID = orderId;
         this.date = LocalDateTime.now();
-        System.out.println("Order Created on "
-                + this.date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        final String debug = String.format("Order created on %s with ID %d",
+                this.date.format(DatabaseUtils.DATE_FORMAT), this.orderID);
+        System.out.println(debug);
     }
 
     /**

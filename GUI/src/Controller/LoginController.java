@@ -7,6 +7,7 @@ import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
 import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
@@ -268,7 +269,9 @@ public class LoginController {
         final long id = this.getEmployeeId();
 
         // sessionDataObject will be passed starting from LoginPage
-        return new SessionData(this.databaseInitializer(), id, new Order(id));
+        final Order order = new Order(id,
+                DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE) + 1l);
+        return new SessionData(this.databaseInitializer(), id, order);
     }
 
     /**

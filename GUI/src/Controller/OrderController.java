@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
@@ -150,7 +151,7 @@ public class OrderController {
         this.employeeId = session.employeeId;
         this.order = session.order;
         this.menuItems = new TreeMap<String, Pair<String, Double>>(
-                Comparator.comparingInt(Integer::parseInt));
+                Comparator.comparingLong(Long::parseLong));
     }
 
     /**
@@ -234,14 +235,6 @@ public class OrderController {
     }
 
     /**
-     * Handles the text change event for the customr name text box
-     * 
-     * @deprecated
-     */
-    @Deprecated
-    public void customerNameOnChanged() {}
-
-    /**
      * Handles the buttom click event for the submit order button. Inserts the order into both the
      * orderitem and solditem tables.
      */
@@ -256,13 +249,13 @@ public class OrderController {
         }
 
         // setup order and submit to database
-        this.order.setOrderId(this.getLastId(DatabaseNames.ORDER_ITEM_DATABASE) + 1l);
         this.order.setCustomerName(this.customerNameField.getText());
 
         this.insertOrderItem(this.order);
 
         // reset order and screen
-        this.order = new Order(this.employeeId);
+        this.order = new Order(this.employeeId,
+                DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE) + 1l);
         this.refreshPage();
         this.customerNameField.setText("");
     }
@@ -298,28 +291,6 @@ public class OrderController {
     }
 
     /**
-     * Returns the last ID in a given table
-     *
-     * @param table table name
-     * @return the last ID in the table
-     */
-    public long getLastId(final String table) {
-        long ret = 0;
-        try {
-            final ResultSet rs =
-                    database.executeQuery(String.format("SELECT MAX(id) from %s;", table));
-            if (rs.next()) {
-                ret = rs.getLong("max");
-            }
-            rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting last id");
-        }
-        return ret;
-    }
-
-    /**
      * Inserts an order into the database
      *
      * @param order {@link Order} to insert
@@ -328,14 +299,12 @@ public class OrderController {
         final long id = order.getOrderID();
         final String customerName = order.getCustomerName();
         final double totalCost = order.getTotalCost();
-        final String date = order.getDate().toString();
+        final String date = order.getDate().format(DatabaseUtils.DATE_FORMAT);
         final long employeeId = order.getEmployeeId();
-
+        final String query = String.format("INSERT INTO %s VALUES (%s, '%s', %s, '%s', %s);",
+                DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date, employeeId);
         try {
-            this.database
-                    .executeUpdate(String.format("INSERT INTO %s VALUES (%s, '%s', %s, '%s', %s);",
-                            DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date,
-                            employeeId));
+            this.database.executeUpdate(query);
             System.out
                     .println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
         } catch (Exception e) {
@@ -357,7 +326,8 @@ public class OrderController {
     public void insertSoldItem(final Order order) {
         final long orderId = order.getOrderID();
         final HashMap<String, Long> soldItems = order.getItems();
-        long soldItemId = this.getLastId("solditem") + 1;
+        long soldItemId =
+                DatabaseUtils.getLastId(this.database, DatabaseNames.SOLD_ITEM_DATABASE) + 1;
 
         for (final String item : soldItems.keySet()) {
             final long quantity = soldItems.get(item);
@@ -410,13 +380,13 @@ public class OrderController {
      */
     public long getMenuItemId(final String name) {
         long ret = -1l;
+        final String query = String.format("SELECT id FROM %s WHERE name = \'%s\';",
+                DatabaseNames.MENU_ITEM_DATABASE, name);
+        final ResultSet rs = database.executeQuery(query);
+
         try {
-            final ResultSet rs =
-                    database.executeQuery(String.format("SELECT id FROM %s WHERE name = \'%s\';",
-                            DatabaseNames.MENU_ITEM_DATABASE, name));
-            if (rs.next()) {
+            if (rs.next())
                 ret = rs.getLong("id");
-            }
             rs.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -443,8 +413,8 @@ public class OrderController {
             final String query =
                     String.format("SELECT inventoryid, count FROM %s WHERE menuid = %d;",
                             DatabaseNames.RECIPE_ITEM_DATABASE, menuItemId);
+            final ResultSet rs = database.executeQuery(query);
             try {
-                final ResultSet rs = database.executeQuery(query);
                 while (rs.next())
                     inventoryIDs.put(rs.getLong("inventoryid"), rs.getLong("count"));
                 rs.close();
