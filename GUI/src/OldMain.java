@@ -44,4 +44,9 @@ public class OldMain extends Application {
     public static void main(String[] args) {
         Application.launch(args);
     }
+
+    /**
+     * Constructor
+     */
+    public OldMain() {}
 }

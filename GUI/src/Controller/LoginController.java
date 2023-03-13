@@ -1,14 +1,13 @@
 package Controller;
 
 import java.io.IOException;
-import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 import Items.Order;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
 import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
@@ -16,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 /**
@@ -32,6 +30,11 @@ import javafx.scene.input.KeyEvent;
  * @author Mao, Steven
  */
 public class LoginController {
+    /**
+     * Max number of digits that PIN can hold
+     */
+    private static final int MAX_PIN_LENGTH = 4;
+
     /**
      * Current session data
      *
@@ -53,63 +56,103 @@ public class LoginController {
      */
     private SceneSwitch sceneSwitch;
 
-    @FXML // ResourceBundle that was given to the FXMLLoader
-    private ResourceBundle resources;
+    /**
+     * {@link Button} that triggers {@link #loginButtonClicked(ActionEvent)}
+     */
+    @FXML
+    private Button login;
 
-    @FXML // URL location of the FXML file that was given to the FXMLLoader
-    private URL location;
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num0;
 
-    @FXML // fx:id="login"
-    private Button login; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num1;
 
-    @FXML // fx:id="num0"
-    private Button num0; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num2;
 
-    @FXML // fx:id="num1"
-    private Button num1; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num3;
 
-    @FXML // fx:id="num2"
-    private Button num2; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num4;
 
-    @FXML // fx:id="num3"
-    private Button num3; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num5;
 
-    @FXML // fx:id="num4"
-    private Button num4; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num6;
 
-    @FXML // fx:id="num5"
-    private Button num5; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num7;
 
-    @FXML // fx:id="num6"
-    private Button num6; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num8;
 
-    @FXML // fx:id="num7"
-    private Button num7; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that triggers {@link #setPin(ActionEvent)}
+     */
+    @FXML
+    private Button num9;
 
-    @FXML // fx:id="num8"
-    private Button num8; // Value injected by FXMLLoader
+    /**
+     * {@link Button} that tiggers {@link #onBackspace(ActionEvent)}
+     */
+    @FXML
+    private Button backspace;
 
-    @FXML // fx:id="num9"
-    private Button num9; // Value injected by FXMLLoader
+    /**
+     * {@link ToggleButton} that triggers {@link #onShowPin(ActionEvent)}
+     */
+    @FXML
+    private ToggleButton showPin;
 
-    @FXML // fx:id="backspace"
-    private Button backspace; // Value injected by FXMLLoader
+    /**
+     * {@link TextField} to input the PIN
+     */
+    @FXML
+    private TextField pinBox;
 
-    @FXML // fx:id="showPin"
-    private ToggleButton showPin; // Value injected by FXMLLoader
-
-    @FXML // fx:id="pinBox"
-    private TextField pinBox; // Value injected by FXMLLoader
-
-    // represents current typed PIN
+    /**
+     * Represents current typed PIN
+     */
     private String pinNumber = "";
 
-    // hiding the PIN
-    private Boolean isShowingPin = false;
+    /**
+     * Boolean determining if the pin is hidden
+     */
+    private boolean isShowingPin = false;
 
-    // Max PIN Length
-    private final int MAX_PIN_LENGTH = 4;
-
+    /**
+     * Constructor
+     */
     public LoginController() {}
 
     /**
@@ -117,28 +160,32 @@ public class LoginController {
      * 
      * @param session Session's Information
      */
-    public LoginController(SessionData session) {
+    public LoginController(final SessionData session) {
         this.session = session;
     }
 
     /**
-     * Connection to the database
-     *
-     * @see DatabaseConnect
+     * Inialize the connection to the database.
      */
-    public Order order;
-
-    @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize() {
+    @FXML
+    public void initialize() {
         this.database = this.databaseInitializer();
     }
 
+    /**
+     * Update the {@link #pinBox}
+     */
     private void updatePin() {
         this.pinBox
                 .setText(this.isShowingPin ? this.pinNumber : "●".repeat(this.pinNumber.length()));
         this.pinBox.positionCaret(this.pinNumber.length());
     }
 
+    /**
+     * Sets the {@link #pinNumber} when a pin input {@link Button} is pressed
+     * 
+     * @param event {@link ActionEvent} of the pin input {@link Button}
+     */
     public void setPin(final ActionEvent event) {
         final Button button = (Button) event.getSource();
         if (this.pinNumber.length() < MAX_PIN_LENGTH) {
@@ -147,36 +194,60 @@ public class LoginController {
         }
     }
 
+    /**
+     * Handle typing directly into {@link #pinBox}
+     * 
+     * @param event {@link KeyEvent} of key pressed
+     */
     public void onPinBoxTyped(final KeyEvent event) {
-        final char keyTyped = (char) event.getCode().getCode();
-
         final int strLength = pinBox.getText().length();
-        if (0 <= strLength && strLength <= MAX_PIN_LENGTH) {
-            if (this.isShowingPin) {
-                this.pinNumber = this.pinBox.getText();
-            } else {
-                if (this.pinNumber.length() < strLength) {
-                    this.pinNumber += keyTyped;
-                } else {
-                    this.pinNumber = this.pinNumber.substring(0, strLength);
-                }
-            }
+        if (strLength < 0)
+            return;
+        if (strLength > MAX_PIN_LENGTH) {
+            this.pinBox.setText(this.pinBox.getText().substring(0, MAX_PIN_LENGTH));
+            return;
         }
+
+        if (this.isShowingPin) {
+            this.pinNumber = this.pinBox.getText();
+        } else {
+            final char keyTyped = (char) event.getCode().getCode();
+            if (this.pinNumber.length() < strLength)
+                this.pinNumber += keyTyped;
+            else
+                this.pinNumber = this.pinNumber.substring(0, strLength);
+        }
+
         this.updatePin();
     }
 
+    /**
+     * Handles pressing {@link #backspace}
+     * 
+     * @param ae {@link ActionEvent} of {@link #backspace}
+     */
     public void onBackspace(final ActionEvent ae) {
-        if (this.pinNumber.length() > 0) {
+        if (!this.pinNumber.isEmpty()) {
             this.pinNumber = this.pinNumber.substring(0, this.pinNumber.length() - 1);
             this.updatePin();
         }
     }
 
+    /**
+     * Toggles between showing and hidding the pin
+     * 
+     * @param ae {@link ActionEvent} of {@link #showPin}
+     */
     public void onShowPin(final ActionEvent ae) {
         this.isShowingPin = ((ToggleButton) ae.getSource()).isSelected();
         this.updatePin();
     }
 
+    /**
+     * Initalize the connection to the database
+     * 
+     * @return {@link DatabaseConnect}
+     */
     public DatabaseConnect databaseInitializer() {
         final String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
         final String username = DatabaseLoginInfo.username;
@@ -189,15 +260,26 @@ public class LoginController {
         return database;
     }
 
+    /**
+     * Retreives {@link SessionData} of the employee who logged in
+     * 
+     * @return {@link SessionData}
+     */
     public SessionData loginInitializer() {
         final long id = this.getEmployeeId();
 
         // sessionDataObject will be passed starting from LoginPage
-        SessionData newSession = new SessionData(this.databaseInitializer(), id, new Order(id));
-
-        return newSession;
+        final Order order = new Order(id,
+                DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE) + 1l);
+        return new SessionData(this.databaseInitializer(), id, order);
     }
 
+    /**
+     * Log into the database and switch scenes.
+     * 
+     * @param event {@link ActionEvent} of {@link #login}
+     * @throws IOException if loading the new window failed
+     */
     @FXML
     public void loginButtonClicked(ActionEvent event) throws IOException {
         try {
@@ -221,6 +303,11 @@ public class LoginController {
 
     }
 
+    /**
+     * Determine the ID of the employee that logged in.
+     * 
+     * @return ID of the employee
+     */
     public long getEmployeeId() {
         long ret = -1l;
         try {

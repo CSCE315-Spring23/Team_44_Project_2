@@ -50,7 +50,16 @@ public class SessionData {
         this.order = order;
     }
 
-    public SessionData(final DatabaseConnect database, final long employeeId, final Order order, String customerName) {
+    /**
+     * Constructor
+     * 
+     * @param database Connection to the database
+     * @param employeeId id of the employee
+     * @param order current order
+     * @param customerName name of the employee making the order
+     */
+    public SessionData(final DatabaseConnect database, final long employeeId, final Order order,
+            final String customerName) {
         this.database = database;
         this.employeeId = employeeId;
         this.order = order;
