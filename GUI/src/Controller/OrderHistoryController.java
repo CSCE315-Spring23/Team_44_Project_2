@@ -1,20 +1,24 @@
 package Controller;
 
-import Items.OrderRow;
-import Utils.DatabaseConnect;
-import Utils.SceneSwitch;
-import Utils.SessionData;
-import Utils.DatabaseNames;
-import Utils.DatabaseUtils;
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import Items.OrderRow;
+import Utils.DatabaseConnect;
+import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
+import Utils.SceneSwitch;
+import Utils.SessionData;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 
 /**
  * Controller for the Order History Screen
@@ -256,12 +260,13 @@ public class OrderHistoryController {
                 if (event.getClickCount() == 1 && (!row.isEmpty())) {
                     final OrderRow rowData = row.getItem();
                     final long id = rowData.getOrderID();
-                    final ArrayList<Long> menuIds = this.getMenuId(id);
-                    final HashMap<String, Long> menuItems = this.getMenuItems(menuIds);
+                    final List<Long> menuIds = DatabaseUtils.getMenuId(this.database, id);
+                    final Map<String, Long> menuItems =
+                            DatabaseUtils.getMenuItems(this.database, menuIds);
                     this.orderHistoryTextBox.setText("");
                     for (final String name : menuItems.keySet()) {
-                        final double cost = this.getMenuCost(name);
                         final long quant = menuItems.get(name);
+                        final double cost = DatabaseUtils.getMenuCost(this.database, name);
                         final String rightside =
                                 String.format("$%.2f x%d = $%.2f", cost, quant, cost * quant);
                         final String print = String.format("%-36s %20s\n", name, rightside);
@@ -272,74 +277,4 @@ public class OrderHistoryController {
             return row;
         });
     }
-
-    /**
-     * Gets the Menu IDs from the database based on the order ID
-     * 
-     * @param orderID identification number of the order
-     * @return {@link ArrayList} of {@link Long} of the menu IDs
-     */
-    private ArrayList<Long> getMenuId(final long orderID) {
-        final ArrayList<Long> menuIds = new ArrayList<>();
-        final String query = String.format("SELECT menuid FROM %s WHERE orderid = %d",
-                DatabaseNames.SOLD_ITEM_DATABASE, orderID);
-        final ResultSet rs = database.executeQuery(query);
-        try {
-            while (rs.next())
-                menuIds.add(rs.getLong("menuid"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return menuIds;
-    }
-
-    /**
-     * Gets the menu items from the database based on Menu IDs
-     * 
-     * @param menuIds
-     * @return {@link HashMap} of {@link String} and {@link Long} of the menu items
-     */
-    private HashMap<String, Long> getMenuItems(final ArrayList<Long> menuIds) {
-        final HashMap<String, Long> menuItems = new HashMap<>();
-        for (final long menuID : menuIds) {
-            final String query = String.format("SELECT name FROM %s WHERE id = %d",
-                    DatabaseNames.MENU_ITEM_DATABASE, menuID);
-            final ResultSet rs = database.executeQuery(query);
-            try {
-                String name;
-                while (rs.next()) {
-                    name = rs.getString("name");
-                    if (menuItems.containsKey(name))
-                        menuItems.put(name, menuItems.get(name) + 1);
-                    else
-                        menuItems.put(name, 1l);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return menuItems;
-    }
-
-    /**
-     * Gets the menu cost from the database based on the menu name
-     * 
-     * @param name of the customer making the order
-     * @return {@link Double} of the menu cost
-     */
-    private double getMenuCost(final String name) {
-        double ret = 0;
-        final String query = String.format("SELECT cost FROM %s WHERE name = \'%s\'",
-                DatabaseNames.MENU_ITEM_DATABASE, name);
-        final ResultSet rs = database.executeQuery(query);
-        try {
-            if (rs.next())
-                ret = rs.getDouble("cost");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
-
 }
