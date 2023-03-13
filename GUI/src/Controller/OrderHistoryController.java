@@ -156,7 +156,6 @@ public class OrderHistoryController {
     public OrderHistoryController(final SessionData session) {
         this.session = session;
         this.database = session.database;
-
     }
 
     /**

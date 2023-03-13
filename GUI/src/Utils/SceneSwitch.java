@@ -1,13 +1,10 @@
 package Utils;
 
 import java.io.IOException;
-import Controller.LoginController;
-import Controller.DataTrendsController;
-import Controller.EditMenuController;
-import Controller.InventoryController;
-import Controller.EmployeeController;
-import Controller.OrderController;
-import Controller.OrderHistoryController;
+import Controller.*;
+import Controller.Reports.*;
+
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -69,6 +66,8 @@ public class SceneSwitch {
      */
     private DataTrendsController dataTrendsController;
 
+    private SalesReport salesReportController;
+
     /**
      * Constructor
      * 
@@ -83,6 +82,8 @@ public class SceneSwitch {
         this.employeeController = new EmployeeController(this.session);
         this.editMenuController = new EditMenuController(this.session);
         this.dataTrendsController = new DataTrendsController(this.session);
+
+        this.salesReportController = new SalesReport(this.session);
     }
 
     /**
@@ -159,6 +160,29 @@ public class SceneSwitch {
                 System.out.println("Logout button clicked");
                 loader = new FXMLLoader(getClass().getResource("../FXML/Login.fxml"));
                 loader.setController(loginController);
+                break;
+            default:
+                throw new IllegalStateException("Invalid button pressed");
+        }
+
+        final Parent root = loader.load();
+        final Scene scene = new Scene(root, 1200, 800);
+        final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void switchReportScene(ActionEvent event) throws IOException{
+        final Button b = (Button) event.getSource();
+        final String buttonID = b.getId();
+
+        FXMLLoader loader = null;
+
+        switch (buttonID) {
+            case "salesReportButton":
+                System.out.println("Sales Report button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/Reports/SalesReport.fxml"));
+                loader.setController(salesReportController);
                 break;
             default:
                 throw new IllegalStateException("Invalid button pressed");
