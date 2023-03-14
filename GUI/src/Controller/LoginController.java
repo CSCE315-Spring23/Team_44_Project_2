@@ -169,6 +169,7 @@ public class LoginController {
      * Inialize the connection to the database.
      */
     public void initialize() {
+        this.database = this.databaseInitializer();
         this.pinBox.setText("");
     }
 

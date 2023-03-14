@@ -19,7 +19,7 @@ import javafx.scene.control.*;
 
 
 public class SalesReport {
-        /**
+    /**
      * Current session data
      *
      * @see SessionData

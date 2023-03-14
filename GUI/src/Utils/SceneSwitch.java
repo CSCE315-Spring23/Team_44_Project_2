@@ -68,6 +68,14 @@ public class SceneSwitch {
 
     private SalesReport salesReportController;
 
+    private XZReport xzReportController;
+
+    private ExcessReport excessReportController;
+
+    private RestockReport restockReportController;
+
+    private SalesTogtherReport salesTogetherReportController;
+
     /**
      * Constructor
      * 
@@ -84,6 +92,10 @@ public class SceneSwitch {
         this.dataTrendsController = new DataTrendsController(this.session);
 
         this.salesReportController = new SalesReport(this.session);
+        this.xzReportController = new XZReport(this.session);
+        this.excessReportController = new ExcessReport(this.session);
+        this.restockReportController = new RestockReport(this.session);
+        this.salesTogetherReportController = new SalesTogtherReport(this.session);
     }
 
     /**
@@ -183,6 +195,26 @@ public class SceneSwitch {
                 System.out.println("Sales Report button clicked");
                 loader = new FXMLLoader(getClass().getResource("../FXML/Reports/SalesReport.fxml"));
                 loader.setController(salesReportController);
+                break;
+            case "XZReportButton":
+                System.out.println("XZ Report button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/Reports/XZReport.fxml"));
+                loader.setController(xzReportController);
+                break;
+            case "excessReportButton":
+                System.out.println("Excess Report button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/Reports/ExcessReport.fxml"));
+                loader.setController(excessReportController);
+                break;
+            case "restockReportButton":
+                System.out.println("Restock Report button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/Reports/RestockReport.fxml"));
+                loader.setController(restockReportController);
+                break;
+            case "salesTogetherReportButton":
+                System.out.println("Sales Together Report button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/Reports/SalesTogetherReport.fxml"));
+                loader.setController(salesTogetherReportController);
                 break;
             default:
                 throw new IllegalStateException("Invalid button pressed");
