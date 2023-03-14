@@ -347,6 +347,7 @@ public class OrderController {
                     DatabaseNames.SOLD_ITEM_DATABASE);
             System.out.println(debug);
         }
+
     }
 
     /**
@@ -370,6 +371,7 @@ public class OrderController {
                 e.printStackTrace();
             }
         }
+
     }
 
     /**
