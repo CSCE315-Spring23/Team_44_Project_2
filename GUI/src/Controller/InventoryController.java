@@ -7,6 +7,7 @@ import Items.InventoryItem;
 import Utils.DatabaseConnect;
 import Utils.DatabaseLoginInfo;
 import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.collections.FXCollections;
@@ -261,21 +262,8 @@ public class InventoryController {
             return;
         }
 
-        long itemID = 0l;
-
-        final String probe =
-                String.format("SELECT MAX(id) FROM %s", DatabaseNames.INVENTORY_DATABASE);
-        final ResultSet result = this.database.executeQuery(probe);
-
-        try {
-            if (result.next())
-                itemID = result.getLong("max") + 1l;
-            result.close();
-        } catch (SQLException e) {
-            System.out.println("Query failed");
-            return;
-        }
-
+        final long itemID =
+                DatabaseUtils.getLastId(this.database, DatabaseNames.INVENTORY_DATABASE);
         final String insert =
                 String.format("INSERT INTO %s (id, name, quantity) VALUES (%d, '%s', %d);",
                         DatabaseNames.INVENTORY_DATABASE, itemID, itemName, quantity);

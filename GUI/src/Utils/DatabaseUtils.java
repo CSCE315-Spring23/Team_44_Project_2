@@ -1,6 +1,7 @@
 package Utils;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,30 @@ public class DatabaseUtils {
      */
     public static final DateTimeFormatter DATE_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * Check if an item exists with in the database
+     * 
+     * @param database {@link DatabaseConnect} to the database
+     * @param itemID identification number of the item to search for
+     * @return {@code true} if the item exists. {@code false} otherwise.
+     */
+    public static final boolean hasItem(final DatabaseConnect database, final long itemID,
+            final String table) {
+        final String query =
+                String.format("SELECT EXISTS(SELECT * FROM %s WHERE id=%d)", table, itemID);
+        final ResultSet rs = database.executeQuery(query);
+        boolean result = false;
+        try {
+            if (rs.next())
+                result = rs.getBoolean("exists");
+            rs.close();
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return result;
+    }
 
     /**
      * Returns the last ID in a given table
