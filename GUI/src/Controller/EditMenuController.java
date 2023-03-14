@@ -322,7 +322,7 @@ public class EditMenuController {
 
         final long itemID;
         try {
-            itemID = Long.valueOf(this.updateIDText.getText(););
+            itemID = Long.valueOf(this.updateIDText.getText());
         } catch (Exception exc) {
             System.err.println("Invalid ID Provided");
             return;
