@@ -1,35 +1,16 @@
-package Controller;
+package Controller.Reports;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import javax.swing.Action;
 
 import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
 
-/**
- * This class handles the data trends scene/tab of the GUI
- * 
- * @since 2023-03-06
- * @version 2023-03-06
- * 
- * @author Dai, Kevin
- * @author Davis, Sloan
- * @author Kuppa Jayaram, Shreeman
- * @author Lai, Huy
- * @author Mao, Steven
- */
-public class DataTrendsController {
-    /**
+public class SalesReport {
+        /**
      * Current session data
      *
      * @see SessionData
@@ -85,6 +66,7 @@ public class DataTrendsController {
     @FXML
     private Button editMenuButton;
 
+
     /**
      * {@link Button} Button to navigate to the data trends scene
      */
@@ -99,32 +81,52 @@ public class DataTrendsController {
     private Button logoutButton;
 
 
-    @FXML private Button salesReportButton;
+    @FXML TextField startDateText;
 
-    public DataTrendsController(SessionData session) {
+    @FXML TextField endDateText;
+
+    @FXML Button goButton;
+
+    public SalesReport(final SessionData session) {
         this.session = session;
         this.database = session.database;
     }
 
     public void initialize() {
+        // set visibility of buttons based on employee role
+        if (session.isManager()) {
+            System.out.println("Manager");
+            editMenuButton.setVisible(true);
+            inventoryButton.setVisible(true);
+            employeesButton.setVisible(true);
+        } else {
+            System.out.println("Employee");
+            editMenuButton.setVisible(false);
+            inventoryButton.setVisible(false);
+            employeesButton.setVisible(false);
+        }
     }
 
+
     /**
-     * Handle switching scenes through the navigation bar
+     * Navigates to the scene specified by the button clicked
      *
-     * @param event {@link ActionEvent} of the {@link Button} pressed
-     * @throws IOException if loading the new GUI failed
+     * @param event {@link ActionEvent} of {@link Button} in the navigation bar
+     * @throws IOException if loading a window fails
      */
     public void navButtonClicked(ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
     }
 
-    public void reportButtonClicked(ActionEvent event) throws IOException {
-        this.sceneSwitch = new SceneSwitch(session);
-        this.sceneSwitch.switchReportScene(event);
+    public void onGoClick(){
+        final String startDate = startDateText.getText();
+        final String endDate = endDateText.getText();
+        startDateText.clear();
+        endDateText.clear();
+
+        //format check for dates
+
     }
-
-
 
 }
