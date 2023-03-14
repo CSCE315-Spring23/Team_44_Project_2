@@ -3,9 +3,12 @@ package Controller;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import Items.MenuItem;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.collections.FXCollections;
@@ -233,9 +236,131 @@ public class EditMenuController {
     }
 
     /**
+     * Handle switching scenes through the navigation bar
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} pressed
+     * @throws IOException if loading the new GUI failed
+     */
+    public void navButtonClicked(ActionEvent event) throws IOException {
+        this.sceneSwitch = new SceneSwitch(session);
+        this.sceneSwitch.switchScene(event);
+    }
+
+    /**
+     * Update existing item in the menuitem table. First checks if the item exists, then updates its
+     * values that the user entered that aren't null, then updates the recipeitem table
+     * 
+     * @param e {@link ActionEvent} of {@link #updateItemButton}
+     */
+    public void updateItemClicked(ActionEvent e) {
+        System.out.println("Updaing item in the menu");
+        final String name = this.updateNameText.getText();
+
+        final long itemID;
+        try {
+            itemID = Long.valueOf(this.updateIDText.getText());
+        } catch (final NumberFormatException nfe) {
+            System.err.println("Invalid ID Provided");
+            return;
+        }
+
+        final double cost;
+        try {
+            cost = Double.parseDouble(this.updateCostText.getText());
+        } catch (final NumberFormatException nfe) {
+            System.err.println("Invalid Cost provided");
+            return;
+        }
+
+        if (itemID < 0L)
+            return;
+        if (cost < 0d)
+            return;
+        if (name == null)
+            return;
+        if (name.isEmpty())
+            return;
+
+        // Update Menu Item Table
+        final String query = String.format("UPDATE menuitem SET name=%s cost=%.2f WHERE id=%d",
+                name, cost, itemID);
+        this.database.executeUpdate(query);
+
+        // update recipe table
+        this.removeItemsFromRecipe(itemID);
+        final String[] recipe = this.updateRecipeText.getText().split(",");
+        final Map<Long, Long> inventoryCountMap = this.parseRecipe(recipe);
+        this.addItemsToRecipe(inventoryCountMap, itemID);
+        this.updateTable();
+        this.clearTextFields();
+    }
+
+    /**
+     * If item doesn't exist, it adds it to menu table and adds its recipe to the recipeitem table
+     * 
+     * @param e {@link ActionEvent} of {@link #addItemButton}
+     */
+    public void addItemClicked(final ActionEvent e) {
+        System.out.println("Adding item to menu");
+        final long menuID =
+                DatabaseUtils.getLastId(this.database, DatabaseNames.MENU_ITEM_DATABASE) + 1;
+        final String name = this.addNameText.getText();
+        final double cost;
+        try {
+            cost = Double.parseDouble(this.addCostText.getText());
+        } catch (NumberFormatException nfe) {
+            System.err.println("Failed to parse price");
+            return;
+        }
+
+        // Parse addRecipeText
+        final String[] recipe = this.addRecipeText.getText().split(",");
+        final Map<Long, Long> inventoryCountMap = this.parseRecipe(recipe);
+
+        // Check if any recipe item exists within the inventory
+        for (final long item : inventoryCountMap.keySet())
+            if (!DatabaseUtils.hasItem(this.database, item, DatabaseNames.INVENTORY_DATABASE)) {
+                System.err.println("Inventory does not have item with ID:\t" + item);
+                return;
+            }
+
+        final String query = String.format(
+                "INSERT INTO %s (id, name, cost, numbersold) VALUES (%d, \'%s\', %.2f, 0)",
+                DatabaseNames.MENU_ITEM_DATABASE, menuID, name, cost);
+        this.database.executeUpdate(query);
+
+        this.addItemsToRecipe(inventoryCountMap, menuID);
+        this.updateTable();
+        this.clearTextFields();
+    }
+
+    /**
+     * Remove item from menu table and recipe item table if it exists
+     * 
+     * @param e {@link ActionEvent} of {@link #deleteItemClicked(ActionEvent)}
+     */
+    public void deleteItemClicked(final ActionEvent e) {
+        System.out.println("Deleting item from menu");
+        final long menuID;
+        try {
+            menuID = Long.parseLong(this.deleteItemID.getText());
+        } catch (NumberFormatException nfe) {
+            System.err.println("Failed to parse menuID");
+            return;
+        }
+
+        final String query = String.format("DELETE FROM %s WHERE id=%d",
+                DatabaseNames.MENU_ITEM_DATABASE, menuID);
+        this.database.executeUpdate(query);
+        this.removeItemsFromRecipe(menuID);
+        this.updateTable();
+        this.clearTextFields();
+    }
+
+    /**
      * Reset all text fields that get user input for editing a menu item to null
      */
-    public void clearTextFields() {
+    private void clearTextFields() {
         this.updateIDText.setText("");
         this.updateNameText.setText("");
         this.updateCostText.setText("");
@@ -256,17 +381,6 @@ public class EditMenuController {
         this.menuName.setCellValueFactory(cellData -> cellData.getValue().getName());
         this.menuPrice.setCellValueFactory(cellData -> cellData.getValue().getPrice());
         this.numberSold.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
-    }
-
-    /**
-     * Handle switching scenes through the navigation bar
-     * 
-     * @param event {@link ActionEvent} of the {@link Button} pressed
-     * @throws IOException if loading the new GUI failed
-     */
-    public void navButtonClicked(ActionEvent event) throws IOException {
-        this.sceneSwitch = new SceneSwitch(session);
-        this.sceneSwitch.switchScene(event);
     }
 
     /**
@@ -306,84 +420,58 @@ public class EditMenuController {
     }
 
     /**
-     * Check if a primary key exists within the database
+     * Parses the recipe list into a {@link Map} maping from {@link Long} to {@link Long}. The Key
+     * is the ID number of the recipe item, the Value is the amount of that item in the recipe.
      * 
-     * @param itemID ID number of the item
-     * @return {@code true} if found, {@code false} otherwise
-     * @deprecated
+     * @param recipe array of {@link String} holding the recipe
+     * @return {@link Map} of {@link Long} to {@link Long}
      */
-    @Deprecated
-    public boolean checkMenuItemExists(final long itemID) {
-        if (itemID <= 0l)
-            return false;
+    private Map<Long, Long> parseRecipe(final String[] recipe) {
+        final Map<Long, Long> map = new HashMap<>();
+        for (final String item : recipe) {
+            final long id;
+            try {
+                id = Long.parseLong(item);
+            } catch (NumberFormatException nfe) {
+                throw nfe;
+            }
 
-        final String query = String.format("SELECT COUNT(*) FROM %s WHERE id = %d;",
-                DatabaseNames.MENU_ITEM_DATABASE, itemID);
-        final ResultSet rs = database.executeQuery(query);
+            if (map.containsKey(id))
+                map.put(id, map.get(id) + 1l);
+            else
+                map.put(id, 1l);
+        }
 
-        try {
-            if (rs.next()) {
-                long has = rs.getLong(0);
-                return has != 0l;
-            } else
-                return false;
-        } catch (SQLException e) {
-            return false;
+        return map;
+    }
+
+    /**
+     * Adds items to the recipe table
+     * 
+     * @param recipeMap {@link Map} parsed by {@link #parseRecipe(String[])}
+     * @param menuID ID number of the menu item
+     */
+    private void addItemsToRecipe(final Map<Long, Long> recipeMap, final long menuID) {
+        for (final Map.Entry<Long, Long> node : recipeMap.entrySet()) {
+            final long recipeID =
+                    DatabaseUtils.getLastId(this.database, DatabaseNames.RECIPE_ITEM_DATABASE) + 1;
+            final long inventoryID = node.getKey();
+            final long count = node.getValue();
+            final String query = String.format(
+                    "INSERT INTO %s (id, inventoryid, menuid, count) VALUES (%d, %d, %d, %d);",
+                    DatabaseNames.RECIPE_ITEM_DATABASE, recipeID, inventoryID, menuID, count);
+            this.database.executeUpdate(query);
         }
     }
 
     /**
-     * Update existing item in the menuitem table. First checks if the item exists, then updates its
-     * values that the user entered that aren't null, then updates the recipeitem table
+     * Remove all recipe items from the recipe table that have a specified menu ID number
      * 
-     * @param e {@link ActionEvent} of {@link #updateItemButton}
+     * @param menuID ID number of the menu to remove from the recipe table.
      */
-    public void updateItemClicked(ActionEvent e) {
-        final String idText = this.updateIDText.getText();
-        String cost = this.updateCostText.getText();
-        String name = this.updateNameText.getText();
-
-        long itemID = -1L;
-        try {
-            itemID = Long.valueOf(idText);
-        } catch (Exception exc) {
-            System.err.println("Invalid ID Provided");
-        }
-
-        if (itemID < 0L) {
-            return;
-        }
-        if (cost != null) {
-            cost = "cost = " + cost;
-        }
-        if (name != null) {
-            name = "name = " + name;
-        }
-        // Update Menu Item Table
-        String query = String.format("UPDATE menuitem SET {} {} WHERE id = {}", name, cost, itemID);
-        database.executeUpdate(query);
-
-        // update recipe table
-        // TODO create functions clearRecipe, parseRecipeString, addRecipeItems
-
+    private void removeItemsFromRecipe(final long menuID) {
+        final String query = String.format("DELETE FROM %s WHERE menuid=%d",
+                DatabaseNames.RECIPE_ITEM_DATABASE, menuID);
+        this.database.executeUpdate(query);
     }
-
-    /**
-     * If item doesn't exist, it adds it to menu table and adds its recipe to the recipeitem table
-     * 
-     * @param e {@link ActionEvent} of {@link #addItemButton}
-     */
-    public void addItemClicked(ActionEvent e) {
-
-    }
-
-    /**
-     * Remove item from menu table and recipe item table if it exists
-     * 
-     * @param e {@link ActionEvent} of {@link #deleteItemClicked(ActionEvent)}
-     */
-    public void deleteItemClicked(ActionEvent e) {
-
-    }
-
 }

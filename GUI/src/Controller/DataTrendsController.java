@@ -99,15 +99,15 @@ public class DataTrendsController {
     private Button logoutButton;
 
 
-    @FXML private Button salesReportButton;
+    @FXML
+    private Button salesReportButton;
 
     public DataTrendsController(SessionData session) {
         this.session = session;
         this.database = session.database;
     }
 
-    public void initialize() {
-    }
+    public void initialize() {}
 
     /**
      * Handle switching scenes through the navigation bar
@@ -124,7 +124,4 @@ public class DataTrendsController {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchReportScene(event);
     }
-
-
-
 }

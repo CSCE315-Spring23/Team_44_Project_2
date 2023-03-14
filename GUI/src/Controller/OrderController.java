@@ -73,7 +73,6 @@ public class OrderController {
      */
     private TreeMap<String, Pair<String, Double>> menuItems;
 
-
     /**
      * {@link Button} Button to navigate order scene
      */
@@ -161,10 +160,9 @@ public class OrderController {
     public void initialize() {
         // using database (menuitem), load into hashmap and create corresponding button
         final List<Button> buttons = new ArrayList<Button>();
+        final String query = String.format("SELECT * FROM %s", DatabaseNames.MENU_ITEM_DATABASE);
+        final ResultSet rs = database.executeQuery(query);
         try {
-            final String query =
-                    String.format("SELECT * FROM %s", DatabaseNames.MENU_ITEM_DATABASE);
-            final ResultSet rs = database.executeQuery(query);
             while (rs.next()) {
                 final String id = rs.getString("id");
                 final String name = rs.getString("name");
@@ -185,10 +183,11 @@ public class OrderController {
             this.menuPane.getChildren().addAll(buttons);
         } catch (SQLException e) {
             e.printStackTrace();
+            return;
         }
 
         // set navbar visibility
-        boolean isManager = session.isManager();
+        final boolean isManager = session.isManager();
         System.out.println("Logged In As " + (isManager ? "Manager" : "Employee"));
         this.editMenuButton.setVisible(isManager);
         this.inventoryButton.setVisible(isManager);
@@ -212,7 +211,7 @@ public class OrderController {
      * @throws IOException if loading the nindow fails
      */
     public void navButtonClicked(ActionEvent event) throws IOException {
-        SessionData session = new SessionData(this.database, this.employeeId, this.order,
+        final SessionData session = new SessionData(this.database, this.employeeId, this.order,
                 this.customerNameField.getText());
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
@@ -243,6 +242,7 @@ public class OrderController {
             System.out.println("Error: No items in order");
             return;
         }
+
         if (this.customerNameField.getText().isEmpty()) {
             System.out.println("Error: No customer name");
             return;
@@ -267,7 +267,7 @@ public class OrderController {
      * @return the name of the menu item
      */
     public String getMenuItemName(final String id) {
-        Pair<String, Double> result;
+        final Pair<String, Double> result;
         if ((result = this.menuItems.get(id)) == null) {
             System.out.println("Error getting menu item name");
             return new String();
@@ -282,7 +282,7 @@ public class OrderController {
      * @return the cost of the menu item
      */
     public double getMenuItemCost(final String id) {
-        Pair<String, Double> result;
+        final Pair<String, Double> result;
         if ((result = this.menuItems.get(id)) == null) {
             System.out.println("Error getting menu item cost");
             return -1d;
@@ -303,14 +303,7 @@ public class OrderController {
         final long employeeId = order.getEmployeeId();
         final String query = String.format("INSERT INTO %s VALUES (%s, '%s', %s, '%s', %s);",
                 DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date, employeeId);
-        try {
-            this.database.executeUpdate(query);
-            System.out
-                    .println("Inserted order " + id + " into " + DatabaseNames.ORDER_ITEM_DATABASE);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error inserting into orderitem");
-        }
+        this.database.executeUpdate(query);
 
         // update solditems based on order, menuitem's num_sold, and inventory
         this.insertSoldItem(order);
@@ -364,12 +357,7 @@ public class OrderController {
                     String.format("UPDATE %s SET numbersold = numbersold + %d WHERE id = %d;",
                             DatabaseNames.MENU_ITEM_DATABASE, quantity, menuItemId);
 
-            try {
-                database.executeUpdate(query);
-            } catch (Exception e) {
-                System.out.println("Error updating menuitem");
-                e.printStackTrace();
-            }
+            database.executeUpdate(query);
         }
 
     }
@@ -381,18 +369,18 @@ public class OrderController {
      * @return the Identification number, -1 when not found
      */
     public long getMenuItemId(final String name) {
-        long ret = -1l;
         final String query = String.format("SELECT id FROM %s WHERE name = \'%s\';",
                 DatabaseNames.MENU_ITEM_DATABASE, name);
         final ResultSet rs = database.executeQuery(query);
 
+        final long ret;
         try {
-            if (rs.next())
-                ret = rs.getLong("id");
+            ret = rs.next() ? rs.getLong("id") : -1l;
             rs.close();
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Error getting menu item id");
+            e.printStackTrace();
+            return -1l;
         }
 
         return ret;

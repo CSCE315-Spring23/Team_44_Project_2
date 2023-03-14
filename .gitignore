@@ -1,6 +1,7 @@
-#Ignore .sh
+#Ignore files
 *.sh
 *.class
+*.gpg
 
 #Ignore Data in AutoGen Folder
 OrderAutoGenerator/OrderItem.csv
@@ -17,4 +18,8 @@ OrderAutoGenerator/__pycache__
 /GUI/src/localCompile.ps1
 /GUI/Makefile
 
-/GUI/doc
+# Ignore documentation
+/doc/
+/docs/
+/GUI/doc/
+/GUI/docs/

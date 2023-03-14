@@ -162,23 +162,23 @@ public class LoginController {
      */
     public LoginController(final SessionData session) {
         this.session = session;
+        this.database = this.session.database;
     }
 
     /**
      * Inialize the connection to the database.
      */
-    @FXML
     public void initialize() {
-        this.database = this.databaseInitializer();
+        this.pinBox.setText("");
     }
 
     /**
      * Update the {@link #pinBox}
      */
     private void updatePin() {
-        this.pinBox
-                .setText(this.isShowingPin ? this.pinNumber : "●".repeat(this.pinNumber.length()));
-        this.pinBox.positionCaret(this.pinNumber.length());
+        final int pinLength = this.pinNumber.length();
+        this.pinBox.setText(this.isShowingPin ? this.pinNumber : "●".repeat(pinLength));
+        this.pinBox.positionCaret(pinLength);
     }
 
     /**
@@ -282,25 +282,22 @@ public class LoginController {
      */
     @FXML
     public void loginButtonClicked(ActionEvent event) throws IOException {
+        final String sqlQuery = String.format("SELECT * FROM %s WHERE pin=\'%s\'",
+                DatabaseNames.EMPLOYEE_DATABASE, this.pinNumber);
+        final ResultSet loginQuery = database.executeQuery(sqlQuery);
         try {
-            final String sqlQuery = String.format("SELECT * FROM %s WHERE pin=\'%s\'",
-                    DatabaseNames.EMPLOYEE_DATABASE, this.pinNumber);
-            // System.out.println(sqlQuery);
-
-            // System.out.println(database);
-            final ResultSet loginQuery = database.executeQuery(sqlQuery);
             if (!loginQuery.next()) {
-                System.out.println("Invalid PIN");
-            } else {
-                this.session = this.loginInitializer();
-                this.sceneSwitch = new SceneSwitch(session);
-                this.sceneSwitch.LoginTransition(event, session);
-                System.out.println("Login authenticated");
+                System.err.println("Invalid PIN");
+                return;
             }
+
+            this.session = this.loginInitializer();
+            this.sceneSwitch = new SceneSwitch(session);
+            this.sceneSwitch.LoginTransition(event, session);
+            System.out.println("Login authenticated");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -309,18 +306,17 @@ public class LoginController {
      * @return ID of the employee
      */
     public long getEmployeeId() {
-        long ret = -1l;
+        final String query = String.format("SELECT id FROM %s WHERE pin = \'%s\'",
+                DatabaseNames.EMPLOYEE_DATABASE, this.pinNumber);
+        final ResultSet rs = this.database.executeQuery(query);
+        final long ret;
         try {
-            ResultSet rs =
-                    database.executeQuery(String.format("SELECT id FROM %s WHERE pin = \'%s\'",
-                            DatabaseNames.EMPLOYEE_DATABASE, this.pinNumber));
-            if (rs.next()) {
-                ret = rs.getLong("id");
-            }
-        } catch (Exception e) {
+            ret = rs.next() ? rs.getLong("id") : -1l;
+            rs.close();
+        } catch (final SQLException e) {
             e.printStackTrace();
+            return -1l;
         }
         return ret;
     }
-
 }

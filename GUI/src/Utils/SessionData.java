@@ -74,13 +74,13 @@ public class SessionData {
     public boolean isManager() {
         final String query = String.format("SELECT role FROM %s WHERE id=%d",
                 DatabaseNames.EMPLOYEE_DATABASE, this.employeeId);
+        final ResultSet rs = this.database.executeQuery(query);
         try {
-            final ResultSet rs = this.database.executeQuery(query);
-            rs.next();
-            return rs.getString("role").equals("manager");
+            return rs.next() ? rs.getString("role").equals("manager") : false;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return false;
     }
 }

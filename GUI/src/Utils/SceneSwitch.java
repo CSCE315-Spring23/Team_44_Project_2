@@ -96,12 +96,8 @@ public class SceneSwitch {
     public void LoginTransition(ActionEvent event, SessionData session) throws IOException {
         // Pass session object from login page to all scenes
         System.out.println("Login Page Initialized");
-        // final Button b = (Button) event.getSource();
-        // System.out.println(this.session.employeeId);
 
         // Load Order Scene from login page
-        // String buttonID = b.getId();
-        // System.out.println(buttonID);
         final FXMLLoader loader =
                 new FXMLLoader(this.getClass().getResource("../FXML/OrderScene.fxml"));
         loader.setController(orderController);
@@ -123,8 +119,7 @@ public class SceneSwitch {
         final Button b = (Button) event.getSource();
         final String buttonID = b.getId();
 
-        FXMLLoader loader = null;
-
+        final FXMLLoader loader;
         switch (buttonID) {
             case "orderButton":
                 System.out.println("Order button clicked");
@@ -172,12 +167,17 @@ public class SceneSwitch {
         stage.show();
     }
 
-    public void switchReportScene(ActionEvent event) throws IOException{
+    /**
+     * Switch to the Report Window
+     * 
+     * @param event {@link ActionEvent} of the Report {@link Button}
+     * @throws IOException if loading the new window fails
+     */
+    public void switchReportScene(final ActionEvent event) throws IOException {
         final Button b = (Button) event.getSource();
         final String buttonID = b.getId();
 
-        FXMLLoader loader = null;
-
+        final FXMLLoader loader;
         switch (buttonID) {
             case "salesReportButton":
                 System.out.println("Sales Report button clicked");

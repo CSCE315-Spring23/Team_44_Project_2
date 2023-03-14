@@ -60,10 +60,10 @@ public class DatabaseConnect {
      */
     public void setUpDatabase() {
         try {
-            conn = DriverManager.getConnection(dbConnectionString, username, password);
-        } catch (Exception e) {
+            this.conn = DriverManager.getConnection(dbConnectionString, username, password);
+        } catch (final SQLException e) {
+            System.err.println("Error connecting to database");
             e.printStackTrace();
-            System.out.println("Error connecting to database");
             System.exit(0);
         }
         System.out.println("Opened database successfully");
@@ -77,13 +77,14 @@ public class DatabaseConnect {
      * @return the {@link ResultSet} of the query
      */
     public ResultSet executeQuery(final String command) {
-        Statement stmt = null;
-        ResultSet rs = null;
+        final Statement stmt;
+        final ResultSet rs;
         try {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(command);
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
         return rs;
     }
@@ -95,16 +96,15 @@ public class DatabaseConnect {
      * @return the result of the query
      */
     public int executeUpdate(final String command) {
-        Statement stmt = null;
-        int rs = 0;
+        final Statement stmt;
+        final int rs;
         try {
             stmt = conn.createStatement();
             rs = stmt.executeUpdate(command);
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
         return rs;
     }
-
-
 }
