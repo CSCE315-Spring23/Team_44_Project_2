@@ -199,9 +199,9 @@ public class EmployeeController {
      */
     private ObservableList<EmployeeRow> getEmployees() {
         final ObservableList<EmployeeRow> employees = FXCollections.observableArrayList();
+        final String query = String.format("SELECT * FROM %s", DatabaseNames.EMPLOYEE_DATABASE);
+        final ResultSet rs = database.executeQuery(query);
         try {
-            ResultSet rs = database.executeQuery(
-                    String.format("SELECT * FROM %s", DatabaseNames.EMPLOYEE_DATABASE));
             while (rs.next()) {
                 final long randomID = rs.getLong("id");
                 final String employeeName = rs.getString("name");

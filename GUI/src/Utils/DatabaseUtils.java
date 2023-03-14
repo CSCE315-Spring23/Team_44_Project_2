@@ -27,12 +27,12 @@ public class DatabaseUtils {
         final String query =
                 String.format("SELECT EXISTS(SELECT * FROM %s WHERE id=%d)", table, itemID);
         final ResultSet rs = database.executeQuery(query);
-        boolean result = false;
+        final boolean result;
         try {
-            if (rs.next())
-                result = rs.getBoolean("exists");
+            result = rs.next() ? rs.getBoolean("exists") : false;
             rs.close();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
+            e.printStackTrace();
             return false;
         }
 
@@ -47,16 +47,16 @@ public class DatabaseUtils {
      * @return the last ID in the table
      */
     public static final long getLastId(final DatabaseConnect database, final String table) {
-        long ret = 0;
         final String query = String.format("SELECT MAX(id) from %s;", table);
+        final long ret;
+        final ResultSet rs = database.executeQuery(query);
         try {
-            final ResultSet rs = database.executeQuery(query);
-            if (rs.next())
-                ret = rs.getLong("max");
+            ret = rs.next() ? rs.getLong("max") : -1l;
             rs.close();
-        } catch (Exception e) {
+        } catch (final SQLException e) {
             System.out.println("Error getting last id");
             e.printStackTrace();
+            return -1l;
         }
         return ret;
     }
@@ -69,17 +69,17 @@ public class DatabaseUtils {
      * @return {@link String} of the employee name
      */
     public static final String getEmployeeName(final DatabaseConnect database, final long id) {
-        String ret = "";
+        final String name;
+        final ResultSet rs = database.executeQuery(String
+                .format("SELECT name FROM %s WHERE id = %d", DatabaseNames.EMPLOYEE_DATABASE, id));
         try {
-            ResultSet rs = database.executeQuery(String.format("SELECT name FROM %s WHERE id = %d",
-                    DatabaseNames.EMPLOYEE_DATABASE, id));
-            if (rs.next()) {
-                ret = rs.getString("name");
-            }
-        } catch (Exception e) {
+            name = rs.next() ? rs.getString("name") : new String();
+            rs.close();
+        } catch (final SQLException e) {
             e.printStackTrace();
+            return new String();
         }
-        return ret;
+        return name;
     }
 
     /**
@@ -96,8 +96,8 @@ public class DatabaseUtils {
             final String query = String.format("SELECT name FROM %s WHERE id = %d",
                     DatabaseNames.MENU_ITEM_DATABASE, menuID);
             final ResultSet rs = database.executeQuery(query);
+            String name;
             try {
-                String name;
                 while (rs.next()) {
                     name = rs.getString("name");
                     if (menuItems.containsKey(name))
@@ -107,8 +107,10 @@ public class DatabaseUtils {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                return new HashMap<>();
             }
         }
+
         return menuItems;
     }
 
@@ -129,6 +131,7 @@ public class DatabaseUtils {
                 menuIds.add(rs.getLong("menuid"));
         } catch (Exception e) {
             e.printStackTrace();
+            return new ArrayList<>();
         }
 
         return menuIds;
@@ -142,17 +145,18 @@ public class DatabaseUtils {
      * @return {@link Double} of the menu cost
      */
     public static final double getMenuCost(final DatabaseConnect database, final String name) {
-        double ret = 0;
         final String query = String.format("SELECT cost FROM %s WHERE name = \'%s\'",
                 DatabaseNames.MENU_ITEM_DATABASE, name);
         final ResultSet rs = database.executeQuery(query);
+        final double cost;
         try {
-            if (rs.next())
-                ret = rs.getDouble("cost");
+            cost = rs.next() ? rs.getDouble("cost") : Double.NaN;
         } catch (Exception e) {
             e.printStackTrace();
+            return Double.NaN;
         }
-        return ret;
+
+        return cost;
     }
 
     public DatabaseUtils() {}
