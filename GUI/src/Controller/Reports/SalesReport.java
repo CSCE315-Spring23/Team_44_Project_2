@@ -222,6 +222,9 @@ public class SalesReport {
             while(rs.next()){
                 final String name = rs.getString("name");
                 final long id = rs.getLong("id");
+                if(id == 0l){
+                    continue;
+                }
                 invOrders.put(name, 0l);
                 invIDs.put(name, id);
                 invNames.put(id, name);
@@ -255,9 +258,8 @@ public class SalesReport {
     private void getOrderItemsBetweenDates(final String startDate, final String endDate) {
 
         try{
-            // ResultSet rs = database.executeQuery(String.format("SELECT name, count(*) as total_sold from %s join %s on orderitem.id =
-            // solditem.orderid join menuitem on solditem.menuid = menuitem.id where Date(orderitem.date) >= \'%s\' AND Date(orderitem.date) <= \'%s\'
-            // group by name order by total_sold desc", startDate, endDate));
+            // get all orders between the dates
+            // %1$s = orderitem database, %2$s = solditem database, %3$s = menuitem database, %4$s = start date, %5$s = end date
             ResultSet rs = database.executeQuery(String.format("SELECT name, count(*) AS totalSold FROM %1$s" +
                 " join %2$s ON %1$s.id = %2$s.orderid" +
                 " join %3$s ON %2$s.menuid = %3$s.id" +

@@ -74,7 +74,7 @@ public class SceneSwitch {
 
     private RestockReport restockReportController;
 
-    private SalesTogtherReport salesTogetherReportController;
+    private SalesTogetherReport salesTogetherReportController;
 
     /**
      * Constructor
@@ -95,7 +95,7 @@ public class SceneSwitch {
         this.xzReportController = new XZReport(this.session);
         this.excessReportController = new ExcessReport(this.session);
         this.restockReportController = new RestockReport(this.session);
-        this.salesTogetherReportController = new SalesTogtherReport(this.session);
+        this.salesTogetherReportController = new SalesTogetherReport(this.session);
     }
 
     /**

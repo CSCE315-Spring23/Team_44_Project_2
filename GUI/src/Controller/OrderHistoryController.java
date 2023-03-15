@@ -263,6 +263,8 @@ public class OrderHistoryController {
 
                     List<String> orderDetails = new ArrayList<>();
                     try{
+                        // get order details
+                        // %1$s = menuitem database, %2$s = solditem database, %3$s = orderitem database, %4$d = order id
                         ResultSet rs = database.executeQuery(String.format("SELECT %1$s.name, %1$s.cost, COUNT(*) as totalSold"+
                             " FROM %2$s " +
                             " JOIN %1$s ON %2$s.menuid = %1$s.id " +
