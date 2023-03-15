@@ -30,6 +30,7 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        System.setProperty("spring.jdbc.getParameterType.ignore", "true");
 
         LoginController loginController = new LoginController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("./FXML/Login.fxml"));

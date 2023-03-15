@@ -199,13 +199,6 @@ public class SalesReport {
         invNumSoldCol.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
     }
 
-    private ObservableList<SalesReportRow> getMenuItems(){
-        ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
-        for(String name : orders.keySet()){
-            items.add(new SalesReportRow(menuIDs.get(name), name, orders.get(name)));
-        }
-        return items;
-    }
 
     private void setUpHashMap(){
         //set up all menu items
@@ -260,39 +253,34 @@ public class SalesReport {
     }
 
     private void getOrderItemsBetweenDates(final String startDate, final String endDate) {
-        try{
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE Date(date) >= \'%s\' AND Date(date) <= \'%s\'",
-                DatabaseNames.ORDER_ITEM_DATABASE, startDate, endDate));
-            while(rs.next()){
-                int orderID = rs.getInt("id");
-                ArrayList<Long> items = getSoldItems(orderID);
 
-                for(long itemID : items){
-                    String name = menuNames.get(itemID);
-                    orders.put(name, orders.getOrDefault(name, 0l) + 1);
-                }
+        try{
+            // ResultSet rs = database.executeQuery(String.format("SELECT name, count(*) as total_sold from %s join %s on orderitem.id =
+            // solditem.orderid join menuitem on solditem.menuid = menuitem.id where Date(orderitem.date) >= \'%s\' AND Date(orderitem.date) <= \'%s\'
+            // group by name order by total_sold desc", startDate, endDate));
+            ResultSet rs = database.executeQuery(String.format("SELECT name, count(*) AS totalSold FROM %1$s" +
+                " join %2$s ON %1$s.id = %2$s.orderid" +
+                " join %3$s ON %2$s.menuid = %3$s.id" +
+                " WHERE Date(%1$s.date) >= \'%4$s\' AND Date(%1$s.date) <= \'%5$s\'" +
+                " GROUP By name ORDER BY totalSold DESC",
+                DatabaseNames.ORDER_ITEM_DATABASE, DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.MENU_ITEM_DATABASE, startDate, endDate));
+            while(rs.next()){
+                String name = rs.getString("name");
+                long numSold = rs.getLong("totalSold");
+                orders.put(name, numSold);
                 numOrders++;
             }
-            rs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    private ArrayList<Long> getSoldItems(final long orderID){
-        ArrayList<Long> items = new ArrayList<>();
-        try{
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE orderid = %d",
-                    DatabaseNames.SOLD_ITEM_DATABASE, orderID));
-            while(rs.next()){
-                items.add(rs.getLong("menuid"));
-            }
-            rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private ObservableList<SalesReportRow> getMenuItems(){
+        ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
+        for(String name : orders.keySet()){
+            items.add(new SalesReportRow(menuIDs.get(name), name, orders.get(name)));
         }
-
         return items;
     }
 
@@ -321,8 +309,6 @@ public class SalesReport {
                 long numSold = itemCount * invCount;
                 invOrders.put(invNames.get(invID), invOrders.getOrDefault(invNames.get(invID), 0l) + numSold);
             }
-
-
 
         }
         //To-Go Bag
