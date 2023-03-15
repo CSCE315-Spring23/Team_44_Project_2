@@ -116,19 +116,26 @@ public class SalesReport {
 
     private HashMap<String, Long> orders;
     private HashMap<String, Long> menuIDs;
+    private HashMap<Long, String> menuNames;
 
     private HashMap<String, Long> invOrders;
     private HashMap<String, Long> invIDs;
+    private HashMap<Long, String> invNames;
 
     private long numOrders;
 
     public SalesReport(final SessionData session) {
         this.session = session;
         this.database = session.database;
+
         this.orders = new HashMap<>();
         this.menuIDs = new HashMap<>();
+        this.menuNames = new HashMap<>();
+
         this.invOrders = new HashMap<>();
         this.invIDs = new HashMap<>();
+        this.invNames = new HashMap<>();
+
         this.numOrders = 0;
     }
 
@@ -205,8 +212,11 @@ public class SalesReport {
         try{
             ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.MENU_ITEM_DATABASE));
             while(rs.next()){
-                orders.put(rs.getString("name"), 0l);
-                menuIDs.put(rs.getString("name"), rs.getLong("id"));
+                final String name = rs.getString("name");
+                final long id = rs.getLong("id");
+                orders.put(name, 0l);
+                menuIDs.put(name, id);
+                menuNames.put(id, name);
             }
             rs.close();
         } catch (SQLException e) {
@@ -217,8 +227,11 @@ public class SalesReport {
         try{
             ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.INVENTORY_DATABASE));
             while(rs.next()){
-                invOrders.put(rs.getString("name"), 0l);
-                invIDs.put(rs.getString("name"), rs.getLong("id"));
+                final String name = rs.getString("name");
+                final long id = rs.getLong("id");
+                invOrders.put(name, 0l);
+                invIDs.put(name, id);
+                invNames.put(id, name);
             }
             rs.close();
         } catch (SQLException e) {
@@ -238,9 +251,11 @@ public class SalesReport {
         }
 
         getOrderItemsBetweenDates(startDate, endDate);
-        getInventory();
         menuItemTable.setItems(getMenuItems());
+
+        getInventory();
         invItemTable.setItems(getInvItems());
+
         sortTableByID();
     }
 
@@ -253,7 +268,7 @@ public class SalesReport {
                 ArrayList<Long> items = getSoldItems(orderID);
 
                 for(long itemID : items){
-                    String name = getMenuItemName(itemID);
+                    String name = menuNames.get(itemID);
                     orders.put(name, orders.getOrDefault(name, 0l) + 1);
                 }
                 numOrders++;
@@ -271,8 +286,7 @@ public class SalesReport {
             ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE orderid = %d",
                     DatabaseNames.SOLD_ITEM_DATABASE, orderID));
             while(rs.next()){
-                long itemID = rs.getLong("menuid");
-                items.add(itemID);
+                items.add(rs.getLong("menuid"));
             }
             rs.close();
         } catch (Exception e) {
@@ -282,20 +296,6 @@ public class SalesReport {
         return items;
     }
 
-    private String getMenuItemName(final long itemID){
-        String name = "";
-        try{
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %S WHERE id = %d",
-                DatabaseNames.MENU_ITEM_DATABASE, itemID));
-            while(rs.next()){
-                name = rs.getString("name");
-            }
-            rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return name;
-    }
 
     private void getInventory(){
         for(String menuItem : orders.keySet()){
@@ -319,32 +319,16 @@ public class SalesReport {
             for(long invID : invItems.keySet()){
                 long invCount = invItems.get(invID);
                 long numSold = itemCount * invCount;
-                invOrders.put(getInvName(invID), invOrders.getOrDefault(getInvName(invID), 0l) + numSold);
+                invOrders.put(invNames.get(invID), invOrders.getOrDefault(invNames.get(invID), 0l) + numSold);
             }
 
-            //To-Go Bag
+
 
         }
-
+        //To-Go Bag
         invOrders.put("To-Go Bags", invOrders.getOrDefault("To-Go Bags", 0l) + numOrders);
     }
 
-    private String getInvName(final long invID){
-        String name = "";
-        try{
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE id = %d",
-                DatabaseNames.INVENTORY_DATABASE, invID));
-
-            while(rs.next()){
-                name = rs.getString("name");
-            }
-
-            rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return name;
-    }
 
     private ObservableList<SalesReportRow> getInvItems(){
         ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
