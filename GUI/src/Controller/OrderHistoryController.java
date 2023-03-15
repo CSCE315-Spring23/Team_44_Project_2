@@ -2,6 +2,7 @@ package Controller;
 
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import Items.OrderRow;
@@ -259,17 +260,34 @@ public class OrderHistoryController {
                 if (event.getClickCount() == 1 && (!row.isEmpty())) {
                     final OrderRow rowData = row.getItem();
                     final long id = rowData.getOrderID();
-                    final List<Long> menuIds = DatabaseUtils.getMenuId(this.database, id);
-                    final Map<String, Long> menuItems =
-                            DatabaseUtils.getMenuItems(this.database, menuIds);
+
+                    List<String> orderDetails = new ArrayList<>();
+                    try{
+                        ResultSet rs = database.executeQuery(String.format("SELECT %1$s.name, %1$s.cost, COUNT(*) as totalSold"+
+                            " FROM %2$s " +
+                            " JOIN %1$s ON %2$s.menuid = %1$s.id " +
+                            " JOIN %3$s ON %2$s.orderid = %3$s.id " +
+                            " WHERE %3$s.id = %4$d " +
+                            " GROUP BY %1$s.id",
+                            DatabaseNames.MENU_ITEM_DATABASE, DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.ORDER_ITEM_DATABASE, id));
+
+                        while(rs.next()){
+                            String name = rs.getString("name");
+                            double cost = rs.getDouble("cost");
+                            int totalSold = rs.getInt("totalSold");
+                            final String rightside = String.format("$%.2f x%d = $%.2f", cost, totalSold, cost * totalSold);
+                            final String print = String.format("%-36s %20s\n", name, rightside);
+                            orderDetails.add(print);
+                        }
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     this.orderHistoryTextBox.setText("");
-                    for (final String name : menuItems.keySet()) {
-                        final long quant = menuItems.get(name);
-                        final double cost = DatabaseUtils.getMenuCost(this.database, name);
-                        final String rightside =
-                                String.format("$%.2f x%d = $%.2f", cost, quant, cost * quant);
-                        final String print = String.format("%-36s %20s\n", name, rightside);
-                        this.orderHistoryTextBox.appendText(print);
+                    for(String s : orderDetails){
+                        this.orderHistoryTextBox.appendText(s);
                     }
                 }
             });
