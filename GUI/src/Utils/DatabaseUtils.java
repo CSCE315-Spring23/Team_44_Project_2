@@ -2,18 +2,41 @@ package Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.util.StringConverter;
 
 public class DatabaseUtils {
     /**
      * {@link DateTimeFormatter} to format {@link java.time.LocalDateTime}
      */
-    public static final DateTimeFormatter DATE_FORMAT =
+    public static final DateTimeFormatter DATE_TIME_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    /**
+     * {@link StringConverter} of {@link LocalDate} to format the date in {@link #inputDate}
+     */
+    public static final StringConverter<LocalDate> CONVERTER = new StringConverter<LocalDate>() {
+        @Override
+        public LocalDate fromString(final String string) {
+            if (string == null)
+                return null;
+            if (string.isEmpty())
+                return null;
+            return LocalDate.parse(string, DatabaseUtils.DATE_FORMAT);
+        }
+
+        @Override
+        public String toString(final LocalDate date) {
+            return date == null ? new String() : date.format(DatabaseUtils.DATE_FORMAT);
+        }
+    };
 
     /**
      * Check if an item exists with in the database

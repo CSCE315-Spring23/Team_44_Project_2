@@ -327,7 +327,7 @@ public class SalesReport {
                 e.printStackTrace();
             }
 
-            for (long invID : invItems.keySet()) {
+            for (final long invID : invItems.keySet()) {
                 final long invCount = invItems.get(invID);
                 final long numSold = itemCount * invCount;
                 invOrders.put(invNames.get(invID),

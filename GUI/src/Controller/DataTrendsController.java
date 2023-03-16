@@ -107,12 +107,12 @@ public class DataTrendsController {
      * @param event {@link ActionEvent} of the {@link Button} pressed
      * @throws IOException if loading the new GUI failed
      */
-    public void navButtonClicked(ActionEvent event) throws IOException {
+    public void navButtonClicked(final ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
     }
 
-    public void reportButtonClicked(ActionEvent event) throws IOException {
+    public void reportButtonClicked(final ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchReportScene(event);
     }

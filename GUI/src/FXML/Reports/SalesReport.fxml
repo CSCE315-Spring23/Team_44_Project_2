@@ -78,7 +78,7 @@
       </VBox>
       <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
          <children>
-            <Button fx:id="dataTrendsButton" mnemonicParsing="false" onAction="#navButtonClicked" text="Back">
+            <Button fx:id="dataTrendsButton" mnemonicParsing="false" onAction="#navButtonClicked" prefHeight="25.0" prefWidth="45.0" text="Back">
                <VBox.margin>
                   <Insets left="5.0" top="5.0" />
                </VBox.margin></Button>
@@ -123,9 +123,9 @@
                <children>
                   <TableView fx:id="menuItemTable" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <columns>
-                      <TableColumn fx:id="menuIDCol" editable="false" prefWidth="77.99998474121094" text="id" />
-                      <TableColumn fx:id="menuNameCol" editable="false" prefWidth="294.00001525878906" text="Menu Item Name" />
-                        <TableColumn fx:id="menuNumSoldCol" minWidth="0.0" prefWidth="378.6666564941406" text="Number Sold" />
+                      <TableColumn fx:id="menuIDCol" editable="false" prefWidth="50.0" resizable="false" text="ID" />
+                      <TableColumn fx:id="menuNameCol" editable="false" prefWidth="250.0" resizable="false" text="Menu Item Name" />
+                        <TableColumn fx:id="menuNumSoldCol" minWidth="0.0" prefWidth="250.0" resizable="false" text="Number Sold" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -133,9 +133,9 @@
                   </TableView>
                   <TableView fx:id="invItemTable" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="invIDCol" prefWidth="75.0" text="id" />
-                      <TableColumn fx:id="invNameCol" prefWidth="75.0" text="Inventory Item Name" />
-                      <TableColumn fx:id="invNumSoldCol" prefWidth="75.0" text="Number Sold" />
+                        <TableColumn fx:id="invIDCol" prefWidth="50.0" resizable="false" text="ID" />
+                      <TableColumn fx:id="invNameCol" prefWidth="250.0" resizable="false" text="Inventory Item Name" />
+                      <TableColumn fx:id="invNumSoldCol" prefWidth="250.0" resizable="false" text="Number Sold" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
