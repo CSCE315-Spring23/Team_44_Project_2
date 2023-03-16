@@ -2,9 +2,11 @@ package Controller.Reports;
 
 
 import java.io.IOException;
+import java.sql.ResultSet;
 
 import Items.RestockReportRow;
 import Utils.DatabaseConnect;
+import Utils.DatabaseNames;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
@@ -95,7 +97,7 @@ public class RestockReport {
 
     @FXML
     private TableColumn<RestockReportRow, Integer> itemQuantity;
-    
+
 
     public RestockReport(final SessionData session) {
         this.session = session;
@@ -115,6 +117,8 @@ public class RestockReport {
             inventoryButton.setVisible(false);
             employeesButton.setVisible(false);
         }
+
+        populateTable();
     }
 
     /**
@@ -128,6 +132,25 @@ public class RestockReport {
         this.sceneSwitch.switchScene(event);
     }
 
+    private void populateTable() {
+        this.itemId.setCellValueFactory(cell -> cell.getValue().getId());
+        this.itemName.setCellValueFactory(cell -> cell.getValue().getName());
+        this.itemQuantity.setCellValueFactory(cell -> cell.getValue().getQuantity());
 
+        String query = "SELECT * FROM " + DatabaseNames.INVENTORY_DATABASE;
+        try {
+            ResultSet rSet = database.executeQuery(query);
+
+            while (rSet.next()) {
+                RestockReportRow row = new RestockReportRow(rSet.getInt("id"), 
+                    rSet.getString("name"), rSet.getInt("quantity"));
+                this.restockReportTable.getItems().add(row);
+            }
+
+            rSet.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

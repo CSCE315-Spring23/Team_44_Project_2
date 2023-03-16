@@ -1,26 +1,28 @@
 package Items;
 
+import javafx.beans.property.SimpleObjectProperty;
+
 public class RestockReportRow {
 
-    private int id;
-    private String name;
-    private int quantity;
+    private SimpleObjectProperty<Integer> id;
+    private SimpleObjectProperty<String> name;
+    private SimpleObjectProperty<Integer> quantity;
 
-    RestockReportRow(int id, String name, int quantity) {
-        this.id = id;
-        this.name = name;
-        this.quantity = quantity;
+    public RestockReportRow(int id, String name, int quantity) {
+        this.id = new SimpleObjectProperty<Integer>(id);
+        this.name = new SimpleObjectProperty<String>(name);
+        this.quantity = new SimpleObjectProperty<Integer>(quantity);
     }
 
-    public int getId() {
-        return id;
+    public SimpleObjectProperty<Integer> getId() {
+        return this.id;
     }
 
-    public String getName() {
-        return name;
+    public SimpleObjectProperty<String> getName() {
+        return this.name;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public SimpleObjectProperty<Integer> getQuantity() {
+        return this.quantity;
     }
 }

@@ -93,11 +93,11 @@
                   </Text>
                </children>
             </HBox>
-            <TableView prefHeight="744.0" prefWidth="1100.0">
+            <TableView fx:id="restockReportTable" prefHeight="744.0" prefWidth="1100.0">
               <columns>
-                <TableColumn fx:id="InventoryItemId" editable="false" prefWidth="92.0" text="ID" />
-                <TableColumn fx:id="InventoryItemName" editable="false" prefWidth="800.0" text="Name" />
-                  <TableColumn fx:id="InventoryItemQuantity" editable="false" minWidth="0.0" prefWidth="207.0" text="Quantity" />
+                <TableColumn fx:id="itemId" editable="false" prefWidth="92.0" text="ID" />
+                <TableColumn fx:id="itemName" editable="false" prefWidth="800.0" text="Name" />
+                  <TableColumn fx:id="itemQuantity" editable="false" minWidth="0.0" prefWidth="207.0" text="Quantity" />
               </columns>
             </TableView>
          </children>
