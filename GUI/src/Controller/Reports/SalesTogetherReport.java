@@ -86,33 +86,63 @@ public class SalesTogetherReport {
     @FXML
     private Button logoutButton;
 
+
+    /**
+     * {@link TextField} Text field for User specified start date
+     */
+
     @FXML
     TextField startDateText;
 
+    /**
+     * {@link TextField} Text field for User specified end date
+     */
     @FXML
     TextField endDateText;
 
+    /**
+     * {@link Button} Button to generate what sales together report between {@link #startDateText} and {@link #endDateText}
+     */
     @FXML
     Button goButton;
 
+    /**
+     * {@link TableView} Table to display what sales together report
+     */
     @FXML
     TableView<SalesTogetherRow> salesTogetherTable;
 
+    /**
+     * {@link TableColumn} Column to display menu item 1
+     */
     @FXML
     TableColumn<SalesTogetherRow, String> menuItem1Col;
 
+    /**
+     * {@link TableColumn} Column to display menu item 2
+     */
     @FXML
     TableColumn<SalesTogetherRow, String> menuItem2Col;
 
+    /**
+     * {@link TableColumn} Column to display number sold
+     */
     @FXML
     TableColumn<SalesTogetherRow, Long> numberSoldCol;
 
-
+    /**
+     * Constructor for SalesTogetherReport
+     *
+     * @param session {@link SessionData} of current session
+     */
     public SalesTogetherReport(final SessionData session) {
         this.session = session;
         this.database = session.database;
     }
 
+    /**
+     * Sets up GUI for SalesTogetherReport
+     */
     public void initialize() {
 
         this.setUpSalesTogetherTable();
@@ -142,6 +172,12 @@ public class SalesTogetherReport {
         this.sceneSwitch.switchScene(event);
     }
 
+    /**
+     * Generates the sales together report after button click
+     *
+     * @param event {@link ActionEvent} of {@link #goButton}
+     * @throws IOException if loading a window fails
+     */
     public void onGoClick(final ActionEvent event) throws IOException {
         final String startDate = startDateText.getText();
         final String endDate = endDateText.getText();
@@ -157,15 +193,27 @@ public class SalesTogetherReport {
         this.generateReport(startDate, endDate);
     }
 
+    /**
+     * Sets up the {@link #salesTogetherTable}
+     */
     private void setUpSalesTogetherTable() {
         this.menuItem1Col.setCellValueFactory(cellData -> cellData.getValue().getMenuItem1());
         this.menuItem2Col.setCellValueFactory(cellData -> cellData.getValue().getMenuItem2());
         this.numberSoldCol.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
     }
 
+    /**
+     * Generates what sales together report between {@code startDate} and {@code endDate}
+     *
+     * @param startDate {@link String} start date
+     * @param endDate {@link String} end date
+     */
     private void generateReport(final String startDate, final String endDate) {
         this.salesTogetherTable.getItems().clear();
 
+        // query to get what sales together report
+        // %1$s = sold item database, %2$s = menu item database, %3$s = order database
+        // %4$s = start date, %5$s = end date
         final String query = String.format(
                 "SELECT mi1.name AS menuitem1, mi2.name as menuitem2, COUNT(*) AS numSold"
                         + " FROM %1$s si1"
@@ -179,8 +227,10 @@ public class SalesTogetherReport {
                 DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.MENU_ITEM_DATABASE,
                 DatabaseNames.ORDER_ITEM_DATABASE, startDate, endDate);
 
-        final ResultSet rs = database.executeQuery(query);
         try {
+            final ResultSet rs = database.executeQuery(query);
+
+            // add each row to the table
             while (rs.next()) {
                 final SalesTogetherRow row = new SalesTogetherRow(rs.getString("menuitem1"),
                         rs.getString("menuitem2"), rs.getLong("numSold"));
