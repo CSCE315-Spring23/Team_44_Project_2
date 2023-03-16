@@ -1,14 +1,13 @@
 package Controller.Reports;
 
 
+import java.io.IOException;
 import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
-
-import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
 
 public class RestockReport {
     /**

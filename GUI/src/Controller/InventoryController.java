@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import Items.InventoryItem;
 import Utils.DatabaseConnect;
-import Utils.DatabaseLoginInfo;
 import Utils.DatabaseNames;
 import Utils.DatabaseUtils;
 import Utils.SceneSwitch;

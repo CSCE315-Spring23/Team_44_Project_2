@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import Items.OrderRow;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
@@ -262,22 +261,24 @@ public class OrderHistoryController {
                     final long id = rowData.getOrderID();
 
                     List<String> orderDetails = new ArrayList<>();
-                    try{
+                    try {
                         // get order details
-                        // %1$s = menuitem database, %2$s = solditem database, %3$s = orderitem database, %4$d = order id
-                        ResultSet rs = database.executeQuery(String.format("SELECT %1$s.name, %1$s.cost, COUNT(*) as totalSold"+
-                            " FROM %2$s " +
-                            " JOIN %1$s ON %2$s.menuid = %1$s.id " +
-                            " JOIN %3$s ON %2$s.orderid = %3$s.id " +
-                            " WHERE %3$s.id = %4$d " +
-                            " GROUP BY %1$s.id",
-                            DatabaseNames.MENU_ITEM_DATABASE, DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.ORDER_ITEM_DATABASE, id));
+                        // %1$s = menuitem database, %2$s = solditem database, %3$s = orderitem
+                        // database, %4$d = order id
+                        ResultSet rs = database.executeQuery(String.format(
+                                "SELECT %1$s.name, %1$s.cost, COUNT(*) as totalSold" + " FROM %2$s "
+                                        + " JOIN %1$s ON %2$s.menuid = %1$s.id "
+                                        + " JOIN %3$s ON %2$s.orderid = %3$s.id "
+                                        + " WHERE %3$s.id = %4$d " + " GROUP BY %1$s.id",
+                                DatabaseNames.MENU_ITEM_DATABASE, DatabaseNames.SOLD_ITEM_DATABASE,
+                                DatabaseNames.ORDER_ITEM_DATABASE, id));
 
-                        while(rs.next()){
+                        while (rs.next()) {
                             String name = rs.getString("name");
                             double cost = rs.getDouble("cost");
                             int totalSold = rs.getInt("totalSold");
-                            final String rightside = String.format("$%.2f x%d = $%.2f", cost, totalSold, cost * totalSold);
+                            final String rightside = String.format("$%.2f x%d = $%.2f", cost,
+                                    totalSold, cost * totalSold);
                             final String print = String.format("%-36s %20s\n", name, rightside);
                             orderDetails.add(print);
                         }
@@ -288,7 +289,7 @@ public class OrderHistoryController {
                     }
 
                     this.orderHistoryTextBox.setText("");
-                    for(String s : orderDetails){
+                    for (String s : orderDetails) {
                         this.orderHistoryTextBox.appendText(s);
                     }
                 }

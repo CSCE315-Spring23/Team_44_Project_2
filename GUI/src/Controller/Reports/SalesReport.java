@@ -1,21 +1,23 @@
 package Controller.Reports;
 
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import Items.SalesReportRow;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
 import Utils.SceneSwitch;
 import Utils.SessionData;
-
-import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
 
 public class SalesReport {
@@ -90,37 +92,48 @@ public class SalesReport {
     private Button logoutButton;
 
 
-    @FXML TextField startDateText;
+    @FXML
+    TextField startDateText;
 
-    @FXML TextField endDateText;
+    @FXML
+    TextField endDateText;
 
-    @FXML Button goButton;
+    @FXML
+    Button goButton;
 
-    @FXML TableView<SalesReportRow> menuItemTable;
+    @FXML
+    TableView<SalesReportRow> menuItemTable;
 
-    @FXML TableColumn<SalesReportRow, Long> menuIDCol;
+    @FXML
+    TableColumn<SalesReportRow, Long> menuIDCol;
 
-    @FXML TableColumn<SalesReportRow, String> menuNameCol;
+    @FXML
+    TableColumn<SalesReportRow, String> menuNameCol;
 
-    @FXML TableColumn<SalesReportRow, Long> menuNumSoldCol;
+    @FXML
+    TableColumn<SalesReportRow, Long> menuNumSoldCol;
 
-    @FXML TableView<SalesReportRow> invItemTable;
+    @FXML
+    TableView<SalesReportRow> invItemTable;
 
-    @FXML TableColumn<SalesReportRow, Long> invIDCol;
+    @FXML
+    TableColumn<SalesReportRow, Long> invIDCol;
 
-    @FXML TableColumn<SalesReportRow, String> invNameCol;
+    @FXML
+    TableColumn<SalesReportRow, String> invNameCol;
 
-    @FXML TableColumn<SalesReportRow, Long> invNumSoldCol;
+    @FXML
+    TableColumn<SalesReportRow, Long> invNumSoldCol;
 
 
 
-    private HashMap<String, Long> orders;
-    private HashMap<String, Long> menuIDs;
-    private HashMap<Long, String> menuNames;
+    private final Map<String, Long> orders;
+    private final Map<String, Long> menuIDs;
+    private final Map<Long, String> menuNames;
 
-    private HashMap<String, Long> invOrders;
-    private HashMap<String, Long> invIDs;
-    private HashMap<Long, String> invNames;
+    private final Map<String, Long> invOrders;
+    private final Map<String, Long> invIDs;
+    private final Map<Long, String> invNames;
 
     private long numOrders;
 
@@ -140,21 +153,21 @@ public class SalesReport {
     }
 
     public void initialize() {
-        setUpHashMap();
-        setUpMenuItemTable();
-        setUpInvItemTable();
+        this.setUpHashMap();
+        this.setUpMenuItemTable();
+        this.setUpInvItemTable();
 
         // set visibility of buttons based on employee role
         if (session.isManager()) {
             System.out.println("Manager");
-            editMenuButton.setVisible(true);
-            inventoryButton.setVisible(true);
-            employeesButton.setVisible(true);
+            this.editMenuButton.setVisible(true);
+            this.inventoryButton.setVisible(true);
+            this.employeesButton.setVisible(true);
         } else {
             System.out.println("Employee");
-            editMenuButton.setVisible(false);
-            inventoryButton.setVisible(false);
-            employeesButton.setVisible(false);
+            this.editMenuButton.setVisible(false);
+            this.inventoryButton.setVisible(false);
+            this.employeesButton.setVisible(false);
         }
     }
 
@@ -169,106 +182,114 @@ public class SalesReport {
         this.sceneSwitch.switchScene(event);
     }
 
-    private void sortTableByID(){
+    private void sortTableByID() {
 
-        //sort table by id by default
-        menuItemTable.getSortOrder().add(menuIDCol);
-        menuIDCol.setSortType(TableColumn.SortType.ASCENDING);
-        menuItemTable.sort();
+        // sort table by id by default
+        this.menuItemTable.getSortOrder().add(menuIDCol);
+        this.menuIDCol.setSortType(TableColumn.SortType.ASCENDING);
+        this.menuItemTable.sort();
 
-        menuItemTable.refresh();
+        this.menuItemTable.refresh();
 
-        invItemTable.getSortOrder().add(invIDCol);
-        invIDCol.setSortType(TableColumn.SortType.ASCENDING);
-        invItemTable.sort();
+        this.invItemTable.getSortOrder().add(invIDCol);
+        this.invIDCol.setSortType(TableColumn.SortType.ASCENDING);
+        this.invItemTable.sort();
 
-        invItemTable.refresh();
+        this.invItemTable.refresh();
     }
 
-    private void setUpMenuItemTable(){
-        //set up columns
-        menuIDCol.setCellValueFactory(cellData -> cellData.getValue().getId());
-        menuNameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
-        menuNumSoldCol.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
+    private void setUpMenuItemTable() {
+        // set up columns
+        this.menuIDCol.setCellValueFactory(cellData -> cellData.getValue().getId());
+        this.menuNameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
+        this.menuNumSoldCol.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
     }
 
-    private void setUpInvItemTable(){
-        //set up columns
-        invIDCol.setCellValueFactory(cellData -> cellData.getValue().getId());
-        invNameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
-        invNumSoldCol.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
+    private void setUpInvItemTable() {
+        // set up columns
+        this.invIDCol.setCellValueFactory(cellData -> cellData.getValue().getId());
+        this.invNameCol.setCellValueFactory(cellData -> cellData.getValue().getName());
+        this.invNumSoldCol.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
     }
 
 
-    private void setUpHashMap(){
-        //set up all menu items
-        try{
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.MENU_ITEM_DATABASE));
-            while(rs.next()){
-                final String name = rs.getString("name");
-                final long id = rs.getLong("id");
+    private void setUpHashMap() {
+        // set up all menu items
+        final String menu =
+                String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.MENU_ITEM_DATABASE);
+        final ResultSet menuSet = database.executeQuery(menu);
+        try {
+            while (menuSet.next()) {
+                final String name = menuSet.getString("name");
+                final long id = menuSet.getLong("id");
                 orders.put(name, 0l);
                 menuIDs.put(name, id);
                 menuNames.put(id, name);
             }
-            rs.close();
+            menuSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        //set up all inventory items
-        try{
-            ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.INVENTORY_DATABASE));
-            while(rs.next()){
-                final String name = rs.getString("name");
-                final long id = rs.getLong("id");
-                if(id == 0l){
+        // set up all inventory items
+        final String inventory =
+                String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.INVENTORY_DATABASE);
+        final ResultSet inventorySet = database.executeQuery(inventory);
+        try {
+            while (inventorySet.next()) {
+                final String name = inventorySet.getString("name");
+                final long id = inventorySet.getLong("id");
+                if (id == 0l)
                     continue;
-                }
+
                 invOrders.put(name, 0l);
                 invIDs.put(name, id);
                 invNames.put(id, name);
             }
-            rs.close();
+            inventorySet.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void onGoClick(){
-        final String startDate = startDateText.getText();
-        final String endDate = endDateText.getText();
+    public void onGoClick() {
+        final String startDate = this.startDateText.getText();
+        final String endDate = this.endDateText.getText();
 
         System.out.println(startDate + " " + endDate);
-        //format check for dates
-        if(!startDate.matches("\\d{4}-\\d{2}-\\d{2}") || !endDate.matches("\\d{4}-\\d{2}-\\d{2}")){
+        // format check for dates
+        if (!startDate.matches("\\d{4}-\\d{2}-\\d{2}")
+                || !endDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
             System.out.println("Invalid date format");
             return;
         }
 
-        getOrderItemsBetweenDates(startDate, endDate);
-        menuItemTable.setItems(getMenuItems());
+        this.getOrderItemsBetweenDates(startDate, endDate);
+        this.menuItemTable.setItems(this.getMenuItems());
 
-        getInventory();
-        invItemTable.setItems(getInvItems());
+        this.getInventory();
+        this.invItemTable.setItems(this.getInvItems());
 
-        sortTableByID();
+        this.sortTableByID();
     }
 
     private void getOrderItemsBetweenDates(final String startDate, final String endDate) {
 
-        try{
-            // get all orders between the dates
-            // %1$s = orderitem database, %2$s = solditem database, %3$s = menuitem database, %4$s = start date, %5$s = end date
-            ResultSet rs = database.executeQuery(String.format("SELECT name, count(*) AS totalSold FROM %1$s" +
-                " join %2$s ON %1$s.id = %2$s.orderid" +
-                " join %3$s ON %2$s.menuid = %3$s.id" +
-                " WHERE Date(%1$s.date) >= \'%4$s\' AND Date(%1$s.date) <= \'%5$s\'" +
-                " GROUP By name ORDER BY totalSold DESC",
-                DatabaseNames.ORDER_ITEM_DATABASE, DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.MENU_ITEM_DATABASE, startDate, endDate));
-            while(rs.next()){
-                String name = rs.getString("name");
-                long numSold = rs.getLong("totalSold");
+        // get all orders between the dates
+        // %1$s = orderitem database, %2$s = solditem database, %3$s = menuitem database, %4$s =
+        // start date, %5$s = end date
+        final String query = String.format(
+                "SELECT name, count(*) AS totalSold FROM %1$s"
+                        + " join %2$s ON %1$s.id = %2$s.orderid join %3$s ON %2$s.menuid = %3$s.id"
+                        + " WHERE Date(%1$s.date) >= \'%4$s\' AND Date(%1$s.date) <= \'%5$s\'"
+                        + " GROUP By name ORDER BY totalSold DESC",
+                DatabaseNames.ORDER_ITEM_DATABASE, DatabaseNames.SOLD_ITEM_DATABASE,
+                DatabaseNames.MENU_ITEM_DATABASE, startDate, endDate);
+        final ResultSet rs = database.executeQuery(query);
+        try {
+            while (rs.next()) {
+                final String name = rs.getString("name");
+                final long numSold = rs.getLong("totalSold");
                 orders.put(name, numSold);
                 numOrders++;
             }
@@ -278,27 +299,27 @@ public class SalesReport {
 
     }
 
-    private ObservableList<SalesReportRow> getMenuItems(){
-        ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
-        for(String name : orders.keySet()){
+    private ObservableList<SalesReportRow> getMenuItems() {
+        final ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
+        for (String name : orders.keySet())
             items.add(new SalesReportRow(menuIDs.get(name), name, orders.get(name)));
-        }
         return items;
     }
 
 
-    private void getInventory(){
-        for(String menuItem : orders.keySet()){
-            long itemCount = orders.get(menuItem);
-            long menuID = menuIDs.get(menuItem);
+    private void getInventory() {
+        for (final String menuItem : orders.keySet()) {
+            final long itemCount = orders.get(menuItem);
+            final long menuID = menuIDs.get(menuItem);
 
-            HashMap<Long, Long> invItems = new HashMap<>();
-            try{
-                ResultSet rs = database.executeQuery(String.format("SELECT * FROM %s WHERE menuid = %d",
-                    DatabaseNames.RECIPE_ITEM_DATABASE, menuID));
-                while(rs.next()){
-                    long invID = rs.getLong("inventoryid");
-                    long invCount = rs.getLong("count");
+            final Map<Long, Long> invItems = new HashMap<>();
+            final String query = String.format("SELECT * FROM %s WHERE menuid = %d",
+                    DatabaseNames.RECIPE_ITEM_DATABASE, menuID);
+            final ResultSet rs = database.executeQuery(query);
+            try {
+                while (rs.next()) {
+                    final long invID = rs.getLong("inventoryid");
+                    final long invCount = rs.getLong("count");
                     invItems.put(invID, invCount);
                 }
                 rs.close();
@@ -306,24 +327,24 @@ public class SalesReport {
                 e.printStackTrace();
             }
 
-            for(long invID : invItems.keySet()){
-                long invCount = invItems.get(invID);
-                long numSold = itemCount * invCount;
-                invOrders.put(invNames.get(invID), invOrders.getOrDefault(invNames.get(invID), 0l) + numSold);
+            for (long invID : invItems.keySet()) {
+                final long invCount = invItems.get(invID);
+                final long numSold = itemCount * invCount;
+                invOrders.put(invNames.get(invID),
+                        invOrders.getOrDefault(invNames.get(invID), 0l) + numSold);
             }
 
         }
-        //To-Go Bag
-        invOrders.put("To-Go Bags", invOrders.getOrDefault("To-Go Bags", 0l) + numOrders);
+
+        // To-Go Bag
+        this.invOrders.put("To-Go Bags", invOrders.getOrDefault("To-Go Bags", 0l) + numOrders);
     }
 
 
-    private ObservableList<SalesReportRow> getInvItems(){
-        ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
-        for(String name : invOrders.keySet()){
+    private ObservableList<SalesReportRow> getInvItems() {
+        final ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
+        for (final String name : invOrders.keySet())
             items.add(new SalesReportRow(invIDs.get(name), name, invOrders.get(name)));
-        }
         return items;
     }
-
 }

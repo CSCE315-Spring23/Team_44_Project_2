@@ -390,10 +390,10 @@ public class EditMenuController {
      */
     private ObservableList<MenuItem> getMenuItems() {
         final ObservableList<MenuItem> menu = FXCollections.observableArrayList();
+        final String query =
+                String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.MENU_ITEM_DATABASE);
+        final ResultSet rs = database.executeQuery(query);
         try {
-            final String query =
-                    String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.MENU_ITEM_DATABASE);
-            final ResultSet rs = database.executeQuery(query);
             while (rs.next()) {
                 final long id = rs.getLong("id");
                 final String name = rs.getString("name");

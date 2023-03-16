@@ -1,14 +1,13 @@
 package Controller.Reports;
 
 
+import java.io.IOException;
 import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
-
-import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
 
 public class XZReport {
     /**
@@ -91,14 +90,14 @@ public class XZReport {
         // set visibility of buttons based on employee role
         if (session.isManager()) {
             System.out.println("Manager");
-            editMenuButton.setVisible(true);
-            inventoryButton.setVisible(true);
-            employeesButton.setVisible(true);
+            this.editMenuButton.setVisible(true);
+            this.inventoryButton.setVisible(true);
+            this.employeesButton.setVisible(true);
         } else {
             System.out.println("Employee");
-            editMenuButton.setVisible(false);
-            inventoryButton.setVisible(false);
-            employeesButton.setVisible(false);
+            this.editMenuButton.setVisible(false);
+            this.inventoryButton.setVisible(false);
+            this.employeesButton.setVisible(false);
         }
     }
 
@@ -112,5 +111,4 @@ public class XZReport {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
     }
-
 }

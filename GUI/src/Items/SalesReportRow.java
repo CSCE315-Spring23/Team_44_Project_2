@@ -63,12 +63,6 @@ public class SalesReportRow {
     }
 
     /**
-     * Gets {@link #price}
-     * 
-     * @return {@link #price}
-     */
-
-    /**
      * Gets {@link #numSold}
      * 
      * @return {@link #numSold}
