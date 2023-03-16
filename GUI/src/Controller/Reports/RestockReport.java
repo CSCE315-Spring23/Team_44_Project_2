@@ -2,12 +2,16 @@ package Controller.Reports;
 
 
 import java.io.IOException;
+
+import Items.RestockReportRow;
 import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 public class RestockReport {
     /**
@@ -80,6 +84,18 @@ public class RestockReport {
     @FXML
     private Button logoutButton;
 
+    @FXML
+    private TableView<RestockReportRow> restockReportTable;
+
+    @FXML
+    private TableColumn<RestockReportRow, Integer> itemId;
+
+    @FXML
+    private TableColumn<RestockReportRow, String> itemName;
+
+    @FXML
+    private TableColumn<RestockReportRow, Integer> itemQuantity;
+    
 
     public RestockReport(final SessionData session) {
         this.session = session;
@@ -112,6 +128,6 @@ public class RestockReport {
         this.sceneSwitch.switchScene(event);
     }
 
-    
+
 
 }
