@@ -1,7 +1,6 @@
 package Controller;
 
 import java.io.IOException;
-import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
@@ -27,13 +26,6 @@ public class DataTrendsController {
      * @see SessionData
      */
     private SessionData session;
-
-    /**
-     * Connection to the database
-     *
-     * @see DatabaseConnect
-     */
-    private DatabaseConnect database;
 
     /**
      * Switches between scenes or tabs
@@ -96,7 +88,6 @@ public class DataTrendsController {
 
     public DataTrendsController(SessionData session) {
         this.session = session;
-        this.database = session.database;
     }
 
     public void initialize() {}

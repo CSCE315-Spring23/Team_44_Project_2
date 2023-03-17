@@ -116,8 +116,8 @@
                   <TableView fx:id="menuItemTable" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="menuIDCol" editable="false" prefWidth="50.0" resizable="false" text="ID" />
-                      <TableColumn fx:id="menuNameCol" editable="false" prefWidth="250.0" resizable="false" text="Menu Item Name" />
-                        <TableColumn fx:id="menuNumSoldCol" minWidth="0.0" prefWidth="250.0" resizable="false" text="Number Sold" />
+                      <TableColumn fx:id="menuNameCol" editable="false" prefWidth="400.0" resizable="false" text="Menu Item Name" />
+                        <TableColumn fx:id="menuNumSoldCol" minWidth="0.0" prefWidth="85.0" resizable="false" text="Number Sold" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -126,8 +126,8 @@
                   <TableView fx:id="invItemTable" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="invIDCol" prefWidth="50.0" resizable="false" text="ID" />
-                      <TableColumn fx:id="invNameCol" prefWidth="250.0" resizable="false" text="Inventory Item Name" />
-                      <TableColumn fx:id="invNumSoldCol" prefWidth="250.0" resizable="false" text="Number Sold" />
+                      <TableColumn fx:id="invNameCol" prefWidth="400.0" resizable="false" text="Inventory Item Name" />
+                      <TableColumn fx:id="invNumSoldCol" prefWidth="85.0" resizable="false" text="Number Sold" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

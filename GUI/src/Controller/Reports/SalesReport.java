@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import Items.InventoryItem;
 import Items.SalesReportRow;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
@@ -21,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
 /**
  * Controller for the Sales Report window
@@ -182,11 +182,6 @@ public class SalesReport {
     private final Map<String, Long> menuIDs;
 
     /**
-     * {@link Map} Map of menu item IDs to their names
-     */
-    private final Map<Long, String> menuNames;
-
-    /**
      * {@link Map} Map of inventory item names to the number of times they were sold
      */
     private final Map<String, Long> invOrders;
@@ -229,6 +224,9 @@ public class SalesReport {
      * Initializes the GUI
      */
     public void initialize() {
+        this.startDate.setConverter(DatabaseUtils.CONVERTER);
+        this.endDate.setConverter(DatabaseUtils.CONVERTER);
+
         this.setUpHashMap();
         this.setUpMenuItemTable();
         this.setUpInvItemTable();
@@ -338,17 +336,12 @@ public class SalesReport {
     }
 
     /**
-     * Generates the Sales Report for the given dates
-     * in the {@link #startDateText} and {@link #endDateText} {@link TextField}s
+     * Generates the Sales Report for the given dates in the {@link #startDateText} and
+     * {@link #endDateText} {@link TextField}s
      */
     public void onGoClick() {
-        final String startDate = this.startDateText.getText();
-        final String endDate = this.endDateText.getText();
-
-        // format check for dates
-        if (!startDate.matches("\\d{4}-\\d{2}-\\d{2}")
-                || !endDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            System.out.println("Invalid date format");
+        final LocalDate sDate = this.startDate.getValue();
+        if (sDate == null)
             return;
 
         final LocalDate eDate = this.endDate.getValue();
