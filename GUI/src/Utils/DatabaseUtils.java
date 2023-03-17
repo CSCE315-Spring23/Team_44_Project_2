@@ -10,6 +10,18 @@ import java.util.List;
 import java.util.Map;
 import javafx.util.StringConverter;
 
+/**
+ * Utilities for the database. Included common queries and standardizes formats
+ * 
+ * @since 2023-03-07
+ * @version 2023-03-07
+ * 
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
+ */
 public class DatabaseUtils {
     /**
      * {@link DateTimeFormatter} to format {@link java.time.LocalDateTime}
@@ -17,10 +29,13 @@ public class DatabaseUtils {
     public static final DateTimeFormatter DATE_TIME_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * {@link DateTimeFormatter} to format {@link java.time.LocalDateTime}
+     */
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
-     * {@link StringConverter} of {@link LocalDate} to format the date in {@link #inputDate}
+     * {@link StringConverter} of {@link LocalDate} to format the date
      */
     public static final StringConverter<LocalDate> CONVERTER = new StringConverter<LocalDate>() {
         @Override
@@ -43,6 +58,7 @@ public class DatabaseUtils {
      * 
      * @param database {@link DatabaseConnect} to the database
      * @param itemID identification number of the item to search for
+     * @param table name of the table to query
      * @return {@code true} if the item exists. {@code false} otherwise.
      */
     public static final boolean hasItem(final DatabaseConnect database, final long itemID,
@@ -182,5 +198,8 @@ public class DatabaseUtils {
         return cost;
     }
 
+    /**
+     * Constructor
+     */
     public DatabaseUtils() {}
 }

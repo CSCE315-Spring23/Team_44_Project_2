@@ -82,15 +82,20 @@ public class DataTrendsController {
     @FXML
     private Button logoutButton;
 
-
+    /**
+     * {@link Button} to switch to {@link Controller.Reports.SalesReport}
+     */
     @FXML
     private Button salesReportButton;
 
+    /**
+     * Constructor
+     * 
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
+     */
     public DataTrendsController(SessionData session) {
         this.session = session;
     }
-
-    public void initialize() {}
 
     /**
      * Handle switching scenes through the navigation bar
@@ -103,6 +108,12 @@ public class DataTrendsController {
         this.sceneSwitch.switchScene(event);
     }
 
+    /**
+     * Handle switching scenes through the report query window
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} pressed
+     * @throws IOException if loading the new GUI failed
+     */
     public void reportButtonClicked(final ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchReportScene(event);
