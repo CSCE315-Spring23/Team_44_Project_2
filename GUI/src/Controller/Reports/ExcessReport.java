@@ -21,7 +21,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.util.StringConverter;
 
 /**
  * Controller for the Excess Inventory Report window
