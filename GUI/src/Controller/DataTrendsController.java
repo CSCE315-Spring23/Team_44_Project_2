@@ -1,7 +1,6 @@
 package Controller;
 
 import java.io.IOException;
-import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
@@ -27,13 +26,6 @@ public class DataTrendsController {
      * @see SessionData
      */
     private SessionData session;
-
-    /**
-     * Connection to the database
-     *
-     * @see DatabaseConnect
-     */
-    private DatabaseConnect database;
 
     /**
      * Switches between scenes or tabs
@@ -90,16 +82,20 @@ public class DataTrendsController {
     @FXML
     private Button logoutButton;
 
-
+    /**
+     * {@link Button} to switch to {@link Controller.Reports.SalesReport}
+     */
     @FXML
     private Button salesReportButton;
 
+    /**
+     * Constructor
+     * 
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
+     */
     public DataTrendsController(SessionData session) {
         this.session = session;
-        this.database = session.database;
     }
-
-    public void initialize() {}
 
     /**
      * Handle switching scenes through the navigation bar
@@ -107,12 +103,18 @@ public class DataTrendsController {
      * @param event {@link ActionEvent} of the {@link Button} pressed
      * @throws IOException if loading the new GUI failed
      */
-    public void navButtonClicked(ActionEvent event) throws IOException {
+    public void navButtonClicked(final ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
     }
 
-    public void reportButtonClicked(ActionEvent event) throws IOException {
+    /**
+     * Handle switching scenes through the report query window
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} pressed
+     * @throws IOException if loading the new GUI failed
+     */
+    public void reportButtonClicked(final ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchReportScene(event);
     }

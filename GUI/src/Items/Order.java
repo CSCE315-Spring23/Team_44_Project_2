@@ -75,7 +75,7 @@ public class Order {
         this.orderID = orderId;
         this.date = LocalDateTime.now();
         final String debug = String.format("Order created on %s with ID %d",
-                this.date.format(DatabaseUtils.DATE_FORMAT), this.orderID);
+                this.date.format(DatabaseUtils.DATE_TIME_FORMAT), this.orderID);
         System.out.println(debug);
     }
 

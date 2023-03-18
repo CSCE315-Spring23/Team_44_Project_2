@@ -299,7 +299,7 @@ public class OrderController {
         final long id = order.getOrderID();
         final String customerName = order.getCustomerName();
         final double totalCost = order.getTotalCost();
-        final String date = order.getDate().format(DatabaseUtils.DATE_FORMAT);
+        final String date = order.getDate().format(DatabaseUtils.DATE_TIME_FORMAT);
         final long employeeId = order.getEmployeeId();
         final String query = String.format("INSERT INTO %s VALUES (%s, '%s', %s, '%s', %s);",
                 DatabaseNames.ORDER_ITEM_DATABASE, id, customerName, totalCost, date, employeeId);

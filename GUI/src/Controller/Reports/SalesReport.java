@@ -3,11 +3,13 @@ package Controller.Reports;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import Items.SalesReportRow;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.collections.FXCollections;
@@ -15,11 +17,23 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-
+/**
+ * Controller for the Sales Report window
+ * 
+ * @since 2023-03-07
+ * @version 2023-03-07
+ * 
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
+ */
 public class SalesReport {
     /**
      * Current session data
@@ -91,59 +105,113 @@ public class SalesReport {
     @FXML
     private Button logoutButton;
 
-
+    /**
+     * {@link TextField} Text field to enter the start date
+     */
     @FXML
-    TextField startDateText;
+    private DatePicker startDate;
 
+    /**
+     * {@link TextField} Text field to enter the end date
+     */
     @FXML
-    TextField endDateText;
+    private DatePicker endDate;
 
+    /**
+     * {@link Button} Button to generate the Sales report
+     */
     @FXML
-    Button goButton;
+    private Button goButton;
 
+    /**
+     * {@link TableView} Table to display the menu items
+     */
     @FXML
-    TableView<SalesReportRow> menuItemTable;
+    private TableView<SalesReportRow> menuItemTable;
 
+    /**
+     * {@link TableColumn} Column to display the menu item ID
+     */
     @FXML
-    TableColumn<SalesReportRow, Long> menuIDCol;
+    private TableColumn<SalesReportRow, Long> menuIDCol;
 
+    /**
+     * {@link TableColumn} Column to display the menu item name
+     */
     @FXML
-    TableColumn<SalesReportRow, String> menuNameCol;
+    private TableColumn<SalesReportRow, String> menuNameCol;
 
+    /**
+     * {@link TableColumn} Column to display the number of menu items sold
+     */
     @FXML
-    TableColumn<SalesReportRow, Long> menuNumSoldCol;
+    private TableColumn<SalesReportRow, Long> menuNumSoldCol;
 
+    /**
+     * {@link TableView} Table to display the inventory items
+     */
     @FXML
-    TableView<SalesReportRow> invItemTable;
+    private TableView<SalesReportRow> invItemTable;
 
+    /**
+     * {@link TableColumn} Column to display the inventory item ID
+     */
     @FXML
-    TableColumn<SalesReportRow, Long> invIDCol;
+    private TableColumn<SalesReportRow, Long> invIDCol;
 
+    /**
+     * {@link TableColumn} Column to display the inventory item name
+     */
     @FXML
-    TableColumn<SalesReportRow, String> invNameCol;
+    private TableColumn<SalesReportRow, String> invNameCol;
 
+    /**
+     * {@link TableColumn} Column to display the number of inventory items sold
+     */
     @FXML
     TableColumn<SalesReportRow, Long> invNumSoldCol;
 
-
-
+    /**
+     * {@link Map} Map of menu item names to the number of times they were sold
+     */
     private final Map<String, Long> orders;
-    private final Map<String, Long> menuIDs;
-    private final Map<Long, String> menuNames;
 
+    /**
+     * {@link Map} Map of menu item names to their IDs
+     */
+    private final Map<String, Long> menuIDs;
+
+    /**
+     * {@link Map} Map of inventory item names to the number of times they were sold
+     */
     private final Map<String, Long> invOrders;
+
+    /**
+     * {@link Map} Map of inventory item names to their IDs
+     */
     private final Map<String, Long> invIDs;
+
+    /**
+     * {@link Map} Map of inventory item IDs to their names
+     */
     private final Map<Long, String> invNames;
 
+    /**
+     * {@link Long} Number of orders
+     */
     private long numOrders;
 
+    /**
+     * Constructor
+     *
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
+     */
     public SalesReport(final SessionData session) {
         this.session = session;
         this.database = session.database;
 
         this.orders = new HashMap<>();
         this.menuIDs = new HashMap<>();
-        this.menuNames = new HashMap<>();
 
         this.invOrders = new HashMap<>();
         this.invIDs = new HashMap<>();
@@ -152,7 +220,13 @@ public class SalesReport {
         this.numOrders = 0;
     }
 
+    /**
+     * Initializes the GUI
+     */
     public void initialize() {
+        this.startDate.setConverter(DatabaseUtils.CONVERTER);
+        this.endDate.setConverter(DatabaseUtils.CONVERTER);
+
         this.setUpHashMap();
         this.setUpMenuItemTable();
         this.setUpInvItemTable();
@@ -177,13 +251,15 @@ public class SalesReport {
      * @param event {@link ActionEvent} of {@link Button} in the navigation bar
      * @throws IOException if loading a window fails
      */
-    public void navButtonClicked(ActionEvent event) throws IOException {
+    public void navButtonClicked(final ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
     }
 
+    /**
+     * Sorts both {@link TableView}s by ID in ascending order
+     */
     private void sortTableByID() {
-
         // sort table by id by default
         this.menuItemTable.getSortOrder().add(menuIDCol);
         this.menuIDCol.setSortType(TableColumn.SortType.ASCENDING);
@@ -198,6 +274,9 @@ public class SalesReport {
         this.invItemTable.refresh();
     }
 
+    /**
+     * Sets up the {@link TableView} for the menu items
+     */
     private void setUpMenuItemTable() {
         // set up columns
         this.menuIDCol.setCellValueFactory(cellData -> cellData.getValue().getId());
@@ -205,6 +284,9 @@ public class SalesReport {
         this.menuNumSoldCol.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
     }
 
+    /**
+     * Sets up the {@link TableView} for the inventory items
+     */
     private void setUpInvItemTable() {
         // set up columns
         this.invIDCol.setCellValueFactory(cellData -> cellData.getValue().getId());
@@ -212,7 +294,9 @@ public class SalesReport {
         this.invNumSoldCol.setCellValueFactory(cellData -> cellData.getValue().getNumSold());
     }
 
-
+    /**
+     * Sets up the {@link Map}s for the menu and inventory items from the database
+     */
     private void setUpHashMap() {
         // set up all menu items
         final String menu =
@@ -224,7 +308,6 @@ public class SalesReport {
                 final long id = menuSet.getLong("id");
                 orders.put(name, 0l);
                 menuIDs.put(name, id);
-                menuNames.put(id, name);
             }
             menuSet.close();
         } catch (SQLException e) {
@@ -252,17 +335,21 @@ public class SalesReport {
         }
     }
 
+    /**
+     * Generates the Sales Report for the given dates in the {@link #startDateText} and
+     * {@link #endDateText} {@link TextField}s
+     */
     public void onGoClick() {
-        final String startDate = this.startDateText.getText();
-        final String endDate = this.endDateText.getText();
-
-        System.out.println(startDate + " " + endDate);
-        // format check for dates
-        if (!startDate.matches("\\d{4}-\\d{2}-\\d{2}")
-                || !endDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            System.out.println("Invalid date format");
+        final LocalDate sDate = this.startDate.getValue();
+        if (sDate == null)
             return;
-        }
+
+        final LocalDate eDate = this.endDate.getValue();
+        if (eDate == null)
+            return;
+
+        final String startDate = sDate.format(DatabaseUtils.DATE_FORMAT);
+        final String endDate = eDate.format(DatabaseUtils.DATE_FORMAT);
 
         this.getOrderItemsBetweenDates(startDate, endDate);
         this.menuItemTable.setItems(this.getMenuItems());
@@ -273,8 +360,14 @@ public class SalesReport {
         this.sortTableByID();
     }
 
+    /**
+     * Gets all the {@link OrderItem}s between the given dates
+     *
+     * @param startDate {@link String} of the start date
+     * @param endDate {@link String} of the end date
+     */
     private void getOrderItemsBetweenDates(final String startDate, final String endDate) {
-
+        System.out.printf("Retreiving orders between %s and %s%n", startDate, endDate);
         // get all orders between the dates
         // %1$s = orderitem database, %2$s = solditem database, %3$s = menuitem database, %4$s =
         // start date, %5$s = end date
@@ -299,6 +392,11 @@ public class SalesReport {
 
     }
 
+    /**
+     * Adds all the {@link SalesReportRow}s to the {@link TableView} for the menu items
+     * 
+     * @return {@link ObservableList} of {@link SalesReportRow}s
+     */
     private ObservableList<SalesReportRow> getMenuItems() {
         final ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
         for (String name : orders.keySet())
@@ -306,7 +404,9 @@ public class SalesReport {
         return items;
     }
 
-
+    /**
+     * Gets the inventory items needed for the menu items based on the {@link #orders} {@link Map}
+     */
     private void getInventory() {
         for (final String menuItem : orders.keySet()) {
             final long itemCount = orders.get(menuItem);
@@ -327,7 +427,7 @@ public class SalesReport {
                 e.printStackTrace();
             }
 
-            for (long invID : invItems.keySet()) {
+            for (final long invID : invItems.keySet()) {
                 final long invCount = invItems.get(invID);
                 final long numSold = itemCount * invCount;
                 invOrders.put(invNames.get(invID),
@@ -340,7 +440,11 @@ public class SalesReport {
         this.invOrders.put("To-Go Bags", invOrders.getOrDefault("To-Go Bags", 0l) + numOrders);
     }
 
-
+    /**
+     * Adds all the {@link SalesReportRow}s to the {@link TableView} for the inventory items
+     * 
+     * @return {@link ObservableList} of {@link SalesReportRow}s
+     */
     private ObservableList<SalesReportRow> getInvItems() {
         final ObservableList<SalesReportRow> items = FXCollections.observableArrayList();
         for (final String name : invOrders.keySet())
