@@ -97,8 +97,8 @@
             <TableView fx:id="inventoryTable" prefHeight="680.0" prefWidth="1100.0" translateY="10.0">
               <columns>
                 <TableColumn fx:id="itemID" editable="false" prefWidth="100.0" resizable="false" text="ID" />
-                <TableColumn fx:id="itemName" editable="false" prefWidth="900.0" resizable="false" text="Name" />
-                  <TableColumn fx:id="itemQuantity" editable="false" prefWidth="100.0" resizable="false" text="Quantity" />
+                <TableColumn fx:id="itemName" editable="false" prefWidth="800.0" resizable="false" text="Name" />
+                  <TableColumn fx:id="itemQuantity" editable="false" prefWidth="200.0" resizable="false" text="Usage" />
               </columns>
             </TableView>
          </children>
