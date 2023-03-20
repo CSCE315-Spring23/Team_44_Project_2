@@ -62,6 +62,11 @@ public class EmployeeRow {
         return this.randomID.get();
     }
 
+    /**
+     * Gets the {@link SimpleObjectProperty} of {@link #randomID}
+     *
+     * @return {@link #randomID}
+     */
     public SimpleObjectProperty<Long> randomIDProperty() {
         return this.randomID;
     }
@@ -75,6 +80,11 @@ public class EmployeeRow {
         return this.employeeName.get();
     }
 
+    /**
+     * Gets the {@link SimpleObjectProperty} of {@link #employeeName}
+     *
+     * @return {@link #employeeName}
+     */
     public SimpleObjectProperty<String> employeeNameProperty() {
         return this.employeeName;
     }
@@ -88,6 +98,11 @@ public class EmployeeRow {
         return this.role.get();
     }
 
+    /**
+     * Gets the {@link SimpleObjectProperty} of {@link #role}
+     *
+     * @return {@link #role}
+     */
     public SimpleObjectProperty<EmployeeRole> roleProperty() {
         return this.role;
     }
@@ -101,6 +116,10 @@ public class EmployeeRow {
         return this.employeePin.get();
     }
 
+    /**
+     * Gets the {@link SimpleObjectProperty} of {@link #employeePin}
+     * @return {@link #employeePin}
+     */
     public SimpleObjectProperty<Integer> employeePinProperty() {
         return this.employeePin;
     }
