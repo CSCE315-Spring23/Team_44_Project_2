@@ -44,9 +44,9 @@ public class Order {
     private long employeeId;
 
     /**
-     * {@link HashMap} holding each item and its coresponding price.
+     * {@link Map} holding each item's name as a key and its coresponding quantity as value.
      */
-    private HashMap<String, Long> items = new HashMap<>();
+    private Map<String, Long> items = new HashMap<>();
 
     /**
      * Construct an Order
