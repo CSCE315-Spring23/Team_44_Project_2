@@ -215,37 +215,8 @@ public class ExcessReport {
         final String end = this.date.format(DatabaseUtils.DATE_FORMAT);
 
         System.out.printf("Retreiving inventory usage since %s until %s%n", start, end);
-        final Map<Long, Long> menuUse = new HashMap<>();
-        final Map<Long, Long> inventoryUse = new HashMap<>();
-
-        final String menuQuery = String.format(
-                "SELECT menuid FROM %1$s INNER JOIN %2$s ON %1$s.orderid = %2$s.id WHERE Date(%2$s.date) >= \'%3$s\' AND Date(%2$s.date) <= \'%4$s\'",
-                DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.ORDER_ITEM_DATABASE, start, end);
-
-        final ResultSet menu = this.database.executeQuery(menuQuery);
-        try {
-            while (menu.next()) {
-                final long menuID = menu.getLong("menuid");
-                if (menuUse.containsKey(menuID))
-                    menuUse.put(menuID, menuUse.get(menuID) + 1l);
-                else
-                    menuUse.put(menuID, 1l);
-            }
-        } catch (final SQLException e) {
-            e.printStackTrace();
-        }
-
-        final String inventory =
-                String.format("SELECT * FROM %s", DatabaseNames.INVENTORY_DATABASE);
-        final ResultSet inv = this.database.executeQuery(inventory);
-        try {
-            while (inv.next()) {
-                final long invID = inv.getLong("id");
-                inventoryUse.putIfAbsent(invID, 0l);
-            }
-        } catch (final SQLException e) {
-            e.printStackTrace();
-        }
+        final Map<Long, Long> menuUse = DatabaseUtils.getMenuUse(this.database, start, end);
+        final Map<Long, Long> inventoryUse = DatabaseUtils.initInventoryUse(this.database);
 
         for (final Map.Entry<Long, Long> entry : menuUse.entrySet()) {
             final long menuID = entry.getKey();
