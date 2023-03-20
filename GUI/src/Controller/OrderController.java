@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import Items.Order;
 import Utils.DatabaseConnect;
@@ -19,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -205,7 +205,7 @@ public class OrderController {
         this.totalCostLabel.setText(String.format("Total Cost: $%.2f", this.order.getTotalCost()));
         
         ArrayList<Button> buttons = new ArrayList<Button>();
-        HashMap<String, Long> orderItems = this.order.getItems();
+        Map<String, Long> orderItems = this.order.getItems();
         for (String name : orderItems.keySet()) {
             Button button = new Button(name + " x" + orderItems.get(name));
             button.setId("o" + name);
@@ -213,6 +213,7 @@ public class OrderController {
             button.setPadding(new Insets(8, 16, 8, 16));
             buttons.add(button);
         }
+        this.orderBox.setSpacing(8);
         this.orderBox.getChildren().clear();
         this.orderBox.getChildren().addAll(buttons);
     }
@@ -338,7 +339,7 @@ public class OrderController {
      */
     public void insertSoldItem(final Order order) {
         final long orderId = order.getOrderID();
-        final HashMap<String, Long> soldItems = order.getItems();
+        final Map<String, Long> soldItems = order.getItems();
         long soldItemId =
                 DatabaseUtils.getLastId(this.database, DatabaseNames.SOLD_ITEM_DATABASE) + 1;
 
@@ -369,7 +370,7 @@ public class OrderController {
      * @param order {@link Order} to insert into the database
      */
     public void updateMenuItem(final Order order) {
-        final HashMap<String, Long> soldItems = order.getItems();
+        final Map<String, Long> soldItems = order.getItems();
         for (final String item : soldItems.keySet()) {
             final long quantity = soldItems.get(item);
             final long menuItemId = this.getMenuItemId(item);
@@ -412,7 +413,7 @@ public class OrderController {
      * @param order {@link Order} that will update inventory
      */
     public void updateInventory(final Order order) {
-        final HashMap<String, Long> soldItems = order.getItems();
+        final Map<String, Long> soldItems = order.getItems();
 
         for (final String item : soldItems.keySet()) {
             final HashMap<Long, Long> inventoryIDs = new HashMap<>();
