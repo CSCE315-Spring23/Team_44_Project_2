@@ -215,24 +215,57 @@ public class ExcessReport {
         final String end = this.date.format(DatabaseUtils.DATE_FORMAT);
 
         System.out.printf("Retreiving inventory usage since %s until %s%n", start, end);
+        final Map<Long, Long> menuUse = new HashMap<>();
         final Map<Long, Long> inventoryUse = new HashMap<>();
 
         final String menuQuery = String.format(
-                "SELECT menuid FROM %1$s INNER JOIN %2$s ON %1$s.orderid = %2$s.id WHERE %2$s.date BETWEEN \'%3$s\' AND \'%4$s\'",
+                "SELECT menuid FROM %1$s INNER JOIN %2$s ON %1$s.orderid = %2$s.id WHERE Date(%2$s.date) >= \'%3$s\' AND Date(%2$s.date) <= \'%4$s\'",
                 DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.ORDER_ITEM_DATABASE, start, end);
-        final String query = String.format("SELECT inventoryid FROM %s WHERE menuid IN (%s);",
-                DatabaseNames.RECIPE_ITEM_DATABASE, menuQuery);
-        final ResultSet set = this.database.executeQuery(query);
+
+        final ResultSet menu = this.database.executeQuery(menuQuery);
         try {
-            while (set.next()) {
-                final long invID = set.getLong("inventoryid");
-                if (inventoryUse.containsKey(invID))
-                    inventoryUse.put(invID, inventoryUse.get(invID) + 1l);
+            while (menu.next()) {
+                final long menuID = menu.getLong("menuid");
+                if (menuUse.containsKey(menuID))
+                    menuUse.put(menuID, menuUse.get(menuID) + 1l);
                 else
-                    inventoryUse.put(invID, 0l);
+                    menuUse.put(menuID, 1l);
             }
         } catch (final SQLException e) {
             e.printStackTrace();
+        }
+
+        final String inventory =
+                String.format("SELECT * FROM %s", DatabaseNames.INVENTORY_DATABASE);
+        final ResultSet inv = this.database.executeQuery(inventory);
+        try {
+            while (inv.next()) {
+                final long invID = inv.getLong("id");
+                inventoryUse.putIfAbsent(invID, 0l);
+            }
+        } catch (final SQLException e) {
+            e.printStackTrace();
+        }
+
+        for (final Map.Entry<Long, Long> entry : menuUse.entrySet()) {
+            final long menuID = entry.getKey();
+            final long quant = entry.getValue();
+            final String query = String.format("SELECt inventoryid from %s WHERE menuid=%d",
+                    DatabaseNames.RECIPE_ITEM_DATABASE, menuID);
+            final ResultSet set = this.database.executeQuery(query);
+            for (long i = 0; i < quant; ++i) {
+                final long invID;
+                try {
+                    invID = set.next() ? set.getLong("inventoryid") : -1l;
+                    if (inventoryUse.containsKey(invID))
+                        inventoryUse.put(invID, inventoryUse.get(invID) + 1l);
+                    else
+                        inventoryUse.put(invID, 0l);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+            }
         }
 
         return inventoryUse;
