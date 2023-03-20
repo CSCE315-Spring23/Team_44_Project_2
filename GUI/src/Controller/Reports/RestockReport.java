@@ -136,7 +136,6 @@ public class RestockReport {
         this.itemName.setCellValueFactory(cell -> cell.getValue().getName());
         this.itemQuantity.setCellValueFactory(cell -> cell.getValue().getQuantity());
 
-        // TODO: manually add threshold values into the database
         String query = "SELECT * FROM " + DatabaseNames.INVENTORY_DATABASE
             + " WHERE quantity < threshold";
         try {
