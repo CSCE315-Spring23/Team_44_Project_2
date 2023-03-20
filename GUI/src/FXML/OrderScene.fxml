@@ -105,9 +105,9 @@
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <ScrollPane fx:id="orderScrollPane" hbarPolicy="NEVER" prefHeight="337.0" prefWidth="275.0">
+                  <ScrollPane fx:id="orderScrollPane" hbarPolicy="NEVER" prefHeight="385.0" prefWidth="300.0">
                      <content>
-                        <VBox fx:id="orderBox" prefHeight="330.0" prefWidth="285.0">
+                        <VBox fx:id="orderBox" prefHeight="385.0" prefWidth="285.0">
                            <padding>
                               <Insets left="20.0" />
                            </padding>
@@ -116,7 +116,7 @@
                   </ScrollPane>
                </children>
             </VBox>
-            <VBox alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0">
+            <VBox alignment="BOTTOM_CENTER" prefHeight="122.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0">
                <children>
                   <Label fx:id="totalCostLabel" text="Price">
                      <font>
