@@ -7,7 +7,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import Items.InventoryItem;
+import Items.InventoryUsage;
+import Items.InventoryUsage;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
 import Utils.DatabaseUtils;
@@ -112,29 +113,29 @@ public class ExcessReport {
     private DatePicker inputDate;
 
     /**
-     * {@link TableView} to display the {@link InventoryItem} that have less than 10% of their
+     * {@link TableView} to display the {@link InventoryUsage} that have less than 10% of their
      * starting quantity used over the time period
      */
     @FXML
-    private TableView<InventoryItem> inventoryTable;
+    private TableView<InventoryUsage> inventoryTable;
 
     /**
-     * {@link TableColumn} to display the id numbers of the {@link InventoryItem}
+     * {@link TableColumn} to display the id numbers of the {@link InventoryUsage}
      */
     @FXML
-    private TableColumn<InventoryItem, Long> itemID;
+    private TableColumn<InventoryUsage, Long> itemID;
 
     /**
-     * {@link TableColumn} to display the names of the {@link InventoryItem}
+     * {@link TableColumn} to display the names of the {@link InventoryUsage}
      */
     @FXML
-    private TableColumn<InventoryItem, String> itemName;
+    private TableColumn<InventoryUsage, String> itemName;
 
     /**
-     * {@link TableColumn} to display the current quantity of the {@link InventoryItem}
+     * {@link TableColumn} to display the current quantity of the {@link InventoryUsage}
      */
     @FXML
-    private TableColumn<InventoryItem, Long> itemQuantity;
+    private TableColumn<InventoryUsage, String> itemQuantity;
 
     /**
      * {@link LocalDate} that holds the current date.
@@ -204,7 +205,7 @@ public class ExcessReport {
     }
 
     /**
-     * Gets the inventory useage from a date range. Returns a map from the {@link InventoryItem}'s
+     * Gets the inventory useage from a date range. Returns a map from the {@link InventoryUsage}'s
      * ID to its usage.
      * 
      * @return {@link Map} from {@link Long} to {@link Long} holding the inventory usage.
@@ -240,10 +241,10 @@ public class ExcessReport {
     /**
      * Retreived the inventory items that did not use 10% of its remaining quantity
      * 
-     * @return {@link ObservableList} of {@link InventoryItem}
+     * @return {@link ObservableList} of {@link InventoryUsage}
      */
-    private ObservableList<InventoryItem> getInventory() {
-        final ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
+    private ObservableList<InventoryUsage> getInventory() {
+        final ObservableList<InventoryUsage> orders = FXCollections.observableArrayList();
         final Map<Long, Long> inventoryUse = this.getInventoryUse();
         final String query =
                 String.format("SELECT * FROM %s ORDER BY id;", DatabaseNames.INVENTORY_DATABASE);
@@ -261,7 +262,7 @@ public class ExcessReport {
                 final long use = inventoryUse.containsKey(id) ? inventoryUse.get(id) : 0l;
 
                 if (use <= quantity / 9)
-                    orders.add(new InventoryItem(id, name, quantity));
+                    orders.add(new InventoryUsage(id, name, ((double) use) / (use + quantity)));
             }
         } catch (final SQLException e) {
             e.printStackTrace();
