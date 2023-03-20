@@ -5,7 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import Items.InventoryItem;
 import Utils.DatabaseConnect;
-import Utils.DatabaseLoginInfo;
+import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.collections.FXCollections;
@@ -31,15 +32,10 @@ import javafx.scene.control.TextField;
  */
 public class InventoryController {
     /**
-     * Name of the inventory database to connect to as a {@link String}
-     */
-    private static final String INVENTORY_DATABASE = "inventory";
-
-    /**
      * Current session data
      *
      * @see SessionData
-    */
+     */
     private SessionData session;
 
     /**
@@ -56,47 +52,54 @@ public class InventoryController {
      */
     private SceneSwitch sceneSwitch;
 
-       /**
+    /**
      * {@link Button} Button to navigate order scene
      *
      */
-    @FXML private Button orderButton;
+    @FXML
+    private Button orderButton;
 
     /**
      * {@link Button} Button to navigate order history scene
      *
      */
-    @FXML private Button orderHistoryButton;
+    @FXML
+    private Button orderHistoryButton;
 
     /**
      * {@link Button} Button to navigate inventory scene
      *
      */
-    @FXML private Button inventoryButton;
+    @FXML
+    private Button inventoryButton;
 
     /**
      * {@link Button} Button to navigate employees scene
      *
      */
-    @FXML private Button employeesButton;
+    @FXML
+    private Button employeesButton;
 
     /**
      * {@link Button} Button to navigate edit menu scene
      *
      */
-    @FXML private Button editMenuButton;
+    @FXML
+    private Button editMenuButton;
+
+    /**
+     * {@link Button} Button to navigate to the data trends scene
+     */
+    @FXML
+    private Button dataTrendsButton;
 
     /**
      * {@link Button} Button to logout
      *
      */
-    @FXML private Button logoutButton;
-
-    /**
-     * {@link Button} update inventory button. Triggers {@link #updateInventory()}
-     */
     @FXML
-    private Button update;
+    private Button logoutButton;
+
 
     /**
      * {@link TableView} of {@link InventoryItem} that will display the entire inventory
@@ -126,85 +129,89 @@ public class InventoryController {
      * {@link TextField} to allow managers to update stock through the item's name
      */
     @FXML
-    private TextField itemInput;
+    private TextField updateItemID;
 
     /**
      * {@link TextField} to allow managers to update stock
      */
     @FXML
-    private TextField quantityInput;
+    private TextField updateItemQuant;
 
     /**
-     * Name of the item to change as a {@link String}
+     * {@link Button} update inventory button. Triggers {@link #updateInventory()}
      */
-    private String item;
+    @FXML
+    private Button updateItem;
 
     /**
-     * Amount of the item to change to as a {@link String}
+     * {@link TextField} that allows user input to delete an item
      */
-    private String quantity;
+    @FXML
+    private TextField deleteItemID;
 
-    public InventoryController() {
-        this.item = new String();
-        this.quantity = new String();
-        this.session = null;
-    }
+    /**
+     * {@link Button} that will delete the item
+     */
+    @FXML
+    private Button deleteItem;
 
+    /**
+     * {@link TextField} that allows user input to add an item
+     */
+    @FXML
+    private TextField addItemName;
+
+    /**
+     * {@link TextField} that allows user input to add an item
+     */
+    @FXML
+    private TextField addItemQuant;
+
+    /**
+     * {@link Button} that will add an item
+     */
+    @FXML
+    private Button addItem;
+
+    /**
+     * Constructor
+     * 
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
+     */
     public InventoryController(final SessionData session) {
-        this.item = new String();
-        this.quantity = new String();
         this.session = session;
+        this.database = this.session.database;
     }
 
     /**
      * Initialize Graphical User Interface
      */
     public void initialize() {
-        // database login info
-        String dbConnectionString = DatabaseLoginInfo.dbConnectionString;
-        String username = DatabaseLoginInfo.username;
-        String password = DatabaseLoginInfo.password;
-
-        database = new DatabaseConnect(dbConnectionString, username, password);
-        database.setUpDatabase();
-        System.out.println("Database Connection Established");
-
         this.setUpTable();
         this.updateTable();
-        this.inventoryTable.refresh();
 
         if (session.isManager()) {
             System.out.println("Manager");
-            editMenuButton.setVisible(true);
-            inventoryButton.setVisible(true);
-            employeesButton.setVisible(true);
+            this.editMenuButton.setVisible(true);
+            this.inventoryButton.setVisible(true);
+            this.employeesButton.setVisible(true);
         } else {
             System.out.println("Employee");
-            editMenuButton.setVisible(false);
-            inventoryButton.setVisible(false);
-            employeesButton.setVisible(false);
+            this.editMenuButton.setVisible(false);
+            this.inventoryButton.setVisible(false);
+            this.employeesButton.setVisible(false);
         }
     }
 
+    /**
+     * Handles switching to a new scene
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} being pressing
+     * @throws IOException when loading the new window fails
+     */
     public void navButtonClicked(ActionEvent event) throws IOException {
-        sceneSwitch = new SceneSwitch(this.session);
-        sceneSwitch.switchScene(event);
-    }
-
-    /**
-     * Updates {@link #item} to current item inputed
-     */
-    public void updateItemName() {
-        this.item = this.itemInput.getText();
-        System.out.println("Update Item Name:\t" + this.item);
-    }
-
-    /**
-     * Updates {@link #quantity} to current item inputed
-     */
-    public void updateQuantity() {
-        this.quantity = this.quantityInput.getText();
-        System.out.println("Update Quantity:\t" + this.quantity);
+        this.sceneSwitch = new SceneSwitch(this.session);
+        this.sceneSwitch.switchScene(event);
     }
 
     /**
@@ -214,10 +221,69 @@ public class InventoryController {
         this.inventoryID.setCellValueFactory(cellData -> cellData.getValue().getId());
         this.itemName.setCellValueFactory(cellData -> cellData.getValue().getName());
         this.quantityCol.setCellValueFactory(cellData -> cellData.getValue().getQuantity());
+    }
 
-        final ObservableList<InventoryItem> items = this.getInventory();
+    /**
+     * Adds an item to the inventory database
+     */
+    public void addItem() {
+        System.out.println("Add Item to Inventory.");
 
-        this.inventoryTable.setItems(items);
+        final String itemName = this.addItemName.getText();
+        if (itemName.isEmpty()) {
+            System.out.println("Invalid item name.\nAbort addition.");
+            return;
+        }
+
+        final long quantity;
+        try {
+            quantity = Long.parseLong(this.addItemQuant.getText());
+        } catch (NumberFormatException nfe) {
+            System.err.println("Invalid item quantity.\nAbort addition.");
+            return;
+        }
+
+        if (quantity <= 0l) {
+            System.err.println("Invalid item quantity.\nAbort addition.");
+            return;
+        }
+
+        final long itemID =
+                DatabaseUtils.getLastId(this.database, DatabaseNames.INVENTORY_DATABASE);
+        final String insert =
+                String.format("INSERT INTO %s (id, name, quantity) VALUES (%d, '%s', %d);",
+                        DatabaseNames.INVENTORY_DATABASE, itemID, itemName, quantity);
+        this.database.executeUpdate(insert);
+
+        this.updateTable();
+        this.clearTextFields();
+    }
+
+    /**
+     * Deletes an item from the database
+     */
+    public void deleteItem() {
+        System.out.println("Delete Item");
+
+        final long itemID;
+        try {
+            itemID = Long.parseLong(this.deleteItemID.getText());
+        } catch (NumberFormatException nfe) {
+            System.err.println("Invalid ID number.\nAbort deletion.");
+            return;
+        }
+
+        if (itemID <= 0l) {
+            System.err.println("Invalid ID number.\nAbort deletion.");
+            return;
+        }
+
+        final String delete = String.format("DELETE FROM %s WHERE id = %d;",
+                DatabaseNames.INVENTORY_DATABASE, itemID);
+        this.database.executeUpdate(delete);
+
+        this.updateTable();
+        this.clearTextFields();
     }
 
     /**
@@ -226,42 +292,71 @@ public class InventoryController {
     public void updateInventory() {
         System.out.println("Update Inventory");
 
-        if (this.item == null)
+        final long itemID;
+        try {
+            itemID = Long.parseLong(this.updateItemID.getText());
+        } catch (NumberFormatException nfe) {
+            System.err.println("Failed to parse ID number.\nAbort Update.");
             return;
-        else if (this.item.isEmpty())
-            return;
-        if (this.quantity == null)
-            return;
-        else if (this.quantity.isEmpty())
-            return;
+        }
 
-        final String probe = String.format("SELECT quantity FROM %s WHERE name=\'%s\';",
-                INVENTORY_DATABASE, this.item);
+        if (itemID <= 0l) {
+            System.err.println("Invalid ID number.\nAbort Update.");
+            return;
+        }
+
+        final long quantity;
+        try {
+            quantity = Long.parseLong(this.updateItemQuant.getText());
+        } catch (NumberFormatException nfe) {
+            System.err.println("Failed to parse quantity.\nAbort Update.");
+            return;
+        }
+
+        if (quantity <= 0l) {
+            System.err.println("Invalid quantity.\nAbort Update.");
+            return;
+        }
+
+        final String probe = String.format("SELECT quantity FROM %s WHERE id=%d;",
+                DatabaseNames.INVENTORY_DATABASE, itemID);
         final ResultSet result = this.database.executeQuery(probe);
 
-        long quant = 0l;
+        final long quant;
         try {
             if (result.next())
                 quant = result.getLong("quantity");
+            else
+                return;
             result.close();
         } catch (SQLException e) {
             System.out.println("Query failed.");
+            return;
         }
 
-        if (quant < 0l) {
-            System.out.println("Cannot update item to a negative number");
+        if (quant == 0l) {
+            System.err.println("Item does not exist");
             return;
-        } else if (quant == 0l) {
-            System.out.println("Item does not exist");
-            return;
-        } else {
-            final String query = String.format("UPDATE %s SET quantity = %d WHERE name=\'%s\';",
-                    INVENTORY_DATABASE, Long.valueOf(this.quantity), this.item);
-            System.out.println(query);
-            this.database.executeUpdate(query);
-
-            this.updateTable();
         }
+
+        final String query = String.format("UPDATE %s SET quantity = %d WHERE id=%d;",
+                DatabaseNames.INVENTORY_DATABASE, quantity, itemID);
+        this.database.executeUpdate(query);
+
+        this.updateTable();
+        this.clearTextFields();
+        return;
+    }
+
+    /**
+     * Reset all text fields that get user input for editing a menu item to null
+     */
+    private void clearTextFields() {
+        this.updateItemID.setText("");
+        this.updateItemQuant.setText("");
+        this.addItemName.setText("");
+        this.addItemQuant.setText("");
+        this.deleteItemID.setText("");
     }
 
     /**
@@ -278,10 +373,11 @@ public class InventoryController {
      * @return {@link ObservableList} of {@link InventoryItem} holding every item in the inventory
      */
     private ObservableList<InventoryItem> getInventory() {
-        ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
+        final ObservableList<InventoryItem> orders = FXCollections.observableArrayList();
+        final String inventory =
+                String.format("SELECT * FROM %s ORDER BY id", DatabaseNames.INVENTORY_DATABASE);
+        final ResultSet rs = database.executeQuery(inventory);
         try {
-            final String query = String.format("SELECT * FROM %s ORDER BY id", INVENTORY_DATABASE);
-            final ResultSet rs = database.executeQuery(query);
             while (rs.next()) {
                 final long id = rs.getLong("id");
                 final String name = rs.getString("name");

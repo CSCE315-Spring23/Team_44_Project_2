@@ -6,15 +6,31 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-/*
+
+/**
  * This Main Class serves as the entry point for the POS System Application. It will initialize the
  * session and load to the login page
+ * 
+ * @since 2023-03-07
+ * 
+ * @version 2023-03-07
+ * 
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
  */
-
 public class Main extends Application {
-
+    /**
+     * Load the graphical user interface
+     * 
+     * @param primaryStage initial {@link Stage}
+     * @throws Exception when the gui fails to load
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        System.setProperty("spring.jdbc.getParameterType.ignore", "true");
 
         LoginController loginController = new LoginController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("./FXML/Login.fxml"));
@@ -28,7 +44,17 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    /**
+     * The classic main function
+     * 
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         Application.launch(args);
     }
+
+    /**
+     * Constructor
+     */
+    public Main() {}
 }

@@ -1,31 +1,28 @@
-package Controller;
+package Controller.Reports;
+
 
 import java.io.IOException;
+import Utils.DatabaseConnect;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-/**
- * This class handles the data trends scene/tab of the GUI
- * 
- * @since 2023-03-06
- * @version 2023-03-06
- * 
- * @author Dai, Kevin
- * @author Davis, Sloan
- * @author Kuppa Jayaram, Shreeman
- * @author Lai, Huy
- * @author Mao, Steven
- */
-public class DataTrendsController {
+public class XZReport {
     /**
      * Current session data
      *
      * @see SessionData
      */
     private SessionData session;
+
+    /**
+     * Connection to the database
+     *
+     * @see DatabaseConnect
+     */
+    private DatabaseConnect database;
 
     /**
      * Switches between scenes or tabs
@@ -69,6 +66,7 @@ public class DataTrendsController {
     @FXML
     private Button editMenuButton;
 
+
     /**
      * {@link Button} Button to navigate to the data trends scene
      */
@@ -82,40 +80,35 @@ public class DataTrendsController {
     @FXML
     private Button logoutButton;
 
-    /**
-     * {@link Button} to switch to {@link Controller.Reports.SalesReport}
-     */
-    @FXML
-    private Button salesReportButton;
 
-    /**
-     * Constructor
-     * 
-     * @param session {@link SessionData} passed in from {@link SceneSwitch}
-     */
-    public DataTrendsController(SessionData session) {
+    public XZReport(final SessionData session) {
         this.session = session;
+        this.database = session.database;
+    }
+
+    public void initialize() {
+        // set visibility of buttons based on employee role
+        if (session.isManager()) {
+            System.out.println("Manager");
+            this.editMenuButton.setVisible(true);
+            this.inventoryButton.setVisible(true);
+            this.employeesButton.setVisible(true);
+        } else {
+            System.out.println("Employee");
+            this.editMenuButton.setVisible(false);
+            this.inventoryButton.setVisible(false);
+            this.employeesButton.setVisible(false);
+        }
     }
 
     /**
-     * Handle switching scenes through the navigation bar
+     * Navigates to the scene specified by the button clicked
      *
-     * @param event {@link ActionEvent} of the {@link Button} pressed
-     * @throws IOException if loading the new GUI failed
+     * @param event {@link ActionEvent} of {@link Button} in the navigation bar
+     * @throws IOException if loading a window fails
      */
-    public void navButtonClicked(final ActionEvent event) throws IOException {
+    public void navButtonClicked(ActionEvent event) throws IOException {
         this.sceneSwitch = new SceneSwitch(session);
         this.sceneSwitch.switchScene(event);
-    }
-
-    /**
-     * Handle switching scenes through the report query window
-     * 
-     * @param event {@link ActionEvent} of the {@link Button} pressed
-     * @throws IOException if loading the new GUI failed
-     */
-    public void reportButtonClicked(final ActionEvent event) throws IOException {
-        this.sceneSwitch = new SceneSwitch(session);
-        this.sceneSwitch.switchReportScene(event);
     }
 }

@@ -1,8 +1,9 @@
 package Items;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import Utils.DatabaseUtils;
 
 /**
  * This class handles the Order Item.
@@ -20,7 +21,7 @@ public class Order {
     /**
      * Indentification number of the order
      */
-    private int orderId;
+    private long orderID;
 
     /**
      * {@link String} holding the name of the customer who made the order
@@ -28,9 +29,9 @@ public class Order {
     private String customerName = "";
 
     /**
-     * {@link LocalDate} holding the current date
+     * {@link LocalDateTime} holding the current date
      */
-    private final LocalDate date;
+    private final LocalDateTime date;
 
     /**
      * Total cost of the order
@@ -40,63 +41,68 @@ public class Order {
     /**
      * Identification number of the employee who created the order
      */
-    private int employeeId;
+    private long employeeId;
 
     /**
      * {@link HashMap} holding each item and its coresponding price.
      */
-    private HashMap<String, Integer> items = new HashMap<String, Integer>();
+    private HashMap<String, Long> items = new HashMap<>();
 
     /**
      * Construct an Order
-     * 
-     * @param employeeId
      */
-    public Order(final int employeeId) {
-        this.employeeId = employeeId;
-        this.orderId = -1;
-        date = LocalDate.now();
-        System.out.println("Order Created:\tcurrent date: " + date + " order id: " + orderId);
+    public Order() {
+        this(-1l, -1l);
     }
 
     /**
      * Construct an Order
      * 
-     * @param employeeId
-     * @param orderId
+     * @param employeeId ID number of the Employee completing the order
      */
-    public Order(final int employeeId, final int orderId) {
+    public Order(final long employeeId) {
+        this(employeeId, -1l);
+    }
+
+    /**
+     * Construct an Order
+     * 
+     * @param employeeId ID number of the Employee completing the order
+     * @param orderId ID number of the Order
+     */
+    public Order(final long employeeId, final long orderId) {
         this.employeeId = employeeId;
-        this.orderId = orderId;
-        date = LocalDate.now();
-        System.out.println("Order Created:\tcurrent date: " + date + " order id: " + orderId);
+        this.orderID = orderId;
+        this.date = LocalDateTime.now();
+        final String debug = String.format("Order created on %s with ID %d",
+                this.date.format(DatabaseUtils.DATE_TIME_FORMAT), this.orderID);
+        System.out.println(debug);
     }
 
     /**
      * Add an item to the order
      * 
-     * @param name  of the item to add as a {@link String}
+     * @param name of the item to add as a {@link String}
      * @param price of the item
      */
     public void addItem(final String name, final double price) {
-        items.put(name, items.containsKey(name) ? items.get(name) + 1 : 1);
+        this.items.put(name, items.containsKey(name) ? items.get(name) + 1l : 1l);
         this.totalCost += price;
     }
 
     /**
      * Removes an item from the order
      * 
-     * @param name  of the item to remove as a {@link String}
+     * @param name of the item to remove as a {@link String}
      * @param price of the item
      */
     public void removeItem(String name, double price) {
-        if (items.containsKey(name)) {
-            if (items.get(name) == 1) {
-                items.remove(name);
-            } else {
-                items.put(name, items.get(name) - 1);
-            }
-        }
+        if (!this.items.containsKey(name))
+            return;
+        if (this.items.get(name) == 1)
+            this.items.remove(name);
+        else
+            this.items.put(name, this.items.get(name) - 1);
 
         this.totalCost -= price;
     }
@@ -122,28 +128,28 @@ public class Order {
     /**
      * Gets {@link #employeeId}
      * 
-     * @return
+     * @return {@link #employeeId}
      */
-    public int getEmployeeId() {
+    public long getEmployeeId() {
         return this.employeeId;
     }
 
     /**
-     * Sets {@link #orderId}
+     * Sets {@link #orderID}
      * 
-     * @return {@link #orderId}
+     * @param orderID new identification number of the order
      */
-    public void setOrderId(final int orderId) {
-        this.orderId = orderId;
+    public void setOrderId(final long orderID) {
+        this.orderID = orderID;
     }
 
     /**
-     * Gets {@link #orderId}
+     * Gets {@link #orderID}
      * 
-     * @return {@link #orderId}
+     * @return {@link #orderID}
      */
-    public int getOrderId() {
-        return this.orderId;
+    public long getOrderID() {
+        return this.orderID;
     }
 
     /**
@@ -151,14 +157,14 @@ public class Order {
      * 
      * @return {@link #date}
      */
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return this.date;
     }
 
     /**
      * Gets {@link #totalCost}
      * 
-     * @return
+     * @return {@link #totalCost}
      */
     public double getTotalCost() {
         return this.totalCost;
@@ -170,8 +176,8 @@ public class Order {
      * @param name of the item as a {@link String}
      * @return amount of the item
      */
-    public int getItemCount(String name) {
-        return items.containsKey(name) ? items.get(name) : 0;
+    public long getItemCount(String name) {
+        return items.containsKey(name) ? items.get(name) : 0l;
     }
 
     /**
@@ -181,9 +187,8 @@ public class Order {
      */
     public String getItemCount() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : items.entrySet()) {
+        for (final Map.Entry<String, Long> entry : items.entrySet())
             sb.append(entry.getKey() + " x" + entry.getValue() + '\n');
-        }
         return sb.toString();
     }
 
@@ -192,7 +197,7 @@ public class Order {
      * 
      * @return {@link #items}
      */
-    public HashMap<String, Integer> getItems() {
+    public HashMap<String, Long> getItems() {
         return this.items;
     }
 }

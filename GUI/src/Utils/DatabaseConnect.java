@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import Items.Order;
 
 /**
@@ -61,32 +60,31 @@ public class DatabaseConnect {
      */
     public void setUpDatabase() {
         try {
-            conn = DriverManager.getConnection(dbConnectionString, username, password);
-        } catch (Exception e) {
+            this.conn = DriverManager.getConnection(dbConnectionString, username, password);
+        } catch (final SQLException e) {
+            System.err.println("Error connecting to database");
             e.printStackTrace();
-            System.out.println("Error connecting to database");
             System.exit(0);
         }
         System.out.println("Opened database successfully");
     }
 
     /**
-     * Execute a SQL query.
-     * 
-     * @implNote This method will NOT handle UPDATE queries. Use {@link #executeUpdate(String)}
-     *           instead.
+     * Execute a SQL query. This method will NOT handle UPDATE queries. Use
+     * {@link #executeUpdate(String)} instead.
      * 
      * @param command query to send to database
      * @return the {@link ResultSet} of the query
      */
     public ResultSet executeQuery(final String command) {
-        Statement stmt = null;
-        ResultSet rs = null;
+        final Statement stmt;
+        final ResultSet rs;
         try {
             stmt = conn.createStatement();
             rs = stmt.executeQuery(command);
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
         return rs;
     }
@@ -98,233 +96,15 @@ public class DatabaseConnect {
      * @return the result of the query
      */
     public int executeUpdate(final String command) {
-        Statement stmt = null;
-        int rs = 0;
+        final Statement stmt;
+        final int rs;
         try {
             stmt = conn.createStatement();
             rs = stmt.executeUpdate(command);
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
         return rs;
-    }
-
-    /**
-     * Returns the NAME of a menu item given its ID
-     * 
-     * @param id Identification number as a {@link String}
-     * @return the name of the menu item
-     */
-    public String getMenuItemName(final String id) {
-        String ret = "";
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT name FROM menuitem WHERE id = " + id + ";");
-            while (rs.next()) {
-                ret = rs.getString("name");
-            }
-            rs.close();
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting menu item name");
-        }
-        return ret;
-    }
-
-    /**
-     * Returns the COST of a menu item given its ID
-     * 
-     * @param id Identification number as a {@link String}
-     * @return the cost of the menu item
-     */
-    public double getMenuItemCost(final String id) {
-        double ret = 0.0;
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT cost FROM menuitem WHERE id = " + id + ";");
-            while (rs.next()) {
-                ret = rs.getDouble("cost");
-            }
-            rs.close();
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting menu item cost");
-        }
-        return ret;
-    }
-
-    /**
-     * Returns the last ID in a given table
-     * 
-     * @param table table name
-     * @return the last ID in the table
-     */
-    public int getLastId(final String table) {
-        int ret = 0;
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT MAX(id) from " + table + ";");
-            while (rs.next()) {
-                ret = rs.getInt("max");
-            }
-            rs.close();
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting last id");
-        }
-        return ret;
-    }
-
-    /**
-     * Inserts an order into the database
-     * 
-     * @param order {@link Order} to insert
-     */
-    public void insertOrderItem(final Order order) {
-        String databaseName = "orderitem";
-
-        int id = order.getOrderId();
-        String customerName = order.getCustomerName();
-        double totalCost = order.getTotalCost();
-        String date = order.getDate().toString();
-        int employeeId = order.getEmployeeId();
-
-        try {
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate("INSERT INTO " + databaseName + " VALUES (" + id + ", '"
-                    + customerName + "', " + totalCost + ", '" + date + "', " + employeeId + ");");
-            System.out.println("Inserted order " + id + " into " + databaseName);
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error inserting into orderitem");
-        }
-    }
-
-    /**
-     * Inserts each individual menu item in an order into the {@code solditem} database
-     * 
-     * @param order
-     */
-    public void insertSoldItem(final Order order) {
-        String databaseName = "solditem";
-
-        int orderId = order.getOrderId();
-        HashMap<String, Integer> soldItems = order.getItems();
-        int soldItemId = getLastId("solditemtest") + 1;
-
-        for (String item : soldItems.keySet()) {
-            int quantity = soldItems.get(item);
-            int menuItemId = getMenuItemId(item);
-            for (int i = 0; i < quantity; ++i) {
-                try {
-                    final Statement stmt = conn.createStatement();
-                    final String query = String.format("INSERT INTO %s VALUES (%d, %d, %d);",
-                            databaseName, soldItemId, menuItemId, orderId);
-                    stmt.executeUpdate(query);
-
-                    final String debug =
-                            String.format("Inserted %s with id %d into %s for order %d", item,
-                                    soldItemId, databaseName, orderId);
-                    System.out.println(debug);
-
-                    stmt.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Error inserting into solditem");
-                }
-                ++soldItemId;
-            }
-        }
-    }
-
-    /*
-     * Returns the ID of a menu item given its NAME
-     * 
-     * @param name
-     * 
-     * @return menuitem.id
-     */
-    /**
-     * Returns the ID of a menu item given its NAME
-     * 
-     * @param name of the menu item as a {@link String}
-     * @return the Identification number, -1 when not found
-     */
-    public int getMenuItemId(final String name) {
-        int ret = -1;
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs =
-                    stmt.executeQuery("SELECT id FROM menuitem WHERE name = '" + name + "';");
-            while (rs.next()) {
-                ret = rs.getInt("id");
-            }
-            rs.close();
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error getting menu item id");
-        }
-
-        return ret;
-    }
-
-    /**
-     * Update the inventory count based on an {@link Order}
-     * 
-     * @param order {@link Order} that will update inventory
-     */
-    public void updateInventory(final Order order) {
-        final String databaseName = "inventory";
-
-        HashMap<String, Integer> soldItems = order.getItems();
-
-        for (final String item : soldItems.keySet()) {
-            HashMap<Integer, Double> inventoryIDs = new HashMap<Integer, Double>();
-
-            int menuItemId = this.getMenuItemId(item);
-            int count = soldItems.get(item);
-
-            try {
-                Statement stmt = this.conn.createStatement();
-                final String query = String.format(
-                        "SELECT inventoryid, count FROM recipeitem WHERE menuid = %d;", menuItemId);
-                ResultSet rs = stmt.executeQuery(query);
-
-                while (rs.next()) {
-                    inventoryIDs.put(rs.getInt("inventoryid"), rs.getDouble("count"));
-                }
-
-                rs.close();
-                stmt.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Error getting recipeitem");
-            }
-
-            for (int inventoryid : inventoryIDs.keySet()) {
-                double quantity = inventoryIDs.get(inventoryid);
-
-                try {
-                    final Statement stmt = conn.createStatement();
-                    final String query =
-                            String.format("UPDATE %s SET quantity = quantity - %f WHERE id = %s;",
-                                    databaseName, quantity * count, inventoryid);
-                    stmt.executeUpdate(query);
-                    System.out
-                            .println("Updated " + databaseName + " for inventoryid " + inventoryid);
-                    stmt.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("Error updating inventory");
-                }
-
-            }
-
-        }
     }
 }

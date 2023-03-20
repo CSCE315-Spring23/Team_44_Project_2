@@ -1,12 +1,18 @@
 package Utils;
 
 import java.io.IOException;
-import Controller.LoginController;
+import Controller.DataTrendsController;
 import Controller.EditMenuController;
-import Controller.InventoryController;
 import Controller.EmployeeController;
+import Controller.InventoryController;
+import Controller.LoginController;
 import Controller.OrderController;
 import Controller.OrderHistoryController;
+import Controller.Reports.ExcessReport;
+import Controller.Reports.RestockReport;
+import Controller.Reports.SalesReport;
+import Controller.Reports.SalesTogetherReport;
+import Controller.Reports.XZReport;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -58,59 +64,82 @@ public class SceneSwitch {
      */
     private InventoryController inventoryController;
 
-    // private EmployeeController employeeController;
-
     /**
      * {@link EditMenuController} to load the menu editting window
      */
     private EditMenuController editMenuController;
 
     /**
+     * {@link DataTrendsController} to load the menu editting window
+     */
+    private DataTrendsController dataTrendsController;
+
+    private SalesReport salesReportController;
+
+    private XZReport xzReportController;
+
+    private ExcessReport excessReportController;
+
+    private RestockReport restockReportController;
+
+    private SalesTogetherReport salesTogetherReportController;
+
+    /**
      * Constructor
      * 
-     * @param session {@link SessionData} to send information between the various
-     *                windows
+     * @param session {@link SessionData} to send information between the various windows
      */
-    public SceneSwitch(SessionData session) {
+    public SceneSwitch(final SessionData session) {
         this.session = session;
-        loginController = new LoginController(this.session);
-        orderController = new OrderController(this.session);
-        orderHistoryController = new OrderHistoryController(this.session);
-        inventoryController = new InventoryController(this.session);
-        employeeController = new EmployeeController(this.session);
-        editMenuController = new EditMenuController(this.session);
+        this.loginController = new LoginController(this.session);
+        this.orderController = new OrderController(this.session);
+        this.orderHistoryController = new OrderHistoryController(this.session);
+        this.inventoryController = new InventoryController(this.session);
+        this.employeeController = new EmployeeController(this.session);
+        this.editMenuController = new EditMenuController(this.session);
+        this.dataTrendsController = new DataTrendsController(this.session);
+
+        this.salesReportController = new SalesReport(this.session);
+        this.xzReportController = new XZReport(this.session);
+        this.excessReportController = new ExcessReport(this.session);
+        this.restockReportController = new RestockReport(this.session);
+        this.salesTogetherReportController = new SalesTogetherReport(this.session);
     }
 
     /**
      * Loads a the new window bassed on the navigation button pressed.
      * 
-     * @param event {@link ActionEvent} passed when pressing a button
+     * @param event {@link ActionEvent} passed when pressing a {@link Button}
+     * @param session {@link SessionData} to pass between controllers
      * @throws IOException if the new window failed to load
      */
-
     public void LoginTransition(ActionEvent event, SessionData session) throws IOException {
         // Pass session object from login page to all scenes
         System.out.println("Login Page Initialized");
-        Button b = (Button) event.getSource();
-        System.out.println(session.employeeId);
+
         // Load Order Scene from login page
-        String buttonID = b.getId();
-        System.out.println(buttonID);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/OrderScene.fxml"));
+        final FXMLLoader loader =
+                new FXMLLoader(this.getClass().getResource("../FXML/OrderScene.fxml"));
         loader.setController(orderController);
-        Parent root = loader.load();
-        Scene scene = new Scene(root, 1200, 800);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+        final Parent root = loader.load();
+        final Scene scene = new Scene(root, 1200, 800);
+        final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
 
+    /**
+     * Loads a new Controller based on which navigation button was pressed
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} pressed
+     * @throws IOException if loading the new window failed
+     */
     public void switchScene(ActionEvent event) throws IOException {
-        Button b = (Button) event.getSource();
-        String buttonID = b.getId();
+        final Button b = (Button) event.getSource();
+        final String buttonID = b.getId();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../FXML/OrderScene.fxml"));
-
+        final FXMLLoader loader;
         switch (buttonID) {
             case "orderButton":
                 System.out.println("Order button clicked");
@@ -137,18 +166,74 @@ public class SceneSwitch {
                 loader = new FXMLLoader(getClass().getResource("../FXML/EditMenu.fxml"));
                 loader.setController(editMenuController);
                 break;
+            case "dataTrendsButton":
+                System.out.println("Data Trends button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/DataTrends.fxml"));
+                loader.setController(dataTrendsController);
+                break;
             case "logoutButton":
                 System.out.println("Logout button clicked");
                 loader = new FXMLLoader(getClass().getResource("../FXML/Login.fxml"));
                 loader.setController(loginController);
                 break;
             default:
-                break;
+                throw new IllegalStateException("Invalid button pressed");
         }
 
-        Parent root = loader.load();
-        Scene scene = new Scene(root, 1200, 800);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        final Parent root = loader.load();
+        final Scene scene = new Scene(root, 1200, 800);
+        final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    /**
+     * Switch to the Report Window
+     * 
+     * @param event {@link ActionEvent} of the Report {@link Button}
+     * @throws IOException if loading the new window fails
+     */
+    public void switchReportScene(final ActionEvent event) throws IOException {
+        final Button b = (Button) event.getSource();
+        final String buttonID = b.getId();
+
+        final FXMLLoader loader;
+        switch (buttonID) {
+            case "salesReportButton":
+                System.out.println("Sales Report button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/Reports/SalesReport.fxml"));
+                loader.setController(salesReportController);
+                break;
+            case "XZReportButton":
+                System.out.println("XZ Report button clicked");
+                loader = new FXMLLoader(getClass().getResource("../FXML/Reports/XZReport.fxml"));
+                loader.setController(xzReportController);
+                break;
+            case "excessReportButton":
+                System.out.println("Excess Report button clicked");
+                loader = new FXMLLoader(
+                        getClass().getResource("../FXML/Reports/ExcessReport.fxml"));
+                loader.setController(excessReportController);
+                break;
+            case "restockReportButton":
+                System.out.println("Restock Report button clicked");
+                loader = new FXMLLoader(
+                        getClass().getResource("../FXML/Reports/RestockReport.fxml"));
+                loader.setController(restockReportController);
+                break;
+            case "salesTogetherReportButton":
+                System.out.println("Sales Together Report button clicked");
+                loader = new FXMLLoader(
+                        getClass().getResource("../FXML/Reports/SalesTogetherReport.fxml"));
+                loader.setController(salesTogetherReportController);
+                break;
+            default:
+                throw new IllegalStateException("Invalid button pressed");
+        }
+
+        final Parent root = loader.load();
+        final Scene scene = new Scene(root, 1200, 800);
+        final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
