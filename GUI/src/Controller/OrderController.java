@@ -16,6 +16,12 @@ import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.util.Pair;
 
 
 /**
@@ -62,9 +68,12 @@ public class OrderController {
      */
     private Order order;
 
+    /**
+     * {@link HashMap} of the menu items Elements: <id, <name, price>>
+     */
+    private TreeMap<String, Pair<String, Double>> menuItems;
 
-    // Navbar Buttons
-        /**
+    /**
      * {@link Button} Button to navigate order scene
      */
     @FXML
@@ -103,7 +112,8 @@ public class OrderController {
     /**
      * FlowPane that holds the menu items
      */
-    @FXML private Button logoutButton;
+    @FXML
+    private FlowPane menuPane;
 
     /*
      * Text that lists the items in the order
@@ -148,17 +158,32 @@ public class OrderController {
      * visibility, and refresh page
      */
     public void initialize() {
-        if(session.isManager()) {
-            System.out.println("Manager");
-            editMenuButton.setVisible(true);
-            inventoryButton.setVisible(true);
-            employeesButton.setVisible(true);
-        }
-        else{
-            System.out.println("Employee");
-            editMenuButton.setVisible(false);
-            inventoryButton.setVisible(false);
-            employeesButton.setVisible(false);
+        // using database (menuitem), load into hashmap and create corresponding button
+        final List<Button> buttons = new ArrayList<Button>();
+        final String query = String.format("SELECT * FROM %s", DatabaseNames.MENU_ITEM_DATABASE);
+        final ResultSet rs = database.executeQuery(query);
+        try {
+            while (rs.next()) {
+                final String id = rs.getString("id");
+                final String name = rs.getString("name");
+                final double price = rs.getDouble("cost");
+
+                // insert into hashmap
+                this.menuItems.put(id, new Pair<String, Double>(name, price));
+            }
+
+            for (final String id : this.menuItems.keySet()) {
+                // create and insert button
+                final Button button = new Button(this.menuItems.get(id).getKey());
+                button.setId("b" + id);
+                button.setOnAction(this::menuItemButtonOnClick);
+                button.setPadding(new Insets(8, 16, 8, 16));
+                buttons.add(button);
+            }
+            this.menuPane.getChildren().addAll(buttons);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
         }
 
         // set navbar visibility
@@ -179,7 +204,12 @@ public class OrderController {
         this.totalCostLabel.setText(String.format("Total Cost: $%.2f", this.order.getTotalCost()));
     }
 
-
+    /**
+     * Handle loading a new window when a navigation button
+     * 
+     * @param event {@link ActionEvent} of the {@link Button} pressed
+     * @throws IOException if loading the nindow fails
+     */
     public void navButtonClicked(ActionEvent event) throws IOException {
         final SessionData session = new SessionData(this.database, this.employeeId, this.order,
                 this.customerNameField.getText());
@@ -196,25 +226,16 @@ public class OrderController {
         final Button b = (Button) event.getSource();
 
         // add item to order
-        String id = b.getId().substring(1);
+        final String id = b.getId().substring(1);
+        this.order.addItem(this.getMenuItemName(id), this.getMenuItemCost(id));
 
-        String name = database.getMenuItemName(id);
-        double cost = database.getMenuItemCost(id);
-
-        order.addItem(name, cost);
-        
         // update order box and cost
         this.refreshPage();
     }
 
     /**
-     * Handles the text change event for the customr name text box
-     */
-    public void customerNameOnChanged() {}
-
-    /**
-     * Handles the buttom click event for the submit order button.
-     * Inserts the order into both the orderitem and solditem tables.
+     * Handles the buttom click event for the submit order button. Inserts the order into both the
+     * orderitem and solditem tables.
      */
     public void submitOrderOnClick() {
         if (this.order.getTotalCost() == 0.0) {
@@ -228,8 +249,7 @@ public class OrderController {
         }
 
         // setup order and submit to database
-        order.setOrderId(database.getLastId("orderitemtest") + 1);
-        order.setCustomerName(customerNameField.getText());
+        this.order.setCustomerName(this.customerNameField.getText());
 
         this.insertOrderItem(this.order);
 
