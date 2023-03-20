@@ -105,9 +105,13 @@
                         <Font size="14.0" />
                      </font>
                   </TextField>
-                  <ScrollPane hbarPolicy="NEVER" prefHeight="337.0" prefWidth="300.0">
+                  <ScrollPane fx:id="orderScrollPane" hbarPolicy="NEVER" prefHeight="337.0" prefWidth="275.0">
                      <content>
-                        <VBox fx:id="orderBox" prefHeight="330.0" prefWidth="285.0" />
+                        <VBox fx:id="orderBox" prefHeight="330.0" prefWidth="285.0">
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </VBox>
                      </content>
                   </ScrollPane>
                </children>
