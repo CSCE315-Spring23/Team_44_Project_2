@@ -11,7 +11,6 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.fxml.FXML;
 
-
 /**
  * .Controller for the Order Screen
  * 
@@ -30,7 +29,7 @@ public class OrderController {
      * Current session data
      *
      * @see SessionData
-    */
+     */
     private SessionData session;
 
     /**
@@ -51,43 +50,48 @@ public class OrderController {
 
     private Order order;
 
-
     // Navbar Buttons
-        /**
+    /**
      * {@link Button} Button to navigate order scene
      *
      */
-    @FXML private Button orderButton;
+    @FXML
+    private Button orderButton;
 
     /**
      * {@link Button} Button to navigate order history scene
      *
      */
-    @FXML private Button orderHistoryButton;
+    @FXML
+    private Button orderHistoryButton;
 
     /**
      * {@link Button} Button to navigate inventory scene
      *
      */
-    @FXML private Button inventoryButton;
+    @FXML
+    private Button inventoryButton;
 
     /**
      * {@link Button} Button to navigate employees scene
      *
      */
-    @FXML private Button employeesButton;
+    @FXML
+    private Button employeesButton;
 
     /**
      * {@link Button} Button to navigate edit menu scene
      *
      */
-    @FXML private Button editMenuButton;
+    @FXML
+    private Button editMenuButton;
 
     /**
      * {@link Button} Button to logout
      *
      */
-    @FXML private Button logoutButton;
+    @FXML
+    private Button logoutButton;
 
     /*
      * Text that lists the items in the order
@@ -113,7 +117,6 @@ public class OrderController {
     @FXML
     private Button submitOrderButton;
 
-
     /**
      * Constructor
      * 
@@ -130,13 +133,12 @@ public class OrderController {
      * Verify Database is Connected
      */
     public void initialize() {
-        if(session.isManager()) {
+        if (session.isManager()) {
             System.out.println("Manager");
             editMenuButton.setVisible(true);
             inventoryButton.setVisible(true);
             employeesButton.setVisible(true);
-        }
-        else{
+        } else {
             System.out.println("Employee");
             editMenuButton.setVisible(false);
             inventoryButton.setVisible(false);
@@ -152,7 +154,6 @@ public class OrderController {
         orderBox.setText(order.getItemCount());
         totalCostLabel.setText(String.format("Total Cost: $%.2f", order.getTotalCost()));
     }
-
 
     public void navButtonClicked(ActionEvent event) throws IOException {
         SessionData session = new SessionData(database, employeeId, order);
@@ -176,7 +177,7 @@ public class OrderController {
         double cost = database.getMenuItemCost(id);
 
         order.addItem(name, cost);
-        
+
         // update order box and cost
         refreshPage();
     }
@@ -184,7 +185,8 @@ public class OrderController {
     /**
      * Handles the text change event for the customr name text box
      */
-    public void customerNameOnChanged() {}
+    public void customerNameOnChanged() {
+    }
 
     /**
      * Handles the buttom click event for the submit order button.
@@ -202,7 +204,7 @@ public class OrderController {
         }
 
         // setup order and submit to database
-        order.setOrderId(database.getLastId("orderitemtest") + 1);
+        order.setOrderId(database.getLastId("orderitem") + 1);
         order.setCustomerName(customerNameField.getText());
 
         database.insertOrderItem(order);
