@@ -197,7 +197,7 @@ public class Order {
      * 
      * @return {@link #items}
      */
-    public HashMap<String, Long> getItems() {
+    public Map<String, Long> getItems() {
         return this.items;
     }
 }
