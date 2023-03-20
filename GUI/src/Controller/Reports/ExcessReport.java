@@ -260,7 +260,7 @@ public class ExcessReport {
 
                 final long use = inventoryUse.containsKey(id) ? inventoryUse.get(id) : 0l;
 
-                if (use <= (quantity + use) / 10)
+                if (use <= quantity / 9)
                     orders.add(new InventoryItem(id, name, quantity));
             }
         } catch (final SQLException e) {
