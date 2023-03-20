@@ -19,8 +19,10 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 
@@ -116,10 +118,10 @@ public class OrderController {
     private FlowPane menuPane;
 
     /*
-     * Text that lists the items in the order
+     * Holds the order item buttons
      */
     @FXML
-    private Label orderBox;
+    private VBox orderBox;
 
     /*
      * Text field to input the customer's name
@@ -200,8 +202,26 @@ public class OrderController {
      * Refreshes the front-end
      */
     private void refreshPage() {
-        this.orderBox.setText(this.order.getItemCount());
         this.totalCostLabel.setText(String.format("Total Cost: $%.2f", this.order.getTotalCost()));
+        
+        ArrayList<Button> buttons = new ArrayList<Button>();
+        HashMap<String, Long> orderItems = this.order.getItems();
+        for (String name : orderItems.keySet()) {
+            Button button = new Button(name + " x" + orderItems.get(name));
+            button.setId("o" + name);
+            button.setOnAction(this::removeItemButtonOnClick);
+            button.setPadding(new Insets(8, 16, 8, 16));
+            buttons.add(button);
+        }
+        this.orderBox.getChildren().clear();
+        this.orderBox.getChildren().addAll(buttons);
+    }
+
+    public void removeItemButtonOnClick(ActionEvent event) {
+        final Button b = (Button) event.getSource();
+        final String itemName = b.getId().substring(1);
+        this.order.removeItem(itemName, this.menuItems.get(Long.toString(this.getMenuItemId(itemName))).getValue());
+        this.refreshPage();
     }
 
     /**
