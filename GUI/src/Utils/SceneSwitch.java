@@ -74,14 +74,29 @@ public class SceneSwitch {
      */
     private DataTrendsController dataTrendsController;
 
+    /**
+     * {@link SalesReport} to load the sales report window
+     */
     private SalesReport salesReportController;
 
+    /**
+     * {@link XZReport} to load the XZ report window
+     */
     private XZReport xzReportController;
 
+    /**
+     * {@link ExcessReport} to load the excess report window
+     */
     private ExcessReport excessReportController;
 
+    /**
+     * {@link RestockReport} to load the restock report window
+     */
     private RestockReport restockReportController;
 
+    /**
+     * {@link SalesTogetherReport} to load the sales together report window
+     */
     private SalesTogetherReport salesTogetherReportController;
 
     /**
