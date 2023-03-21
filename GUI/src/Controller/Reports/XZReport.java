@@ -294,19 +294,20 @@ public class XZReport {
         try {
             final long millis = System.currentTimeMillis();
             Date dateCreated = new java.sql.Date(millis);
+            String dateString = dateCreated.toString();
             final Long orderID = DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE);
-            final Long reportID = this.getLastZReport().getLong("reportid") + 1;
             final String totalSales = this.getTotalSalesSinceZReport();
             final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
 
             final String query = String.format(
                     /* TODO: The %s may need '\ %s '\ for employee name, and ? for Date */
-                    "INSERT INTO %s (reportid, totalsales, employee, orderid, datecreated) VALUES (%d, %s, %s, %d, ?)",
-                    DatabaseNames.ZREPORT_DATABASE, reportID, totalSales, employee, orderID, dateCreated);
+                    "INSERT INTO %s (totalsales, employee, orderid, datecreated) VALUES (%s,\'%s\', %d, \'%s\')",
+                    DatabaseNames.ZREPORT_DATABASE, totalSales, employee, orderID, dateString);
             System.out.println("SQL Query: " + query);
             this.database.executeUpdate(query);
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("BAD ADD ZReport");
         }
     }
 
