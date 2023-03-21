@@ -65,15 +65,7 @@ public class OrderRow {
      * 
      * @return {@link #orderID}
      */
-    public long getOrderID() {
-        return this.orderID.get();
-    }
-
-    /**
-     * Gets {@link #orderID}
-     * @return {@link #orderID}
-     */
-    public SimpleObjectProperty<Long> orderIDProperty() {
+    public SimpleObjectProperty<Long> getOrderID() {
         return orderID;
     }
 
@@ -82,15 +74,7 @@ public class OrderRow {
      * 
      * @return {@link #customerName}
      */
-    public String getCustomerName() {
-        return this.customerName.get();
-    }
-
-    /**
-     * Gets {@link #customerName}
-     * @return {@link #customerName}
-     */
-    public SimpleObjectProperty<String> customerNameProperty() {
+    public SimpleObjectProperty<String> getName() {
         return customerName;
     }
 
@@ -99,15 +83,7 @@ public class OrderRow {
      * 
      * @return {@link #orderDate}
      */
-    public String getOrderDate() {
-        return this.orderDate.get();
-    }
-
-    /**
-     * Gets {@link #orderDate}
-     * @return {@link #orderDate}
-     */
-    public SimpleObjectProperty<String> orderDateProperty() {
+    public SimpleObjectProperty<String> getDate() {
         return this.orderDate;
     }
 
@@ -122,9 +98,10 @@ public class OrderRow {
 
     /**
      * Gets {@link #orderTotal}
+     * 
      * @return {@link #orderTotal}
      */
-    public SimpleObjectProperty<String> orderTotalProperty() {
+    public SimpleObjectProperty<String> getPrice() {
         return new SimpleObjectProperty<>(this.getOrderTotal());
     }
 
@@ -133,15 +110,7 @@ public class OrderRow {
      * 
      * @return {@link #employeeName}
      */
-    public String getEmployeeName() {
-        return this.employeeName.get();
-    }
-
-    /**
-     * Gets {@link #employeeName}
-     * @return {@link #employeeName}
-     */
-    public SimpleObjectProperty<String> employeeNameProperty() {
+    public SimpleObjectProperty<String> getEmployeeName() {
         return this.employeeName;
     }
 }
