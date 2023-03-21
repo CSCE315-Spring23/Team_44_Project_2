@@ -26,8 +26,7 @@ public class DatabaseUtils {
     /**
      * {@link DateTimeFormatter} to format {@link java.time.LocalDateTime}
      */
-    public static final DateTimeFormatter DATE_TIME_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * {@link DateTimeFormatter} to format {@link java.time.LocalDateTime}
@@ -57,14 +56,13 @@ public class DatabaseUtils {
      * Check if an item exists with in the database
      * 
      * @param database {@link DatabaseConnect} to the database
-     * @param itemID identification number of the item to search for
-     * @param table name of the table to query
+     * @param itemID   identification number of the item to search for
+     * @param table    name of the table to query
      * @return {@code true} if the item exists. {@code false} otherwise.
      */
     public static final boolean hasItem(final DatabaseConnect database, final long itemID,
             final String table) {
-        final String query =
-                String.format("SELECT EXISTS(SELECT * FROM %s WHERE id=%d)", table, itemID);
+        final String query = String.format("SELECT EXISTS(SELECT * FROM %s WHERE id=%d)", table, itemID);
         final ResultSet rs = database.executeQuery(query);
         final boolean result;
         try {
@@ -82,7 +80,7 @@ public class DatabaseUtils {
      * Returns the last ID in a given table
      *
      * @param database {@link DatabaseConnect} to the database
-     * @param table table name
+     * @param table    table name
      * @return the last ID in the table
      */
     public static final long getLastId(final DatabaseConnect database, final String table) {
@@ -104,7 +102,7 @@ public class DatabaseUtils {
      * Gets the employee name from the database based on the employee ID
      * 
      * @param database {@link DatabaseConnect} to the database
-     * @param id identification number of the employee to find
+     * @param id       identification number of the employee to find
      * @return {@link String} of the employee name
      */
     public static final String getEmployeeName(final DatabaseConnect database, final long id) {
@@ -125,7 +123,7 @@ public class DatabaseUtils {
      * Gets the menu items from the database based on Menu IDs
      * 
      * @param database {@link DatabaseConnect} to the database
-     * @param menuIds {@link List} of {@link Long} holding all Menu IDs to look up
+     * @param menuIds  {@link List} of {@link Long} holding all Menu IDs to look up
      * @return {@link HashMap} of {@link String} and {@link Long} of the menu items
      */
     public static final Map<String, Long> getMenuItems(final DatabaseConnect database,
@@ -153,7 +151,8 @@ public class DatabaseUtils {
     }
 
     /**
-     * Initializes inventory useage map. The {@link Map} holds an {@link Items.InventoryItem} ID
+     * Initializes inventory useage map. The {@link Map} holds an
+     * {@link Items.InventoryItem} ID
      * number as the key and its initialized quantity as value.
      * 
      * @param database {@link DatabaseConnect}
@@ -161,8 +160,7 @@ public class DatabaseUtils {
      */
     public static final Map<Long, Long> initInventoryUse(final DatabaseConnect database) {
         final Map<Long, Long> inventoryUse = new HashMap<>();
-        final String inventory =
-                String.format("SELECT * FROM %s", DatabaseNames.INVENTORY_DATABASE);
+        final String inventory = String.format("SELECT * FROM %s", DatabaseNames.INVENTORY_DATABASE);
         final ResultSet inv = database.executeQuery(inventory);
         try {
             while (inv.next()) {
@@ -178,12 +176,13 @@ public class DatabaseUtils {
     }
 
     /**
-     * Gets the menu items ordered from the start to the end date. The {@link Map} holds a
+     * Gets the menu items ordered from the start to the end date. The {@link Map}
+     * holds a
      * {@link Items.MenuItem} as the key and the number of times ordered as value.
      * 
      * @param database {@link DatabaseConnect}
-     * @param start start date
-     * @param end end date
+     * @param start    start date
+     * @param end      end date
      * @return {@link Map}
      */
     public static final Map<Long, Long> getMenuUse(final DatabaseConnect database,
@@ -214,7 +213,7 @@ public class DatabaseUtils {
      * Gets the Menu IDs from the database based on the order ID
      * 
      * @param database {@link DatabaseConnect} to the database
-     * @param orderID identification number of the order
+     * @param orderID  identification number of the order
      * @return {@link ArrayList} of {@link Long} of the menu IDs
      */
     public static final List<Long> getMenuId(final DatabaseConnect database, final long orderID) {
@@ -237,7 +236,7 @@ public class DatabaseUtils {
      * Gets the menu cost from the database based on the menu name
      * 
      * @param database {@link DatabaseConnect} to the database
-     * @param name of the customer making the order
+     * @param name     of the customer making the order
      * @return {@link Double} of the menu cost
      */
     public static final double getMenuCost(final DatabaseConnect database, final String name) {
@@ -258,5 +257,6 @@ public class DatabaseUtils {
     /**
      * Constructor
      */
-    public DatabaseUtils() {}
+    public DatabaseUtils() {
+    }
 }

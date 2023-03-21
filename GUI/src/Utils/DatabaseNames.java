@@ -35,7 +35,13 @@ public final class DatabaseNames {
     public static final String EMPLOYEE_DATABASE = "employee";
 
     /**
+     * The name of the Z Report Database
+     */
+    public static final String ZREPORT_DATABASE = "zreport";
+
+    /**
      * Constructor
      */
-    public DatabaseNames() {}
+    public DatabaseNames() {
+    }
 }
