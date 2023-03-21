@@ -161,6 +161,7 @@ public class XZReport {
     public void initialize() {
         this.setUpZTable();
         this.updateZTable();
+        this.addRowOnClick();
         this.ZReportTable.refresh();
 
         // set visibility of buttons based on employee role
@@ -300,7 +301,6 @@ public class XZReport {
             final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
 
             final String query = String.format(
-                    /* TODO: The %s may need '\ %s '\ for employee name, and ? for Date */
                     "INSERT INTO %s (totalsales, employee, orderid, datecreated) VALUES (%s,\'%s\', %d, \'%s\')",
                     DatabaseNames.ZREPORT_DATABASE, totalSales, employee, orderID, dateString);
             System.out.println("SQL Query: " + query);
@@ -311,6 +311,10 @@ public class XZReport {
         }
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
     private String getZReportParams() {
         try {
             final long millis = System.currentTimeMillis();
@@ -333,4 +337,49 @@ public class XZReport {
         return "-1";
     }
 
+    private void addRowOnClick() {
+        this.ZReportTable.setRowFactory(tv -> {
+            final TableRow<ZRow> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 1 && (!row.isEmpty())) {
+                    final ZRow rowData = row.getItem();
+                    final long id = rowData.getReportID().getValue();
+
+                    String reportDetails = "No Report Selected";
+                    try {
+                        // get order details
+                        // %1$s = menuitem database, %2$s = solditem database, %3$s = orderitem
+                        // database, %4$d = order id
+                        String query = String.format(
+                            "SELECT * FROM zreport WHERE reportid = %o", id);
+                        System.out.println("QUERY: " + query);
+                        final ResultSet rs = database.executeQuery(query);
+
+                        if(rs.next() == false){
+                            this.ZTextBox.setText(reportDetails);
+                            return;
+                        }
+
+                        String totalSales = rs.getString("totalSales");
+                        String employee = rs.getString("employee");
+                        String dateString = rs.getString("datecreated");
+                        String orderID = rs.getString("orderid");
+                        
+                        reportDetails = String.format("Z Report:\n" +
+                        "Total Sales Since Z Report: %s\n" + 
+                        "Employee: %s\n" + 
+                        "Date: %s\n" + 
+                        "Since orderID: %s\n", 
+                        totalSales, employee, dateString, orderID);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    this.ZTextBox.setText(reportDetails);
+                }
+            });
+            return row;
+        });
+    }
 }
