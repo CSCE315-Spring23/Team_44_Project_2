@@ -1,16 +1,9 @@
 package Controller.Reports;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.naming.spi.DirStateFactory.Result;
-
-import Items.ZRow;
 import java.sql.Date;
-import java.io.IOException;
-import java.lang.Double;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import Items.ZRow;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
@@ -23,10 +16,21 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 
+/**
+ * Controller for the XZ Report window
+ * 
+ * @since 2023-03-07
+ * @version 2023-03-07
+ * 
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
+ */
 public class XZReport {
     /**
      * Current session data
@@ -126,8 +130,7 @@ public class XZReport {
     private TableColumn<ZRow, String> employee;
 
     /**
-     * {@link TableColumn} to display the date the
-     * z report is created
+     * {@link TableColumn} to display the date the z report is created
      *
      */
     @FXML
@@ -147,21 +150,34 @@ public class XZReport {
     @FXML
     private TextArea ZTextBox;
 
+    /**
+     * {@link Button} to create Z Report
+     */
     @FXML
     private Button createZReport;
 
+    /**
+     * {@link Button} to view the X report
+     */
     @FXML
     private Button viewXReport;
 
+    /**
+     * Constructor
+     * 
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
+     */
     public XZReport(final SessionData session) {
         this.session = session;
         this.database = session.database;
     }
 
+    /**
+     * Initialize the graphical user interface
+     */
     public void initialize() {
         this.setUpZTable();
         this.updateZTable();
-        this.ZReportTable.refresh();
 
         // set visibility of buttons based on employee role
         if (session.isManager()) {
@@ -188,15 +204,25 @@ public class XZReport {
         this.sceneSwitch.switchScene(event);
     }
 
-    public void zReportButtonClicked(ActionEvent event) {
-        ZTextBox.setText(createReport(true));
-        addZReport();
-        updateZTable();
+    /**
+     * Create a Z Report
+     * 
+     * @param event {@link ActionEvent} of the {@link #createZReport}
+     */
+    public void zReportButtonClicked(final ActionEvent event) {
+        this.ZTextBox.setText(this.createReport(true));
+        this.addZReport();
+        this.updateZTable();
     }
 
-    public void xReportButtonClicked(ActionEvent event) {
-        String xReportText = createReport(false);
-        ZTextBox.setText(xReportText);
+    /**
+     * View the X Report
+     * 
+     * @param event {@link ActionEvent} of the {@link #viewXReport}
+     */
+    public void xReportButtonClicked(final ActionEvent event) {
+        final String xReportText = this.createReport(false);
+        this.ZTextBox.setText(xReportText);
     }
 
     /**
@@ -219,60 +245,78 @@ public class XZReport {
         this.employee.setCellValueFactory(cellData -> cellData.getValue().getEmployee());
     }
 
-    private String createReport(boolean isZReport) {
-        String totalSales = getTotalSalesSinceZReport();
-        final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
+    /**
+     * Create a Z or X Report
+     * 
+     * @param isZReport true if creating a Z report and false for X Report
+     * @return the Report as a {@link String}
+     */
+    private String createReport(final boolean isZReport) {
+        final String totalSales = this.getTotalSalesSinceZReport();
+        final String employee =
+                DatabaseUtils.getEmployeeName(this.database, this.session.employeeId);
         final long millis = System.currentTimeMillis();
-        Date dateCreated = new java.sql.Date(millis);
-        String dateString = dateCreated.toString();
-        final Long orderID = DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE);
+        final Date dateCreated = new Date(millis);
+        final String dateString = dateCreated.toLocalDate().format(DatabaseUtils.DATE_FORMAT);
+        final Long orderID =
+                DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE);
 
-        String reportType = "X";
-        if(isZReport){
-            reportType = "Z";
-        }
-        String textToDisplay = String.format("%s Report:\n" +
-                                            "Total Sales Since Z Report: %s\n" + 
-                                            "Employee: %s\n" + 
-                                            "Date: %s\n" + 
-                                            "Since orderID: %s\n", 
-                                            reportType, totalSales, employee, dateString, orderID);
+        final String reportType = isZReport ? "Z" : "X";
+        final String textToDisplay = String.format(
+                "%s Report:\n" + "Total Sales Since Z Report: %s\n" + "Employee: %s\n"
+                        + "Date: %s\n" + "Since orderID: %s\n",
+                reportType, totalSales, employee, dateString, orderID);
         return textToDisplay;
     }
 
+    /**
+     * Determines the total sales since the last z report was created
+     * 
+     * @return total sales as a {@link String}
+     */
     private String getTotalSalesSinceZReport() {
-        Double totalSales = 0.0;
+        double totalSales = 0.0d;
         try {
             final ResultSet zResultSet = this.getLastZReport();
-            if (zResultSet.next() == false) {
-                return "0.00";
+            if (!zResultSet.next()) {
+                return "NaN";
             }
 
             final int previousOrderID = zResultSet.getInt("orderID");
-            final String costQuery = String.format("SELECT total_cost FROM orderitem WHERE id > %s", previousOrderID);
+            final String costQuery = String.format("SELECT total_cost FROM %s WHERE id > %s",
+                    DatabaseNames.ORDER_ITEM_DATABASE, previousOrderID);
 
             final ResultSet rs = database.executeQuery(costQuery);
             while (rs.next()) {
-                totalSales = totalSales + Double.parseDouble(rs.getString("total_cost"));
+                totalSales += Double.parseDouble(rs.getString("total_cost"));
             }
-
-        } catch (Exception e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
         }
 
-        System.out.println("Total Sales Output:" + Double.toString(totalSales));
+        System.out.println("Total Sales Output: " + totalSales);
         return Double.toString(totalSales);
     }
 
+    /**
+     * Returns the last Z Report as a {@link ResultSet}
+     * 
+     * @return the last Z Report
+     */
     private ResultSet getLastZReport() {
-        return database.executeQuery("SELECT * FROM zreport ORDER BY reportid DESC LIMIT 1");
+        return this.database.executeQuery("SELECT * FROM zreport ORDER BY reportid DESC LIMIT 1");
     }
 
+    /**
+     * Creates a list to display in the {@link #ZReportTable}
+     * 
+     * @return {@link ObservableList} of {@link ZRow}
+     */
     private ObservableList<ZRow> getZRows() {
         final ObservableList<ZRow> zRows = FXCollections.observableArrayList();
-        final String query = String.format("SELECT * FROM %s ORDER BY reportid",
-                DatabaseNames.ZREPORT_DATABASE);
-        final ResultSet rs = database.executeQuery(query);
+        final String query =
+                String.format("SELECT * FROM %s ORDER BY reportid", DatabaseNames.ZREPORT_DATABASE);
+        final ResultSet rs = this.database.executeQuery(query);
         try {
             while (rs.next()) {
                 final Long reportID = rs.getLong("reportid");
@@ -280,50 +324,60 @@ public class XZReport {
                 final String employee = rs.getString("employee");
                 final Long orderID = rs.getLong("orderid");
                 final Date dateCreated = rs.getDate("datecreated");
-                zRows.add(
-                        new ZRow(reportID, totalSales, employee, orderID, dateCreated));
+                zRows.add(new ZRow(reportID, totalSales, employee, orderID, dateCreated));
             }
-        } catch (Exception e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
         }
 
         return zRows;
     }
 
+    /**
+     * Adds a Z Report to the database
+     */
     private void addZReport() {
         try {
             final long millis = System.currentTimeMillis();
-            Date dateCreated = new java.sql.Date(millis);
+            final Date dateCreated = new Date(millis);
             String dateString = dateCreated.toString();
-            final Long orderID = DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE);
+            final Long orderID =
+                    DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE);
             final String totalSales = this.getTotalSalesSinceZReport();
             final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
 
+            /* TODO: The %s may need '\ %s '\ for employee name, and ? for Date */
             final String query = String.format(
-                    /* TODO: The %s may need '\ %s '\ for employee name, and ? for Date */
                     "INSERT INTO %s (totalsales, employee, orderid, datecreated) VALUES (%s,\'%s\', %d, \'%s\')",
                     DatabaseNames.ZREPORT_DATABASE, totalSales, employee, orderID, dateString);
             System.out.println("SQL Query: " + query);
             this.database.executeUpdate(query);
         } catch (Exception e) {
-            e.printStackTrace();
             System.err.println("BAD ADD ZReport");
+            e.printStackTrace();
         }
     }
 
+    /**
+     * Gets a Z Report
+     * 
+     * @return Z report as a {@link String}
+     * @deprecated
+     */
+    @Deprecated
     private String getZReportParams() {
         try {
             final long millis = System.currentTimeMillis();
             Date dateCreated = new java.sql.Date(millis);
             String.format("The date: %tY-%tm-%td", dateCreated);
 
-            final String orderID = Long
-                    .toString(DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE));
+            final String orderID = Long.toString(
+                    DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE));
             final String reportID = Long.toString(this.getLastZReport().getLong("reportid") + 1);
             final String totalSales = this.getTotalSalesSinceZReport();
             final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
-            final String zString = String.format("%s %s %s %s %s", reportID, totalSales, employee, orderID,
-                    dateCreated);
+            final String zString = String.format("%s %s %s %s %s", reportID, totalSales, employee,
+                    orderID, dateCreated);
             System.out.println(zString);
             return zString;
         } catch (Exception e) {
@@ -332,5 +386,4 @@ public class XZReport {
         System.out.println("Did not get Z-Report Params Successfully");
         return "-1";
     }
-
 }
