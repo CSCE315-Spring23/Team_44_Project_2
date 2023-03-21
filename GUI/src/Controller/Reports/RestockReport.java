@@ -3,7 +3,7 @@ package Controller.Reports;
 import java.io.IOException;
 import java.sql.ResultSet;
 
-import Items.RestockReportRow;
+import Items.InventoryItem;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
 import Utils.SceneSwitch;
@@ -14,6 +14,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+/**
+ * Controller for the restock report window
+ * 
+ * @since 2023-03-07
+ * @version 2023-03-07
+ * 
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
+ */
 public class RestockReport {
     /**
      * Current session data
@@ -80,24 +92,39 @@ public class RestockReport {
 
     /**
      * {@link Button} Button to logout
-     *
      */
     @FXML
     private Button logoutButton;
 
+    /**
+     * {@link TableView} of {@link InventoryItem} to display in the graphical user interface
+     */
     @FXML
-    private TableView<RestockReportRow> restockReportTable;
+    private TableView<InventoryItem> restockReportTable;
 
+    /**
+     * {@link TableColumn} displaying the {@link Items.InventoryItem} ID number
+     */
     @FXML
-    private TableColumn<RestockReportRow, Integer> itemId;
+    private TableColumn<InventoryItem, Long> itemId;
 
+    /**
+     * {@link TableColumn} displaying the {@link Items.InventoryItem} name
+     */
     @FXML
-    private TableColumn<RestockReportRow, String> itemName;
+    private TableColumn<InventoryItem, String> itemName;
 
+    /**
+     * {@link TableColumn} displaying the {@link Items.InventoryItem} stock
+     */
     @FXML
-    private TableColumn<RestockReportRow, Integer> itemQuantity;
+    private TableColumn<InventoryItem, Long> itemQuantity;
 
-
+    /**
+     * Constructor
+     * 
+     * @param session {@link SessionData} passed in from {@link SceneSwitch}
+     */
     public RestockReport(final SessionData session) {
         this.session = session;
         this.database = session.database;
@@ -117,7 +144,7 @@ public class RestockReport {
             this.employeesButton.setVisible(false);
         }
 
-        populateTable();
+        this.populateTable();
     }
 
     /**
@@ -136,15 +163,13 @@ public class RestockReport {
         this.itemName.setCellValueFactory(cell -> cell.getValue().getName());
         this.itemQuantity.setCellValueFactory(cell -> cell.getValue().getQuantity());
 
-        // TODO: manually add threshold values into the database
-        String query = "SELECT * FROM " + DatabaseNames.INVENTORY_DATABASE
-            + " WHERE quantity < threshold";
+        final String query = String.format("SELECT * FROM %s WHERE quantity < threshold",
+                DatabaseNames.INVENTORY_DATABASE);
+        final ResultSet rSet = this.database.executeQuery(query);
         try {
-            ResultSet rSet = database.executeQuery(query);
-
             while (rSet.next()) {
-                RestockReportRow row = new RestockReportRow(rSet.getInt("id"), 
-                    rSet.getString("name"), rSet.getInt("quantity"));
+                final InventoryItem row = new InventoryItem(rSet.getInt("id"),
+                        rSet.getString("name"), rSet.getInt("quantity"));
                 this.restockReportTable.getItems().add(row);
             }
 
@@ -153,5 +178,4 @@ public class RestockReport {
             e.printStackTrace();
         }
     }
-
 }

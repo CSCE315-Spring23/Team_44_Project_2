@@ -54,30 +54,12 @@ public class EmployeeRow {
     }
 
     /**
-     * Gets value in {@link #randomID}
-     * 
-     * @return {@link #randomID}
-     */
-    public long getRandomID() {
-        return this.randomID.get();
-    }
-
-    /**
      * Gets the {@link SimpleObjectProperty} of {@link #randomID}
      *
      * @return {@link #randomID}
      */
-    public SimpleObjectProperty<Long> randomIDProperty() {
+    public SimpleObjectProperty<Long> getRandomID() {
         return this.randomID;
-    }
-
-    /**
-     * Gets value in {@link #employeeName}
-     * 
-     * @return {@link #employeeName}
-     */
-    public String getEmployeeName() {
-        return this.employeeName.get();
     }
 
     /**
@@ -85,17 +67,8 @@ public class EmployeeRow {
      *
      * @return {@link #employeeName}
      */
-    public SimpleObjectProperty<String> employeeNameProperty() {
+    public SimpleObjectProperty<String> getName() {
         return this.employeeName;
-    }
-
-    /**
-     * Gets the value in {@link #role}
-     * 
-     * @return {@link #role}
-     */
-    public EmployeeRole getRole() {
-        return this.role.get();
     }
 
     /**
@@ -103,24 +76,16 @@ public class EmployeeRow {
      *
      * @return {@link #role}
      */
-    public SimpleObjectProperty<EmployeeRole> roleProperty() {
+    public SimpleObjectProperty<EmployeeRole> getRole() {
         return this.role;
     }
 
     /**
-     * Gets the value of {@link #employeePin}
+     * Gets the {@link SimpleObjectProperty} of {@link #employeePin}
      * 
      * @return {@link #employeePin}
      */
-    public int getEmployeePin() {
-        return this.employeePin.get();
-    }
-
-    /**
-     * Gets the {@link SimpleObjectProperty} of {@link #employeePin}
-     * @return {@link #employeePin}
-     */
-    public SimpleObjectProperty<Integer> employeePinProperty() {
+    public SimpleObjectProperty<Integer> getPIN() {
         return this.employeePin;
     }
 }

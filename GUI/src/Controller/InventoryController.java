@@ -100,7 +100,6 @@ public class InventoryController {
     @FXML
     private Button logoutButton;
 
-
     /**
      * {@link TableView} of {@link InventoryItem} that will display the entire inventory
      */

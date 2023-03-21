@@ -135,10 +135,9 @@ public class DatabaseUtils {
             final String query = String.format("SELECT name FROM %s WHERE id = %d",
                     DatabaseNames.MENU_ITEM_DATABASE, menuID);
             final ResultSet rs = database.executeQuery(query);
-            String name;
             try {
                 while (rs.next()) {
-                    name = rs.getString("name");
+                    final String name = rs.getString("name");
                     if (menuItems.containsKey(name))
                         menuItems.put(name, menuItems.get(name) + 1);
                     else
@@ -151,6 +150,64 @@ public class DatabaseUtils {
         }
 
         return menuItems;
+    }
+
+    /**
+     * Initializes inventory useage map. The {@link Map} holds an {@link Items.InventoryItem} ID
+     * number as the key and its initialized quantity as value.
+     * 
+     * @param database {@link DatabaseConnect}
+     * @return {@link Map}
+     */
+    public static final Map<Long, Long> initInventoryUse(final DatabaseConnect database) {
+        final Map<Long, Long> inventoryUse = new HashMap<>();
+        final String inventory =
+                String.format("SELECT * FROM %s", DatabaseNames.INVENTORY_DATABASE);
+        final ResultSet inv = database.executeQuery(inventory);
+        try {
+            while (inv.next()) {
+                final long invID = inv.getLong("id");
+                inventoryUse.putIfAbsent(invID, 0l);
+            }
+        } catch (final SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return inventoryUse;
+    }
+
+    /**
+     * Gets the menu items ordered from the start to the end date. The {@link Map} holds a
+     * {@link Items.MenuItem} as the key and the number of times ordered as value.
+     * 
+     * @param database {@link DatabaseConnect}
+     * @param start start date
+     * @param end end date
+     * @return {@link Map}
+     */
+    public static final Map<Long, Long> getMenuUse(final DatabaseConnect database,
+            final String start, final String end) {
+        System.out.printf("Retreiving menu items sold starting %s until %s%n", start, end);
+        final Map<Long, Long> menuUse = new HashMap<>();
+        final String menuQuery = String.format(
+                "SELECT menuid FROM %1$s INNER JOIN %2$s ON %1$s.orderid = %2$s.id WHERE Date(%2$s.date) >= \'%3$s\' AND Date(%2$s.date) <= \'%4$s\'",
+                DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.ORDER_ITEM_DATABASE, start, end);
+        final ResultSet menu = database.executeQuery(menuQuery);
+        try {
+            while (menu.next()) {
+                final long menuID = menu.getLong("menuid");
+                if (menuUse.containsKey(menuID))
+                    menuUse.put(menuID, menuUse.get(menuID) + 1l);
+                else
+                    menuUse.put(menuID, 1l);
+            }
+        } catch (final SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return menuUse;
     }
 
     /**

@@ -177,11 +177,10 @@ public class EmployeeController {
      */
     private void setUpTable() {
         // define TableView columns
-        this.randomID.setCellValueFactory(cellData -> cellData.getValue().randomIDProperty());
-        this.employeeName
-                .setCellValueFactory(cellData -> cellData.getValue().employeeNameProperty());
-        this.role.setCellValueFactory(cellData -> cellData.getValue().roleProperty());
-        this.employeePin.setCellValueFactory(cellData -> cellData.getValue().employeePinProperty());
+        this.randomID.setCellValueFactory(cellData -> cellData.getValue().getRandomID());
+        this.employeeName.setCellValueFactory(cellData -> cellData.getValue().getName());
+        this.role.setCellValueFactory(cellData -> cellData.getValue().getRole());
+        this.employeePin.setCellValueFactory(cellData -> cellData.getValue().getPIN());
     }
 
     /**

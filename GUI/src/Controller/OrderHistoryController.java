@@ -201,13 +201,11 @@ public class OrderHistoryController {
      */
     private void setUpTable() {
         // define TableView columns
-        this.orderID.setCellValueFactory(cellData -> cellData.getValue().orderIDProperty());
-        this.customerName
-                .setCellValueFactory(cellData -> cellData.getValue().customerNameProperty());
-        this.orderDate.setCellValueFactory(cellData -> cellData.getValue().orderDateProperty());
-        this.orderTotal.setCellValueFactory(cellData -> cellData.getValue().orderTotalProperty());
-        this.employeeName
-                .setCellValueFactory(cellData -> cellData.getValue().employeeNameProperty());
+        this.orderID.setCellValueFactory(cellData -> cellData.getValue().getOrderID());
+        this.customerName.setCellValueFactory(cellData -> cellData.getValue().getName());
+        this.orderDate.setCellValueFactory(cellData -> cellData.getValue().getDate());
+        this.orderTotal.setCellValueFactory(cellData -> cellData.getValue().getPrice());
+        this.employeeName.setCellValueFactory(cellData -> cellData.getValue().getEmployeeName());
     }
 
     /**
@@ -247,8 +245,6 @@ public class OrderHistoryController {
         return orders;
     }
 
-
-
     /**
      * Adds a click event to each {@link OrderRow} in table to display order details
      */
@@ -258,14 +254,14 @@ public class OrderHistoryController {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!row.isEmpty())) {
                     final OrderRow rowData = row.getItem();
-                    final long id = rowData.getOrderID();
+                    final long id = rowData.getOrderID().getValue();
 
-                    List<String> orderDetails = new ArrayList<>();
+                    final List<String> orderDetails = new ArrayList<>();
                     try {
                         // get order details
                         // %1$s = menuitem database, %2$s = solditem database, %3$s = orderitem
                         // database, %4$d = order id
-                        ResultSet rs = database.executeQuery(String.format(
+                        final ResultSet rs = database.executeQuery(String.format(
                                 "SELECT %1$s.name, %1$s.cost, COUNT(*) as totalSold" + " FROM %2$s "
                                         + " JOIN %1$s ON %2$s.menuid = %1$s.id "
                                         + " JOIN %3$s ON %2$s.orderid = %3$s.id "
@@ -274,9 +270,9 @@ public class OrderHistoryController {
                                 DatabaseNames.ORDER_ITEM_DATABASE, id));
 
                         while (rs.next()) {
-                            String name = rs.getString("name");
-                            double cost = rs.getDouble("cost");
-                            int totalSold = rs.getInt("totalSold");
+                            final String name = rs.getString("name");
+                            final double cost = rs.getDouble("cost");
+                            final long totalSold = rs.getLong("totalSold");
                             final String rightside = String.format("$%.2f x%d = $%.2f", cost,
                                     totalSold, cost * totalSold);
                             final String print = String.format("%-36s %20s\n", name, rightside);
@@ -289,7 +285,7 @@ public class OrderHistoryController {
                     }
 
                     this.orderHistoryTextBox.setText("");
-                    for (String s : orderDetails) {
+                    for (final String s : orderDetails) {
                         this.orderHistoryTextBox.appendText(s);
                     }
                 }
