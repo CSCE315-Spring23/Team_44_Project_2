@@ -362,35 +362,6 @@ public class XZReport {
     }
 
     /**
-     * Gets a Z Report
-     * 
-     * @return Z report as a {@link String}
-     * @deprecated
-     */
-    @Deprecated
-    private String getZReportParams() {
-        try {
-            final long millis = System.currentTimeMillis();
-            Date dateCreated = new java.sql.Date(millis);
-            String.format("The date: %tY-%tm-%td", dateCreated);
-
-            final String orderID = Long.toString(
-                    DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE));
-            final String reportID = Long.toString(this.getLastZReport().getLong("reportid") + 1);
-            final String totalSales = this.getTotalSalesSinceZReport();
-            final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
-            final String zString = String.format("%s %s %s %s %s", reportID, totalSales, employee,
-                    orderID, dateCreated);
-            System.out.println(zString);
-            return zString;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Did not get Z-Report Params Successfully");
-        return "-1";
-    }
-
-    /**
      * Adds interactibilitiy to each {@link TableRow} in the {@link #ZReportTable}
      */
     private void addRowOnClick() {
@@ -402,31 +373,27 @@ public class XZReport {
                     final long id = rowData.getReportID().getValue();
 
                     String reportDetails = "No Report Selected";
+                    final String query =
+                            String.format("SELECT * FROM zreport WHERE reportid = %o", id);
+                    System.out.println("QUERY: " + query);
+                    final ResultSet rs = database.executeQuery(query);
                     try {
-                        // get order details
-                        // %1$s = menuitem database, %2$s = solditem database, %3$s = orderitem
-                        // database, %4$d = order id
-                        String query =
-                                String.format("SELECT * FROM zreport WHERE reportid = %o", id);
-                        System.out.println("QUERY: " + query);
-                        final ResultSet rs = database.executeQuery(query);
-
-                        if (rs.next() == false) {
+                        if (!rs.next()) {
                             this.ZTextBox.setText(reportDetails);
                             return;
                         }
 
-                        String totalSales = rs.getString("totalSales");
-                        String employee = rs.getString("employee");
-                        String dateString = rs.getString("datecreated");
-                        String orderID = rs.getString("orderid");
+                        final String totalSales = rs.getString("totalSales");
+                        final String employee = rs.getString("employee");
+                        final String dateString = rs.getString("datecreated");
+                        final String orderID = rs.getString("orderid");
 
                         reportDetails = String.format(
                                 "Z Report:\n" + "Total Sales Since Z Report: %s\n"
                                         + "Employee: %s\n" + "Date: %s\n" + "Since orderID: %s\n",
                                 totalSales, employee, dateString, orderID);
 
-                    } catch (Exception e) {
+                    } catch (final SQLException e) {
                         e.printStackTrace();
                     }
 
