@@ -90,7 +90,6 @@ public class ExcessReport {
     @FXML
     private Button editMenuButton;
 
-
     /**
      * {@link Button} Button to navigate to the data trends scene
      */
@@ -212,7 +211,6 @@ public class ExcessReport {
         final String start = this.inputDate.getValue().format(DatabaseUtils.DATE_FORMAT);
         final String end = this.date.format(DatabaseUtils.DATE_FORMAT);
 
-        System.out.printf("Retreiving inventory usage since %s until %s%n", start, end);
         final Map<Long, Long> menuUse = DatabaseUtils.getMenuUse(this.database, start, end);
         final Map<Long, Long> inventoryUse = DatabaseUtils.initInventoryUse(this.database);
 
@@ -262,8 +260,7 @@ public class ExcessReport {
                 if (id == 0)
                     continue;
 
-                final long use = inventoryUse.containsKey(id) ? inventoryUse.get(id) : 0l;
-
+                final long use = inventoryUse.getOrDefault(id, 0l);
                 if (use <= quantity / 9)
                     orders.add(new InventoryUsage(id, name, ((double) use) / (use + quantity)));
             }

@@ -26,7 +26,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
-
 /**
  * .Controller for the Order Screen
  * 
@@ -72,9 +71,9 @@ public class OrderController {
     private Order order;
 
     /**
-     * {@link HashMap} of the menu items Elements: <id, <name, price>>
+     * {@link Map} of the menu items Elements: <id, <name, price>>
      */
-    private TreeMap<String, Pair<String, Double>> menuItems;
+    private Map<Long, Pair<String, Double>> menuItems;
 
     /**
      * {@link Button} Button to navigate order scene
@@ -158,8 +157,8 @@ public class OrderController {
         this.database = session.database;
         this.employeeId = session.employeeId;
         this.order = session.order;
-        this.menuItems = new TreeMap<String, Pair<String, Double>>(
-                Comparator.comparingLong(Long::parseLong));
+        this.menuItems =
+                new TreeMap<Long, Pair<String, Double>>(Comparator.comparingLong(Long::longValue));
     }
 
     /**
@@ -173,7 +172,7 @@ public class OrderController {
         final ResultSet rs = database.executeQuery(query);
         try {
             while (rs.next()) {
-                final String id = rs.getString("id");
+                final long id = rs.getLong("id");
                 final String name = rs.getString("name");
                 final double price = rs.getDouble("cost");
 
@@ -181,7 +180,7 @@ public class OrderController {
                 this.menuItems.put(id, new Pair<String, Double>(name, price));
             }
 
-            for (final String id : this.menuItems.keySet()) {
+            for (final long id : this.menuItems.keySet()) {
                 // create and insert button
                 final Button button = new Button(this.menuItems.get(id).getKey());
                 button.setId("b" + id);
@@ -213,11 +212,11 @@ public class OrderController {
      */
     private void refreshPage() {
         this.totalCostLabel.setText(String.format("Total Cost: $%.2f", this.order.getTotalCost()));
-        
-        ArrayList<Button> buttons = new ArrayList<Button>();
-        Map<String, Long> orderItems = this.order.getItems();
-        for (String name : orderItems.keySet()) {
-            Button button = new Button(name + " x" + orderItems.get(name));
+
+        final List<Button> buttons = new ArrayList<Button>();
+        final Map<String, Long> orderItems = this.order.getItems();
+        for (final String name : orderItems.keySet()) {
+            final Button button = new Button(name + " x" + orderItems.get(name));
             button.setId("o" + name);
             button.setOnAction(this::removeItemButtonOnClick);
             button.setPadding(new Insets(8, 16, 8, 16));
@@ -228,10 +227,16 @@ public class OrderController {
         this.orderBox.getChildren().addAll(buttons);
     }
 
-    public void removeItemButtonOnClick(ActionEvent event) {
+    /**
+     * Remove an item from the {@link Order} when the dynamically created {@link Button} is pressed
+     * 
+     * @param event {@link ActionEvent} of the button
+     */
+    public void removeItemButtonOnClick(final ActionEvent event) {
         final Button b = (Button) event.getSource();
         final String itemName = b.getId().substring(1);
-        this.order.removeItem(itemName, this.menuItems.get(Long.toString(this.getMenuItemId(itemName))).getValue());
+        this.order.removeItem(itemName,
+                this.menuItems.get(this.getMenuItemId(itemName)).getValue());
         this.refreshPage();
     }
 
@@ -258,7 +263,8 @@ public class OrderController {
 
         // add item to order
         final String id = b.getId().substring(1);
-        this.order.addItem(this.getMenuItemName(id), this.getMenuItemCost(id));
+        final long itemID = Long.parseLong(id);
+        this.order.addItem(this.getMenuItemName(itemID), this.getMenuItemCost(itemID));
 
         // update order box and cost
         this.refreshPage();
@@ -297,9 +303,9 @@ public class OrderController {
      * @param id Identification number as a {@link String}
      * @return the name of the menu item
      */
-    public String getMenuItemName(final String id) {
-        final Pair<String, Double> result;
-        if ((result = this.menuItems.get(id)) == null) {
+    public String getMenuItemName(final long id) {
+        final Pair<String, Double> result = this.menuItems.get(id);
+        if (result == null) {
             System.out.println("Error getting menu item name");
             return new String();
         }
@@ -312,9 +318,9 @@ public class OrderController {
      * @param id Identification number as a {@link String}
      * @return the cost of the menu item
      */
-    public double getMenuItemCost(final String id) {
-        final Pair<String, Double> result;
-        if ((result = this.menuItems.get(id)) == null) {
+    public double getMenuItemCost(final long id) {
+        final Pair<String, Double> result = this.menuItems.get(id);
+        if (result == null) {
             System.out.println("Error getting menu item cost");
             return -1d;
         }

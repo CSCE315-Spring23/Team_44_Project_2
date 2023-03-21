@@ -1,20 +1,35 @@
 package Controller.Reports;
 
-
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import Items.SalesTogetherRow;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
+import Utils.DatabaseUtils;
 import Utils.SceneSwitch;
 import Utils.SessionData;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
+/**
+ * Controller for the Sales Together window
+ * 
+ * @since 2023-03-07
+ * @version 2023-03-07
+ * 
+ * @author Dai, Kevin
+ * @author Davis, Sloan
+ * @author Kuppa Jayaram, Shreeman
+ * @author Lai, Huy
+ * @author Mao, Steven
+ */
 public class SalesTogetherReport {
     /**
      * Current session data
@@ -86,22 +101,22 @@ public class SalesTogetherReport {
     @FXML
     private Button logoutButton;
 
-
     /**
      * {@link TextField} Text field for User specified start date
      */
 
     @FXML
-    TextField startDateText;
+    private DatePicker startDate;
 
     /**
      * {@link TextField} Text field for User specified end date
      */
     @FXML
-    TextField endDateText;
+    private DatePicker endDate;
 
     /**
-     * {@link Button} Button to generate what sales together report between {@link #startDateText} and {@link #endDateText}
+     * {@link Button} Button to generate what sales together report between {@link #startDate} and
+     * {@link #endDate}
      */
     @FXML
     Button goButton;
@@ -110,25 +125,25 @@ public class SalesTogetherReport {
      * {@link TableView} Table to display what sales together report
      */
     @FXML
-    TableView<SalesTogetherRow> salesTogetherTable;
+    private TableView<SalesTogetherRow> salesTogetherTable;
 
     /**
      * {@link TableColumn} Column to display menu item 1
      */
     @FXML
-    TableColumn<SalesTogetherRow, String> menuItem1Col;
+    private TableColumn<SalesTogetherRow, String> menuItem1Col;
 
     /**
      * {@link TableColumn} Column to display menu item 2
      */
     @FXML
-    TableColumn<SalesTogetherRow, String> menuItem2Col;
+    private TableColumn<SalesTogetherRow, String> menuItem2Col;
 
     /**
      * {@link TableColumn} Column to display number sold
      */
     @FXML
-    TableColumn<SalesTogetherRow, Long> numberSoldCol;
+    private TableColumn<SalesTogetherRow, Long> numberSoldCol;
 
     /**
      * Constructor for SalesTogetherReport
@@ -176,20 +191,24 @@ public class SalesTogetherReport {
      * Generates the sales together report after button click
      *
      * @param event {@link ActionEvent} of {@link #goButton}
-     * @throws IOException if loading a window fails
      */
-    public void onGoClick(final ActionEvent event) throws IOException {
-        final String startDate = startDateText.getText();
-        final String endDate = endDateText.getText();
-
-        System.out.println(startDate + " " + endDate);
-        // format check for dates
-        if (!startDate.matches("\\d{4}-\\d{2}-\\d{2}")
-                || !endDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            System.out.println("Invalid date format");
+    public void onGoClick(final ActionEvent event) {
+        final LocalDate sDate = this.startDate.getValue();
+        if (sDate == null) {
+            System.out.println("No start date");
             return;
         }
 
+        final LocalDate eDate = this.endDate.getValue();
+        if (eDate == null) {
+            System.out.println("No end date");
+            return;
+        }
+
+        final String startDate = sDate.format(DatabaseUtils.DATE_FORMAT);
+        final String endDate = eDate.format(DatabaseUtils.DATE_FORMAT);
+
+        System.out.println(startDate + " " + endDate);
         this.generateReport(startDate, endDate);
     }
 
@@ -238,8 +257,9 @@ public class SalesTogetherReport {
             }
 
             rs.close();
-        } catch (Exception e) {
+        } catch (final SQLException e) {
             e.printStackTrace();
+            return;
         }
     }
 }
