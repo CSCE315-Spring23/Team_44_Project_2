@@ -2,16 +2,10 @@ package Controller.Reports;
 
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.naming.spi.DirStateFactory.Result;
 
 import Items.ZRow;
 import java.sql.Date;
-import java.io.IOException;
 import java.lang.Double;
-import Items.ZRow;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
 import Utils.DatabaseUtils;
@@ -315,27 +309,27 @@ public class XZReport {
      * @deprecated
      * @return
      */
-    private String getZReportParams() {
-        try {
-            final long millis = System.currentTimeMillis();
-            Date dateCreated = new java.sql.Date(millis);
-            String.format("The date: %tY-%tm-%td", dateCreated);
+    // private String getZReportParams() {
+    //     try {
+    //         final long millis = System.currentTimeMillis();
+    //         Date dateCreated = new java.sql.Date(millis);
+    //         String.format("The date: %tY-%tm-%td", dateCreated);
 
-            final String orderID = Long
-                    .toString(DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE));
-            final String reportID = Long.toString(this.getLastZReport().getLong("reportid") + 1);
-            final String totalSales = this.getTotalSalesSinceZReport();
-            final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
-            final String zString = String.format("%s %s %s %s %s", reportID, totalSales, employee, orderID,
-                    dateCreated);
-            System.out.println(zString);
-            return zString;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Did not get Z-Report Params Successfully");
-        return "-1";
-    }
+    //         final String orderID = Long
+    //                 .toString(DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE));
+    //         final String reportID = Long.toString(this.getLastZReport().getLong("reportid") + 1);
+    //         final String totalSales = this.getTotalSalesSinceZReport();
+    //         final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
+    //         final String zString = String.format("%s %s %s %s %s", reportID, totalSales, employee, orderID,
+    //                 dateCreated);
+    //         System.out.println(zString);
+    //         return zString;
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     System.out.println("Did not get Z-Report Params Successfully");
+    //     return "-1";
+    // }
 
     private void addRowOnClick() {
         this.ZReportTable.setRowFactory(tv -> {
