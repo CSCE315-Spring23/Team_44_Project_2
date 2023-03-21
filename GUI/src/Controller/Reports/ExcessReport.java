@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
-import Items.InventoryUsage;
 import Items.InventoryUsage;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
@@ -218,10 +216,11 @@ public class ExcessReport {
         final Map<Long, Long> menuUse = DatabaseUtils.getMenuUse(this.database, start, end);
         final Map<Long, Long> inventoryUse = DatabaseUtils.initInventoryUse(this.database);
 
+        // Calculates inventory usage
         for (final Map.Entry<Long, Long> entry : menuUse.entrySet()) {
             final long menuID = entry.getKey();
             final long quant = entry.getValue();
-            final String query = String.format("SELECt inventoryid from %s WHERE menuid=%d",
+            final String query = String.format("SELECT inventoryid FROM %s WHERE menuid=%d",
                     DatabaseNames.RECIPE_ITEM_DATABASE, menuID);
             final ResultSet set = this.database.executeQuery(query);
             for (long i = 0; i < quant; ++i) {
