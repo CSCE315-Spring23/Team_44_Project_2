@@ -147,6 +147,12 @@ public class XZReport {
     @FXML
     private TextArea ZTextBox;
 
+    @FXML
+    private Button createZReport;
+
+    @FXML
+    private Button viewXReport;
+
     public XZReport(final SessionData session) {
         this.session = session;
         this.database = session.database;
@@ -182,6 +188,17 @@ public class XZReport {
         this.sceneSwitch.switchScene(event);
     }
 
+    public void zReportButtonClicked(ActionEvent event) {
+        ZTextBox.setText(createReport(true));
+        addZReport();
+        updateZTable();
+    }
+
+    public void xReportButtonClicked(ActionEvent event) {
+        String xReportText = createReport(false);
+        ZTextBox.setText(xReportText);
+    }
+
     /**
      * Update the {@link #ZReportTable}
      */
@@ -202,18 +219,39 @@ public class XZReport {
         this.employee.setCellValueFactory(cellData -> cellData.getValue().getEmployee());
     }
 
-    private String createXReport() {
-        return "";
+    private String createReport(boolean isZReport) {
+        String totalSales = getTotalSalesSinceZReport();
+        final String employee = DatabaseUtils.getEmployeeName(database, session.employeeId);
+        final long millis = System.currentTimeMillis();
+        Date dateCreated = new java.sql.Date(millis);
+        String dateString = dateCreated.toString();
+        final Long orderID = DatabaseUtils.getLastId(this.database, DatabaseNames.ORDER_ITEM_DATABASE);
+
+        String reportType = "X";
+        if(isZReport){
+            reportType = "Z";
+        }
+        String textToDisplay = String.format("%s Report:\n" +
+                                            "Total Sales Since Z Report: %s\n" + 
+                                            "Employee: %s\n" + 
+                                            "Date: %s\n" + 
+                                            "Since orderID: %s\n", 
+                                            reportType, totalSales, employee, dateString, orderID);
+        return textToDisplay;
     }
 
     private String getTotalSalesSinceZReport() {
         Double totalSales = 0.0;
         try {
             final ResultSet zResultSet = this.getLastZReport();
+            if (zResultSet.next() == false) {
+                return "0.00";
+            }
+
             final int previousOrderID = zResultSet.getInt("orderID");
             final String costQuery = String.format("SELECT total_cost FROM orderitem WHERE id > %s", previousOrderID);
-            final ResultSet rs = database.executeQuery(costQuery);
 
+            final ResultSet rs = database.executeQuery(costQuery);
             while (rs.next()) {
                 totalSales = totalSales + Double.parseDouble(rs.getString("total_cost"));
             }

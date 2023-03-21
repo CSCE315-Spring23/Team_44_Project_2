@@ -97,7 +97,7 @@
                <children>
                   <VBox alignment="CENTER" prefHeight="727.0" prefWidth="240.0">
                      <children>
-                        <Button fx:id="createZReport" mnemonicParsing="false" text="Create Z Report">
+                        <Button fx:id="createZReport" mnemonicParsing="false" onAction="#zReportButtonClicked" text="Create Z Report">
                            <padding>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </padding>
@@ -105,7 +105,7 @@
                               <Font size="24.0" />
                            </font>
                         </Button>
-                        <Button fx:id="viewXReport" layoutX="26.0" layoutY="335.0" mnemonicParsing="false" text="View X Report">
+                        <Button fx:id="viewXReport" layoutX="26.0" layoutY="335.0" mnemonicParsing="false" onAction="#xReportButtonClicked" text="View X Report">
                            <padding>
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </padding>
