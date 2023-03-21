@@ -118,12 +118,13 @@
                         </Button>
                      </children>
                   </VBox>
-                  <TableView prefHeight="727.0" prefWidth="406.0">
+                  <TableView prefHeight="727.0" prefWidth="541.0">
                     <columns>
-                      <TableColumn prefWidth="60.00006103515625" text="ID" />
-                      <TableColumn prefWidth="119.333251953125" text="Total Sales $" />
-                        <TableColumn prefWidth="75.333251953125" text="Date" />
-                        <TableColumn prefWidth="150.0" text="Employee" />
+                      <TableColumn fx:id="reportID" prefWidth="60.00006103515625" text="ID" />
+                      <TableColumn fx:id="totalSales" prefWidth="119.333251953125" text="Total Sales $" />
+                        <TableColumn fx:id="dateCreated" prefWidth="75.333251953125" text="Date" />
+                        <TableColumn fx:id="employee" prefWidth="150.0" text="Employee" />
+                        <TableColumn fx:id="orderID" prefWidth="86.00001017252606" text="orderID" />
                     </columns>
                   </TableView>
                   <TextArea prefHeight="727.0" prefWidth="467.0" />
