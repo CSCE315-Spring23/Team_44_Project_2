@@ -18,20 +18,18 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public class ZRow {
     /**
-     * {@link SimpleObjectProperty} of {@link Long} storing the identification
-     * number of the Z-row table
+     * {@link SimpleObjectProperty} of {@link Long} storing the identification number of the Z-row
+     * table
      */
     private final SimpleObjectProperty<Long> reportID;
 
     /**
-     * {@link SimpleObjectProperty} of {@link String} storing the total sales
-     * for that day
+     * {@link SimpleObjectProperty} of {@link String} storing the total sales for that day
      */
     private final SimpleObjectProperty<String> totalSales;
 
     /**
-     * {@link SimpleObjectProperty} of {@link String} storing the name of the
-     * Employee
+     * {@link SimpleObjectProperty} of {@link String} storing the name of the Employee
      */
     private final SimpleObjectProperty<String> employee;
 
@@ -41,19 +39,18 @@ public class ZRow {
     private final SimpleObjectProperty<Long> orderID;
 
     /**
-     * {@link SimpleObjectProperty} of {@link Date storing the date the
-     * z-row entry was created
+     * {@link SimpleObjectProperty} of {@link Date storing the date the z-row entry was created
      */
     private final SimpleObjectProperty<Date> dateCreated;
 
     /**
      * Constructor
      * 
-     * @param reportID    identification number of the Z-row table
-     * @param totalSales  total sales made in that day
-     * @param employee    being the name of the employee
+     * @param reportID identification number of the Z-row table
+     * @param totalSales total sales made in that day
+     * @param employee being the name of the employee
      * @param dateCreated being the date when z-row entry was made
-     * @param orderID     identifies the last order ID from the last z-report made
+     * @param orderID identifies the last order ID from the last z-report made
      */
     public ZRow(final Long reportID, final String totalSales, final String employee,
             final Long orderID, final Date dateCreated) {
@@ -85,7 +82,7 @@ public class ZRow {
     }
 
     /**
-     * Gets the value in {@link #tota;lSales}
+     * Gets the value in {@link #totalSales}
      * 
      * @return {@link #totalSales}
      */
