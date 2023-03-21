@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.naming.spi.DirStateFactory.Result;
+
 import Items.ZRow;
 import java.sql.Date;
 import java.io.IOException;
@@ -207,9 +210,8 @@ public class XZReport {
         Double totalSales = 0.0;
         try {
             final ResultSet zResultSet = this.getLastZReport();
-            /* TODO: check if ? placeholder works */
-            final String costQuery = String.format("SELECT total_cost FROM orderitem WHERE id > ?",
-                    zResultSet.getLong("reportid"));
+            final int previousOrderID = zResultSet.getInt("orderID");
+            final String costQuery = String.format("SELECT total_cost FROM orderitem WHERE id > %s", previousOrderID);
             final ResultSet rs = database.executeQuery(costQuery);
 
             while (rs.next()) {
