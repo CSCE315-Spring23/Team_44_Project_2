@@ -282,7 +282,7 @@ public class EditMenuController {
             return;
 
         // Update Menu Item Table
-        final String query = String.format("UPDATE menuitem SET name=%s cost=%.2f WHERE id=%d",
+        final String query = String.format("UPDATE menuitem SET name = \'%s\', cost=%.2f WHERE id=%d",
                 name, cost, itemID);
         this.database.executeUpdate(query);
 
