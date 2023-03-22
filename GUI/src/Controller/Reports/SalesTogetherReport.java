@@ -234,7 +234,7 @@ public class SalesTogetherReport {
         // %1$s = sold item database, %2$s = menu item database, %3$s = order database
         // %4$s = start date, %5$s = end date
         final String query = String.format(
-                "SELECT mi1.name AS menuitem1, mi2.name as menuitem2, COUNT(*) AS numSold"
+                "SELECT mi1.name AS menuitem1, mi2.name as menuitem2, COUNT(DISTINCT si1.orderid) AS numSold"
                         + " FROM %1$s si1"
                         + " JOIN %1$s si2 ON si1.orderid = si2.orderid AND si1.menuid < si2.menuid"
                         + " JOIN %2$s mi1 ON si1.menuid = mi1.id"
