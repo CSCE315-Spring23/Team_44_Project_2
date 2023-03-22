@@ -39,7 +39,7 @@ public class ZRow {
     private final SimpleObjectProperty<Long> orderID;
 
     /**
-     * {@link SimpleObjectProperty} of {@link Date storing the date the z-row entry was created
+     * {@link SimpleObjectProperty} of {@link Date} storing the date the z-row entry was created
      */
     private final SimpleObjectProperty<Date> dateCreated;
 

@@ -71,7 +71,7 @@ public class OrderController {
     private Order order;
 
     /**
-     * {@link Map} of the menu items Elements: <id, <name, price>>
+     * {@link Map} of the menu items Elements: &lt;id, &lt;name, price&gt;&gt;
      */
     private Map<Long, Pair<String, Double>> menuItems;
 
@@ -219,7 +219,8 @@ public class OrderController {
      * Refreshes the front-end
      */
     private void refreshPage() {
-        this.totalCostLabel.setText(String.format("Total Cost: $%.2f", Math.max(0, this.order.getTotalCost())));
+        this.totalCostLabel.setText(
+                String.format("Total Cost: $%.2f", Math.max(0, this.order.getTotalCost())));
 
         final List<Button> buttons = new ArrayList<Button>();
         final Map<String, Long> orderItems = this.order.getItems();
