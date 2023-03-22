@@ -112,36 +112,36 @@ public class OrderController {
     private Button logoutButton;
 
     /**
-     * FlowPane that holds the menu items
+     * {@link FlowPane} FlowPane that holds the menu items
      */
     @FXML
     private FlowPane menuPane;
 
     /**
-     * ScrollPane that holds the orderBox
+     * {@link ScrollPane} ScrollPane that holds the orderBox
      */
     @FXML
     private ScrollPane orderScrollPane;
 
-    /*
+    /**
      * Holds the order item buttons
      */
     @FXML
     private VBox orderBox;
 
-    /*
+    /**
      * Text field to input the customer's name
      */
     @FXML
     private TextField customerNameField;
 
-    /*
+    /**
      * Shows total cost of the order
      */
     @FXML
     private Label totalCostLabel;
 
-    /*
+    /**
      * Button to submit the order
      */
     @FXML
@@ -211,7 +211,7 @@ public class OrderController {
      * Refreshes the front-end
      */
     private void refreshPage() {
-        this.totalCostLabel.setText(String.format("Total Cost: $%.2f", this.order.getTotalCost()));
+        this.totalCostLabel.setText(String.format("Total Cost: $%.2f", Math.max(0, this.order.getTotalCost())));
 
         final List<Button> buttons = new ArrayList<Button>();
         final Map<String, Long> orderItems = this.order.getItems();
