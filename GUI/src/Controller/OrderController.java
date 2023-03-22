@@ -106,6 +106,12 @@ public class OrderController {
     private Button editMenuButton;
 
     /**
+     * {@link Button} Button to navigate data trends scene
+     */
+    @FXML
+    private Button dataTrendsButton;
+
+    /**
      * {@link Button} Button to logout
      */
     @FXML
@@ -203,6 +209,8 @@ public class OrderController {
         this.editMenuButton.setVisible(isManager);
         this.inventoryButton.setVisible(isManager);
         this.employeesButton.setVisible(isManager);
+        this.dataTrendsButton.setVisible(isManager);
+
         this.refreshPage();
         this.customerNameField.setText(this.session.customerName);
     }
