@@ -250,7 +250,7 @@ public class InventoryController {
         final long itemID =
                 DatabaseUtils.getLastId(this.database, DatabaseNames.INVENTORY_DATABASE) + 1;
         final String insert =
-                String.format("INSERT INTO %s (id, name, quantity) VALUES (%d, '%s', %d);",
+                String.format("INSERT INTO %s (id, name, quantity, threshold) VALUES (%d, '%s', %d, 50);",
                         DatabaseNames.INVENTORY_DATABASE, itemID, itemName, quantity);
         this.database.executeUpdate(insert);
 
