@@ -298,7 +298,7 @@ public class XZReport {
         }
 
         System.out.println("Total Sales Output: " + totalSales);
-        return Double.toString(totalSales);
+        return String.format("%.2f", totalSales);
     }
 
     /**
