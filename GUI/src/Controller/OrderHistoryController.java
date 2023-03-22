@@ -171,18 +171,13 @@ public class OrderHistoryController {
         this.addRowOnClick();
         this.orderHistoryTable.refresh();
 
-        // set visibility of buttons based on employee role
-        if (session.isManager()) {
-            System.out.println("Manager");
-            this.editMenuButton.setVisible(true);
-            this.inventoryButton.setVisible(true);
-            this.employeesButton.setVisible(true);
-        } else {
-            System.out.println("Employee");
-            this.editMenuButton.setVisible(false);
-            this.inventoryButton.setVisible(false);
-            this.employeesButton.setVisible(false);
-        }
+        // set navbar visibility
+        final boolean isManager = session.isManager();
+        System.out.println("Logged In As " + (isManager ? "Manager" : "Employee"));
+        this.editMenuButton.setVisible(isManager);
+        this.inventoryButton.setVisible(isManager);
+        this.employeesButton.setVisible(isManager);
+        this.dataTrendsButton.setVisible(isManager);
     }
 
     /**
