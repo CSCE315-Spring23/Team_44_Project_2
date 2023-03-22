@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
-import Items.InventoryUsage;
 import Items.InventoryUsage;
 import Utils.DatabaseConnect;
 import Utils.DatabaseNames;
@@ -91,7 +89,6 @@ public class ExcessReport {
      */
     @FXML
     private Button editMenuButton;
-
 
     /**
      * {@link Button} Button to navigate to the data trends scene
@@ -214,43 +211,14 @@ public class ExcessReport {
         final String start = this.inputDate.getValue().format(DatabaseUtils.DATE_FORMAT);
         final String end = this.date.format(DatabaseUtils.DATE_FORMAT);
 
-        System.out.printf("Retreiving inventory usage since %s until %s%n", start, end);
-        final Map<Long, Long> menuUse = new HashMap<>();
-        final Map<Long, Long> inventoryUse = new HashMap<>();
+        final Map<Long, Long> menuUse = DatabaseUtils.getMenuUse(this.database, start, end);
+        final Map<Long, Long> inventoryUse = DatabaseUtils.initInventoryUse(this.database);
 
-        final String menuQuery = String.format(
-                "SELECT menuid FROM %1$s INNER JOIN %2$s ON %1$s.orderid = %2$s.id WHERE Date(%2$s.date) >= \'%3$s\' AND Date(%2$s.date) <= \'%4$s\'",
-                DatabaseNames.SOLD_ITEM_DATABASE, DatabaseNames.ORDER_ITEM_DATABASE, start, end);
-
-        final ResultSet menu = this.database.executeQuery(menuQuery);
-        try {
-            while (menu.next()) {
-                final long menuID = menu.getLong("menuid");
-                if (menuUse.containsKey(menuID))
-                    menuUse.put(menuID, menuUse.get(menuID) + 1l);
-                else
-                    menuUse.put(menuID, 1l);
-            }
-        } catch (final SQLException e) {
-            e.printStackTrace();
-        }
-
-        final String inventory =
-                String.format("SELECT * FROM %s", DatabaseNames.INVENTORY_DATABASE);
-        final ResultSet inv = this.database.executeQuery(inventory);
-        try {
-            while (inv.next()) {
-                final long invID = inv.getLong("id");
-                inventoryUse.putIfAbsent(invID, 0l);
-            }
-        } catch (final SQLException e) {
-            e.printStackTrace();
-        }
-
+        // Calculates inventory usage
         for (final Map.Entry<Long, Long> entry : menuUse.entrySet()) {
             final long menuID = entry.getKey();
             final long quant = entry.getValue();
-            final String query = String.format("SELECt inventoryid from %s WHERE menuid=%d",
+            final String query = String.format("SELECT inventoryid FROM %s WHERE menuid=%d",
                     DatabaseNames.RECIPE_ITEM_DATABASE, menuID);
             final ResultSet set = this.database.executeQuery(query);
             for (long i = 0; i < quant; ++i) {
@@ -292,8 +260,7 @@ public class ExcessReport {
                 if (id == 0)
                     continue;
 
-                final long use = inventoryUse.containsKey(id) ? inventoryUse.get(id) : 0l;
-
+                final long use = inventoryUse.getOrDefault(id, 0l);
                 if (use <= quantity / 9)
                     orders.add(new InventoryUsage(id, name, ((double) use) / (use + quantity)));
             }

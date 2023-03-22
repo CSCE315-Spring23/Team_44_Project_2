@@ -40,9 +40,9 @@ public class SessionData {
     /**
      * Constructor
      * 
-     * @param database Connection to the database
+     * @param database   Connection to the database
      * @param employeeId id of the employee
-     * @param order current order
+     * @param order      current order
      */
     public SessionData(final DatabaseConnect database, final long employeeId, final Order order) {
         this.database = database;
@@ -53,9 +53,9 @@ public class SessionData {
     /**
      * Constructor
      * 
-     * @param database Connection to the database
-     * @param employeeId id of the employee
-     * @param order current order
+     * @param database     Connection to the database
+     * @param employeeId   id of the employee
+     * @param order        current order
      * @param customerName name of the employee making the order
      */
     public SessionData(final DatabaseConnect database, final long employeeId, final Order order,

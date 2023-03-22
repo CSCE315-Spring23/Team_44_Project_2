@@ -1,8 +1,9 @@
 package Items;
 
 import javafx.beans.property.SimpleObjectProperty;
+
 /**
- * Handle displaying the {@link RestockReport} in the GUI
+ * Handle displaying the {@link Controller.Reports.RestockReport} in the GUI
  *
  * @since 2023-03-07
  * @version 2023-03-07
@@ -12,10 +13,13 @@ import javafx.beans.property.SimpleObjectProperty;
  * @author Kuppa Jayaram, Shreeman
  * @author Lai, Huy
  * @author Mao, Steven
+ * 
+ * @deprecated
  */
 public class RestockReportRow {
     /**
-     * {@link SimpleObjectProperty} of {@link Integer} holding the identification number of the item.
+     * {@link SimpleObjectProperty} of {@link Integer} holding the identification number of the
+     * item.
      */
     private SimpleObjectProperty<Integer> id;
 
