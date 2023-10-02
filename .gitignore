@@ -1,5 +1,7 @@
-#Ignore .sh
+#Ignore files
 *.sh
+*.class
+*.gpg
 
 #Ignore Data in AutoGen Folder
 OrderAutoGenerator/OrderItem.csv
@@ -7,4 +9,17 @@ OrderAutoGenerator/SoldItem.csv
 OrderAutoGenerator/__pycache__
 
 #Ignore .json in .vscode
-/.vscode
+.vscode/
+
+#Ignore bin
+/GUI/bin/
+
+#Ignore computer specific compile scripts
+/GUI/src/localCompile.ps1
+/GUI/Makefile
+
+# Ignore documentation
+/doc/
+/docs/
+/GUI/doc/
+/GUI/docs/

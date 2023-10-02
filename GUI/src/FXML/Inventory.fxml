@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox fx:id="navBar" alignment="TOP_CENTER" prefHeight="569.0" prefWidth="100.0">
+         <children>
+            <Button fx:id="orderButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#navButtonClicked" text="Order">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="15.0" left="25.0" right="25.0" top="15.0" />
+               </padding>
+            </Button>
+            <Button fx:id="orderHistoryButton" alignment="CENTER" contentDisplay="CENTER" layoutX="21.0" layoutY="20.0" mnemonicParsing="false" onAction="#navButtonClicked" text="Order History" textAlignment="CENTER" wrapText="true">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="15.0" left="5.0" right="5.0" top="15.0" />
+               </padding>
+            </Button>
+            <Button fx:id="inventoryButton" alignment="CENTER" contentDisplay="CENTER" layoutX="19.0" layoutY="78.0" mnemonicParsing="false" onAction="#navButtonClicked" text="Inventory" textAlignment="CENTER" wrapText="true">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="employeesButton" alignment="CENTER" contentDisplay="CENTER" layoutX="20.0" layoutY="136.0" mnemonicParsing="false" onAction="#navButtonClicked" text="Employees" textAlignment="CENTER" wrapText="true">
+               <padding>
+                  <Insets bottom="15.0" left="13.0" right="13.0" top="15.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="editMenuButton" alignment="CENTER" contentDisplay="CENTER" layoutX="19.0" layoutY="194.0" mnemonicParsing="false" onAction="#navButtonClicked" text="Edit Menu" textAlignment="CENTER" wrapText="true">
+               <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </padding>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
+            <Button fx:id="dataTrendsButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#navButtonClicked" text="Data Trends" textAlignment="CENTER" wrapText="true">
+               <padding>
+                  <Insets bottom="15.0" left="10.0" right="10.0" top="15.0" />
+               </padding>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#navButtonClicked" text="Logout">
+               <VBox.margin>
+                  <Insets top="40.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+      <TableView fx:id="inventoryTable" prefHeight="800.0" prefWidth="850.0">
+        <columns>
+            <TableColumn fx:id="inventoryID" prefWidth="100.0" text="ID" />
+          <TableColumn fx:id="itemName" prefWidth="600.0" text="Item" />
+          <TableColumn fx:id="quantityCol" prefWidth="135.0" text="Quantity" />
+        </columns>
+      </TableView>
+      <VBox prefHeight="200.0" prefWidth="250.0">
+         <children>
+            <TitledPane animated="false" prefHeight="110.0" prefWidth="250.0" text="Update Inventory">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="250.0">
+                     <children>
+                        <VBox>
+                           <children>
+                              <TextField fx:id="updateItemID" promptText="Item ID" />
+                              <TextField fx:id="updateItemQuant" promptText="New Quantity" />
+                              <Button fx:id="updateItem" mnemonicParsing="false" onAction="#updateInventory" prefHeight="35.0" prefWidth="250.0" text="Update Item" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
+            <TitledPane animated="false" prefWidth="250.0" text="Delete Item from Inventory">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefWidth="250.0">
+                           <children>
+                              <TextField fx:id="deleteItemID" promptText="Item ID" />
+                              <Button fx:id="deleteItem" mnemonicParsing="false" onAction="#deleteItem" prefHeight="35.0" prefWidth="250.0" text="Delete Item" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
+            <TitledPane animated="false" prefHeight="110.0" prefWidth="250.0" text="Add Item to Inventory">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <VBox prefWidth="250.0">
+                           <children>
+                              <TextField fx:id="addItemName" promptText="Item Name" />
+                              <TextField fx:id="addItemQuant" promptText="Quantity" />
+                              <Button fx:id="addItem" mnemonicParsing="false" onAction="#addItem" prefHeight="35.0" prefWidth="250.0" text="Add Item" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </TitledPane>
+         </children>
+      </VBox>
+   </children>
+</HBox>
